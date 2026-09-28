@@ -23,3 +23,9 @@
   Estado column in docs/hypotheses.md.
 - Report raw duplicates and nulls before any deduplication.
 - Never state a verdict without the numbers that support it.
+- Before filtering on any categorical value (contact_reason, category, status...),
+  list its distinct values with counts. Never assume label strings.
+- The data is synthetic. For any pattern you report, compare against a null baseline
+  (shuffled labels or timestamps, or uniform expectation) and say whether the
+  signal is distinguishable from generator noise.
+- Write reports to docs/findings/day1/<ID>.md (committed), not only to ml/data/.

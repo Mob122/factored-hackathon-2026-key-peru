@@ -80,5 +80,8 @@ ignore = [
     "E501",
 ]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["PLR2004"]
+
 [tool.kedro_telemetry]
 project_id = "b5c49bbfc370466c9de61475cf4f30c6"
