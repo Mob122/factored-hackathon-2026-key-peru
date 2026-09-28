@@ -1,0 +1,2311 @@
+{
+  "customers": {
+    "table": "customers",
+    "kind": "dimension",
+    "grain": "one row per customer_id",
+    "primary_key": [
+      "customer_id"
+    ],
+    "unique": [
+      "document_number"
+    ],
+    "required": [
+      "customer_id",
+      "document_number",
+      "document_type",
+      "first_name",
+      "last_name",
+      "date_of_birth",
+      "city",
+      "state",
+      "country",
+      "segment",
+      "registration_date",
+      "registration_branch_id",
+      "customer_status",
+      "last_updated",
+      "accepts_marketing"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "email": {
+        "observed_null_rate": 0.0199,
+        "rule": "random at ~2.0%"
+      },
+      "mobile_phone": {
+        "observed_null_rate": 0.0314,
+        "rule": "random at ~3.1%"
+      },
+      "landline_phone": {
+        "observed_null_rate": 0.5004,
+        "rule": "random at ~50.0%"
+      },
+      "address": {
+        "observed_null_rate": 0.0491,
+        "rule": "random at ~4.9%"
+      },
+      "postal_code": {
+        "observed_null_rate": 0.1003,
+        "rule": "random at ~10.0%"
+      },
+      "detected_accent": {
+        "observed_null_rate": 0.2988,
+        "rule": "random at ~29.9%"
+      },
+      "credit_score": {
+        "observed_null_rate": 0.1499,
+        "rule": "random at ~15.0%"
+      },
+      "estimated_monthly_income": {
+        "observed_null_rate": 0.2002,
+        "rule": "random at ~20.0%"
+      },
+      "occupation": {
+        "observed_null_rate": 0.1003,
+        "rule": "random at ~10.0%"
+      },
+      "marital_status": {
+        "observed_null_rate": 0.0797,
+        "rule": "random at ~8.0%"
+      },
+      "education_level": {
+        "observed_null_rate": 0.1197,
+        "rule": "random at ~12.0%"
+      }
+    },
+    "allowed_values": {
+      "document_type": [
+        "DNI",
+        "CE",
+        "Pasaporte",
+        "CC"
+      ],
+      "gender": [
+        "F",
+        "O",
+        "M"
+      ],
+      "city": [
+        "Guadalajara",
+        "Ciudad de México",
+        "Querétaro",
+        "Tijuana",
+        "Puebla",
+        "Monterrey",
+        "Bogotá",
+        "Medellín",
+        "Barranquilla",
+        "Cali",
+        "Cartagena",
+        "Rosario",
+        "Buenos Aires",
+        "La Plata",
+        "Mendoza",
+        "Córdoba"
+      ],
+      "state": [
+        "Jalisco",
+        "Ciudad de México",
+        "Querétaro",
+        "Baja California",
+        "Puebla",
+        "Nuevo León",
+        "Cundinamarca",
+        "Antioquia",
+        "Atlántico",
+        "Valle del Cauca",
+        "Bolívar",
+        "Santa Fe",
+        "Ciudad Autónoma de Buenos Aires",
+        "Buenos Aires",
+        "Mendoza",
+        "Córdoba"
+      ],
+      "country": [
+        "México",
+        "Colombia",
+        "Argentina"
+      ],
+      "detected_accent": [
+        "mexican",
+        "colombian",
+        "argentine"
+      ],
+      "segment": [
+        "Basic",
+        "Plus",
+        "Premium",
+        "Student"
+      ],
+      "occupation": [
+        "Manager",
+        "Accountant",
+        "Salesperson",
+        "Homemaker",
+        "Entrepreneur",
+        "Doctor",
+        "Lawyer",
+        "Technician",
+        "Artist",
+        "Driver",
+        "Director",
+        "Retired",
+        "Student",
+        "Consultant",
+        "Teacher",
+        "Merchant",
+        "Administrative",
+        "Employee",
+        "Engineer",
+        "Independent Professional"
+      ],
+      "marital_status": [
+        "Married",
+        "Divorced",
+        "Single",
+        "Widowed"
+      ],
+      "education_level": [
+        "College Prep",
+        "High School",
+        "University",
+        "Graduate",
+        "Elementary"
+      ],
+      "customer_status": [
+        "Active",
+        "Inactive",
+        "Suspended",
+        "Closed"
+      ]
+    },
+    "numeric_ranges": {
+      "credit_score": {
+        "observed": [
+          422,
+          850
+        ],
+        "declared": [
+          300,
+          850
+        ]
+      },
+      "estimated_monthly_income": {
+        "observed": [
+          5100.28,
+          111895075.15
+        ],
+        "declared": null
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "registration_branch_id",
+        "references": "branches.branch_id",
+        "observed_orphan_rate": 0.99997,
+        "policy": "keep row, flag `<col>_orphan = true`; inner joins drop it"
+      }
+    ],
+    "row_rules": [
+      "registration_date <= last_updated",
+      "age at registration in [18, 100]"
+    ],
+    "dedup_rule": "unique on customer_id (single snapshot file); fail on violation"
+  },
+  "products": {
+    "table": "products",
+    "kind": "dimension",
+    "grain": "one row per product_id",
+    "primary_key": [
+      "product_id"
+    ],
+    "unique": [
+      "product_number"
+    ],
+    "required": [
+      "product_id",
+      "customer_id",
+      "product_type",
+      "product_number",
+      "currency",
+      "current_balance",
+      "opening_date",
+      "opening_branch_id",
+      "product_status",
+      "opening_channel",
+      "has_linked_app",
+      "last_updated"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "credit_limit": {
+        "observed_null_rate": 0.6867,
+        "rule": "null when `product_type` = `Cuenta Ahorro`, `Cuenta Corriente`, `Tarjeta Débito`, `Inversión`, `Seguro`; otherwise random at ~5.0%"
+      },
+      "interest_rate": {
+        "observed_null_rate": 0.1002,
+        "rule": "random at ~10.0%"
+      },
+      "expiration_date": {
+        "observed_null_rate": 0.6671,
+        "rule": "null when `product_type` = `Cuenta Ahorro`, `Cuenta Corriente`, `Préstamo Personal`, `Préstamo Hipotecario`, `Inversión`, `Seguro`; otherwise random at ~4.9%"
+      },
+      "days_past_due": {
+        "observed_null_rate": 0.6866,
+        "rule": "null when `product_type` = `Cuenta Ahorro`, `Cuenta Corriente`, `Tarjeta Débito`, `Inversión`, `Seguro`; otherwise random at ~5.0%"
+      },
+      "last_transaction_date": {
+        "observed_null_rate": 0.2357,
+        "rule": "null when `product_status` = `Closed`, `Blocked`, `Suspended`; otherwise random at ~10.1%"
+      }
+    },
+    "allowed_values": {
+      "product_type": [
+        "Cuenta Ahorro",
+        "Tarjeta Crédito",
+        "Cuenta Corriente",
+        "Tarjeta Débito",
+        "Préstamo Personal",
+        "Préstamo Hipotecario",
+        "Inversión",
+        "Seguro"
+      ],
+      "currency": [
+        "USD",
+        "COP",
+        "ARS"
+      ],
+      "product_status": [
+        "Active",
+        "Closed",
+        "Blocked",
+        "Suspended"
+      ],
+      "opening_channel": [
+        "Branch",
+        "Web",
+        "App",
+        "Call Center"
+      ]
+    },
+    "numeric_ranges": {
+      "current_balance": {
+        "observed": [
+          0.0,
+          881511545.61
+        ],
+        "declared": null
+      },
+      "credit_limit": {
+        "observed": [
+          1000.33,
+          599984205.95
+        ],
+        "declared": null
+      },
+      "interest_rate": {
+        "observed": [
+          0.0,
+          45.0
+        ],
+        "declared": null
+      },
+      "days_past_due": {
+        "observed": [
+          0,
+          180
+        ],
+        "declared": null
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "customer_id",
+        "references": "customers.customer_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "opening_branch_id",
+        "references": "branches.branch_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      }
+    ],
+    "row_rules": [
+      "expiration_date >= opening_date",
+      "current_balance >= 0"
+    ],
+    "dedup_rule": "unique on product_id (single snapshot file); fail on violation"
+  },
+  "branches": {
+    "table": "branches",
+    "kind": "dimension",
+    "grain": "one row per branch_id",
+    "primary_key": [
+      "branch_id"
+    ],
+    "unique": [
+      "branch_code"
+    ],
+    "required": [
+      "branch_id",
+      "branch_code",
+      "branch_name",
+      "branch_type",
+      "address",
+      "city",
+      "state",
+      "country",
+      "geographic_zone",
+      "phone",
+      "opening_time",
+      "closing_time",
+      "has_atms",
+      "has_teller_windows",
+      "branch_opening_date",
+      "branch_status"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {},
+    "allowed_values": {
+      "branch_type": [
+        "Express",
+        "Corporate",
+        "Premium",
+        "Main"
+      ],
+      "city": [
+        "Puebla",
+        "Guadalajara",
+        "Ciudad de México",
+        "Tijuana",
+        "Monterrey",
+        "Querétaro",
+        "Barranquilla",
+        "Cartagena",
+        "Bogotá",
+        "Cali",
+        "Córdoba",
+        "La Plata",
+        "Mendoza",
+        "Medellín",
+        "Buenos Aires",
+        "Rosario"
+      ],
+      "state": [
+        "Puebla",
+        "Jalisco",
+        "Baja California",
+        "Ciudad de México",
+        "Nuevo León",
+        "Querétaro",
+        "Atlántico",
+        "Bolívar",
+        "Cundinamarca",
+        "Valle del Cauca",
+        "Córdoba",
+        "Buenos Aires",
+        "Mendoza",
+        "Antioquia",
+        "Ciudad Autónoma de Buenos Aires",
+        "Santa Fe"
+      ],
+      "country": [
+        "México",
+        "Colombia",
+        "Argentina"
+      ],
+      "geographic_zone": [
+        "Urbana"
+      ],
+      "branch_status": [
+        "Active",
+        "Temporarily Closed"
+      ]
+    },
+    "numeric_ranges": {
+      "atm_count": {
+        "observed": [
+          2,
+          8
+        ],
+        "declared": null
+      },
+      "teller_window_count": {
+        "observed": [
+          3,
+          12
+        ],
+        "declared": null
+      },
+      "latitude": {
+        "observed": [
+          -34.6907666,
+          25.7817721
+        ],
+        "declared": null
+      },
+      "longitude": {
+        "observed": [
+          -103.4485498,
+          0.0999953
+        ],
+        "declared": null
+      }
+    },
+    "foreign_keys": [],
+    "row_rules": [
+      "closing_time > opening_time",
+      "has_atms = false => atm_count in (0, NULL)"
+    ],
+    "dedup_rule": "unique on branch_id (single snapshot file); fail on violation"
+  },
+  "service_agents": {
+    "table": "service_agents",
+    "kind": "dimension",
+    "grain": "one row per agent_id",
+    "primary_key": [
+      "agent_id"
+    ],
+    "unique": [
+      "employee_code"
+    ],
+    "required": [
+      "agent_id",
+      "employee_code",
+      "first_name",
+      "last_name",
+      "email",
+      "native_accent",
+      "country_of_origin",
+      "agent_type",
+      "experience_level",
+      "languages",
+      "hire_date",
+      "agent_status",
+      "work_shift"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "phone": {
+        "observed_null_rate": 0.0575,
+        "rule": "random at ~5.8%"
+      },
+      "assigned_branch_id": {
+        "observed_null_rate": 0.3058,
+        "rule": "random at ~30.6%"
+      },
+      "specialty": {
+        "observed_null_rate": 0.3967,
+        "rule": "random at ~39.7%"
+      },
+      "avg_csat": {
+        "observed_null_rate": 0.1117,
+        "rule": "random at ~11.2%"
+      },
+      "total_monthly_interactions": {
+        "observed_null_rate": 0.0925,
+        "rule": "random at ~9.2%"
+      }
+    },
+    "allowed_values": {
+      "native_accent": [
+        "mexican",
+        "colombian",
+        "argentine"
+      ],
+      "country_of_origin": [
+        "Mexico",
+        "Colombia",
+        "Argentina"
+      ],
+      "agent_type": [
+        "Phone",
+        "Digital",
+        "In-Person",
+        "Hybrid"
+      ],
+      "experience_level": [
+        "Specialist",
+        "Senior",
+        "Mid-Senior",
+        "Junior"
+      ],
+      "languages": [
+        "español",
+        "español, inglés",
+        "español, portugués",
+        "español, inglés, portugués"
+      ],
+      "specialty": [
+        "Fraudes",
+        "Cobranza",
+        "Retención",
+        "Soporte Técnico",
+        "Créditos",
+        "Inversiones",
+        "Ventas",
+        "Quejas y Reclamos"
+      ],
+      "agent_status": [
+        "Active",
+        "Vacation",
+        "Leave",
+        "Inactive"
+      ],
+      "work_shift": [
+        "Afternoon",
+        "Morning",
+        "Rotating",
+        "Night"
+      ]
+    },
+    "numeric_ranges": {
+      "avg_csat": {
+        "observed": [
+          3.5,
+          5.0
+        ],
+        "declared": [
+          1,
+          5
+        ]
+      },
+      "total_monthly_interactions": {
+        "observed": [
+          100,
+          800
+        ],
+        "declared": null
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "assigned_branch_id",
+        "references": "branches.branch_id",
+        "observed_orphan_rate": 0.9976,
+        "policy": "keep row, flag `<col>_orphan = true`; inner joins drop it"
+      }
+    ],
+    "row_rules": [],
+    "dedup_rule": "unique on agent_id (single snapshot file); fail on violation"
+  },
+  "marketing_campaigns": {
+    "table": "marketing_campaigns",
+    "kind": "dimension",
+    "grain": "one row per campaign_id",
+    "primary_key": [
+      "campaign_id"
+    ],
+    "unique": [],
+    "required": [
+      "campaign_id",
+      "campaign_name",
+      "campaign_type",
+      "campaign_objective",
+      "start_date",
+      "end_date",
+      "campaign_status"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "description": {
+        "observed_null_rate": 0.195,
+        "rule": "random at ~19.5%"
+      },
+      "promoted_product": {
+        "observed_null_rate": 0.11,
+        "rule": "random at ~11.0%"
+      },
+      "target_segment": {
+        "observed_null_rate": 0.395,
+        "rule": "random at ~39.5%"
+      },
+      "target_country": {
+        "observed_null_rate": 0.555,
+        "rule": "random at ~55.5%"
+      },
+      "budget": {
+        "observed_null_rate": 0.155,
+        "rule": "random at ~15.5%"
+      },
+      "expected_conversion_rate": {
+        "observed_null_rate": 0.07,
+        "rule": "random at ~7.0%"
+      }
+    },
+    "allowed_values": {
+      "description": [
+        "Campaña de retention para Tarjeta Crédito",
+        "Campaña de acquisition para Tarjeta Crédito",
+        "Campaña de cross-sell para Tarjeta Crédito",
+        "Campaña de cross-sell para Cuenta Ahorro",
+        "Campaña de retention para Cuenta Ahorro",
+        "Campaña de acquisition para Cuenta Ahorro",
+        "Campaña de reactivation para Tarjeta Crédito",
+        "Campaña de up-sell para Préstamo Personal",
+        "Campaña de reactivation para Inversión",
+        "Campaña de reactivation para Préstamo Personal",
+        "Campaña de retention para Préstamo Personal",
+        "Campaña de cross-sell para Cuenta Corriente",
+        "Campaña de cross-sell para Préstamo Hipotecario",
+        "Campaña de cross-sell para Préstamo Personal",
+        "Campaña de cross-sell para Seguro",
+        "Campaña de retention para Cuenta Corriente",
+        "Campaña de retention para Inversión",
+        "Campaña de retention para productos generales",
+        "Campaña de up-sell para Tarjeta Crédito",
+        "Campaña de acquisition para Préstamo Personal",
+        "Campaña de retention para Préstamo Hipotecario",
+        "Campaña de up-sell para Cuenta Ahorro",
+        "Campaña de up-sell para Cuenta Corriente",
+        "Campaña de acquisition para Cuenta Corriente",
+        "Campaña de acquisition para Inversión",
+        "Campaña de acquisition para Préstamo Hipotecario",
+        "Campaña de acquisition para productos generales",
+        "Campaña de cross-sell para Inversión",
+        "Campaña de cross-sell para productos generales",
+        "Campaña de reactivation para Seguro",
+        "Campaña de retention para Seguro",
+        "Campaña de up-sell para Inversión",
+        "Campaña de acquisition para Seguro",
+        "Campaña de reactivation para Cuenta Ahorro",
+        "Campaña de reactivation para Cuenta Corriente",
+        "Campaña de reactivation para productos generales",
+        "Campaña de up-sell para Préstamo Hipotecario"
+      ],
+      "campaign_type": [
+        "Email",
+        "SMS",
+        "WhatsApp",
+        "Push",
+        "Mix",
+        "Voice"
+      ],
+      "campaign_objective": [
+        "Retention",
+        "Cross-sell",
+        "Acquisition",
+        "Reactivation",
+        "Up-sell"
+      ],
+      "promoted_product": [
+        "Tarjeta Crédito",
+        "Cuenta Ahorro",
+        "Préstamo Personal",
+        "Inversión",
+        "Cuenta Corriente",
+        "Préstamo Hipotecario",
+        "Seguro"
+      ],
+      "target_segment": [
+        "Plus",
+        "Premium",
+        "Basic",
+        "Student"
+      ],
+      "target_country": [
+        "Colombia",
+        "Argentina",
+        "Mexico"
+      ],
+      "campaign_status": [
+        "Completed",
+        "Paused",
+        "Active"
+      ]
+    },
+    "numeric_ranges": {
+      "budget": {
+        "observed": [
+          6355.31,
+          499954.38
+        ],
+        "declared": null
+      },
+      "expected_conversion_rate": {
+        "observed": [
+          0.55,
+          14.69
+        ],
+        "declared": [
+          0,
+          100
+        ]
+      }
+    },
+    "foreign_keys": [],
+    "row_rules": [
+      "end_date >= start_date"
+    ],
+    "dedup_rule": "unique on campaign_id (single snapshot file); fail on violation"
+  },
+  "daily_exchange_rates": {
+    "table": "daily_exchange_rates",
+    "kind": "reference",
+    "grain": "one row per date + source_currency + target_currency",
+    "primary_key": [
+      "date",
+      "source_currency",
+      "target_currency"
+    ],
+    "unique": [],
+    "required": [
+      "date",
+      "source_currency",
+      "target_currency",
+      "exchange_rate"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {},
+    "allowed_values": {
+      "source": [
+        "Bloomberg",
+        "Reuters",
+        "Internal",
+        "Central Bank"
+      ]
+    },
+    "numeric_ranges": {
+      "exchange_rate": {
+        "observed": [
+          0.000245,
+          4079.944006
+        ],
+        "declared": null
+      },
+      "buy_rate": {
+        "observed": [
+          0.000241,
+          4057.98057
+        ],
+        "declared": null
+      },
+      "sell_rate": {
+        "observed": [
+          0.000246,
+          4138.591967
+        ],
+        "declared": null
+      }
+    },
+    "foreign_keys": [],
+    "row_rules": [
+      "exchange_rate > 0",
+      "buy_rate <= sell_rate",
+      "source_currency <> target_currency"
+    ],
+    "dedup_rule": "unique on date + source_currency + target_currency (single snapshot file); fail on violation"
+  },
+  "transactions": {
+    "table": "transactions",
+    "kind": "fact",
+    "grain": "one row per transaction_id",
+    "primary_key": [
+      "transaction_id"
+    ],
+    "unique": [],
+    "required": [
+      "transaction_id",
+      "transaction_date",
+      "process_date",
+      "product_id",
+      "customer_id",
+      "transaction_type",
+      "amount",
+      "currency",
+      "channel",
+      "transaction_country",
+      "transaction_status",
+      "is_fraud"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "transaction_category": {
+        "observed_null_rate": 0.6087,
+        "rule": "null when `transaction_type` = `Withdrawal`, `Transfer`, `Deposit`, `Adjustment`; otherwise random at ~5.0%"
+      },
+      "amount_usd": {
+        "observed_null_rate": 0.5734,
+        "rule": "null when `currency` = `USD`; otherwise random at ~5.0%"
+      },
+      "branch_id": {
+        "observed_null_rate": 0.6863,
+        "rule": "null when `channel` = `POS`, `Web`, `App`, `Transfer`; otherwise random at ~5.0%"
+      },
+      "merchant_name": {
+        "observed_null_rate": 0.7674,
+        "rule": "null when `transaction_type` = `Withdrawal`, `Transfer`, `Payment`, `Deposit`, `Adjustment`; otherwise random at ~5.0%"
+      },
+      "merchant_category": {
+        "observed_null_rate": 0.7675,
+        "rule": "null when `transaction_type` = `Withdrawal`, `Transfer`, `Payment`, `Deposit`, `Adjustment`; otherwise random at ~5.0%"
+      },
+      "transaction_city": {
+        "observed_null_rate": 0.1,
+        "rule": "random at ~10.0%"
+      },
+      "response_code": {
+        "observed_null_rate": 0.05,
+        "rule": "random at ~5.0%"
+      },
+      "fraud_score": {
+        "observed_null_rate": 0.2,
+        "rule": "random at ~20.0%"
+      },
+      "latitude": {
+        "observed_null_rate": 0.8063,
+        "rule": "co-null with `longitude` (null in 98.8% of rows where it is null, 5.0% where it is not)"
+      },
+      "longitude": {
+        "observed_null_rate": 0.8063,
+        "rule": "co-null with `latitude` (null in 98.8% of rows where it is null, 5.0% where it is not)"
+      }
+    },
+    "allowed_values": {
+      "transaction_type": [
+        "Purchase",
+        "Withdrawal",
+        "Transfer",
+        "Payment",
+        "Deposit",
+        "Adjustment"
+      ],
+      "transaction_category": [
+        "Food",
+        "Services",
+        "Other",
+        "Transport",
+        "Entertainment",
+        "Health"
+      ],
+      "currency": [
+        "USD",
+        "COP",
+        "ARS"
+      ],
+      "channel": [
+        "POS",
+        "ATM",
+        "Web",
+        "App",
+        "Branch",
+        "Transfer"
+      ],
+      "merchant_name": [
+        "Super Ahorro",
+        "Restaurante El Buen Sabor",
+        "Tienda Don José",
+        "Mercado Central",
+        "Empresa Telefónica",
+        "Cable TV",
+        "Servicios Públicos",
+        "Internet Plus",
+        "Estación de Servicio",
+        "Uber",
+        "Taxi Seguro",
+        "Ferretería",
+        "Tienda General",
+        "Cine Premium",
+        "Centro Comercial",
+        "Boutique Moda",
+        "Streaming Music",
+        "Conciertos Live",
+        "Teatro Nacional",
+        "Gasolinera Express",
+        "Farmacia Salud",
+        "Clínica Médica",
+        "Laboratorio Central",
+        "Óptica Visión"
+      ],
+      "merchant_category": [
+        "Food",
+        "Services",
+        "Other",
+        "Transport",
+        "Entertainment",
+        "Health"
+      ],
+      "transaction_country": [
+        "México",
+        "Colombia",
+        "Argentina",
+        "USA",
+        "Spain",
+        "Mexico",
+        "Brazil"
+      ],
+      "transaction_city": [
+        "Guadalajara",
+        "Monterrey",
+        "Puebla",
+        "Ciudad de México",
+        "Tijuana",
+        "Querétaro",
+        "Barranquilla",
+        "Medellín",
+        "Bogotá",
+        "Cali",
+        "Cartagena",
+        "Mendoza",
+        "Buenos Aires",
+        "Rosario",
+        "Córdoba",
+        "La Plata",
+        "Brasília",
+        "Sevilla",
+        "Miami",
+        "Los Angeles",
+        "Rio de Janeiro",
+        "Madrid",
+        "New York",
+        "Valencia",
+        "Houston",
+        "São Paulo",
+        "Salvador",
+        "Barcelona"
+      ],
+      "transaction_status": [
+        "Approved",
+        "Declined",
+        "Pending",
+        "Reversed"
+      ],
+      "response_code": [
+        "00",
+        "14",
+        "51",
+        "05",
+        "54"
+      ]
+    },
+    "numeric_ranges": {
+      "amount": {
+        "observed": [
+          5.0,
+          39999828.48
+        ],
+        "declared": null
+      },
+      "amount_usd": {
+        "observed": [
+          5.0,
+          9999.96
+        ],
+        "declared": null
+      },
+      "fraud_score": {
+        "observed": [
+          0.0,
+          99.99
+        ],
+        "declared": [
+          0,
+          100
+        ]
+      },
+      "latitude": {
+        "observed": [
+          -35.6036984,
+          5.7109985
+        ],
+        "declared": null
+      },
+      "longitude": {
+        "observed": [
+          -75.0720969,
+          0.99999
+        ],
+        "declared": null
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "customer_id",
+        "references": "customers.customer_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "branch_id",
+        "references": "branches.branch_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "product_id",
+        "references": "products.product_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      }
+    ],
+    "row_rules": [
+      "amount > 0",
+      "currency = USD => amount_usd = amount",
+      "transaction_date within dataset range"
+    ],
+    "dedup_rule": "unique on transaction_id. On violation keep the row with the latest process_date, then latest source_file; alert if the kept and dropped rows differ outside process_date/source_file",
+    "late_arrival": {
+      "partition_key": "process_date",
+      "event_time": "transaction_date",
+      "observed_lag_days": [
+        -1,
+        0
+      ],
+      "cutoff_hour": 6,
+      "rule": "process_date = CAST(transaction_date - INTERVAL 6 HOUR AS DATE) (business-day cutoff at 06:00, 99.999% of rows agree); lag in [-1, 0] days; partition path date must equal process_date"
+    }
+  },
+  "call_center_interactions": {
+    "table": "call_center_interactions",
+    "kind": "fact",
+    "grain": "one row per interaction_id",
+    "primary_key": [
+      "interaction_id"
+    ],
+    "unique": [],
+    "required": [
+      "interaction_id",
+      "interaction_date",
+      "process_date",
+      "customer_id",
+      "interaction_type",
+      "channel",
+      "contact_reason",
+      "reason_category",
+      "requires_followup",
+      "was_escalated",
+      "has_transcript",
+      "has_recording"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "duration_seconds": {
+        "observed_null_rate": 0.1402,
+        "rule": "structural: null determined by `interaction_type` = `Chat`, `Email`"
+      },
+      "wait_time_seconds": {
+        "observed_null_rate": 0.2996,
+        "rule": "structural: null determined by `interaction_type` = `Outbound Call`, `Chat`, `Email`, `Video`"
+      },
+      "customer_detected_accent": {
+        "observed_null_rate": 0.2983,
+        "rule": "structural: null determined by `agent_used_accent` = `<NULL>`"
+      },
+      "agent_used_accent": {
+        "observed_null_rate": 0.2983,
+        "rule": "structural: null determined by `customer_detected_accent` = `<NULL>`"
+      },
+      "mentioned_products": {
+        "observed_null_rate": 0.6003,
+        "rule": "random at ~60.0%"
+      }
+    },
+    "allowed_values": {
+      "interaction_type": [
+        "Inbound Call",
+        "Outbound Call",
+        "Chat",
+        "Email",
+        "Video"
+      ],
+      "channel": [
+        "Phone",
+        "Email",
+        "App",
+        "WhatsApp",
+        "Web Chat",
+        "Web"
+      ],
+      "contact_reason": [
+        "Transaccional",
+        "Producto",
+        "Queja",
+        "Técnico",
+        "Comercial",
+        "Retención"
+      ],
+      "reason_category": [
+        "Transaccional",
+        "Producto",
+        "Queja",
+        "Técnico",
+        "Comercial",
+        "Retención"
+      ],
+      "detected_sentiment": [
+        "Neutral",
+        "Negativo",
+        "Positivo",
+        "Muy Negativo",
+        "Muy Positivo"
+      ],
+      "customer_detected_accent": [
+        "mexican",
+        "colombian",
+        "argentine"
+      ],
+      "agent_used_accent": [
+        "mexican",
+        "colombian",
+        "argentine"
+      ]
+    },
+    "numeric_ranges": {
+      "duration_seconds": {
+        "observed": [
+          30,
+          1204
+        ],
+        "declared": [
+          0,
+          null
+        ]
+      },
+      "wait_time_seconds": {
+        "observed": [
+          0,
+          424
+        ],
+        "declared": [
+          0,
+          null
+        ]
+      },
+      "sentiment_score": {
+        "observed": [
+          -1.0,
+          1.0
+        ],
+        "declared": [
+          -1,
+          1
+        ]
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "customer_id",
+        "references": "customers.customer_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "agent_id",
+        "references": "service_agents.agent_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      }
+    ],
+    "row_rules": [
+      "(soft) was_resolved = true => requires_followup = false"
+    ],
+    "dedup_rule": "unique on interaction_id. On violation keep the row with the latest process_date, then latest source_file; alert if the kept and dropped rows differ outside process_date/source_file",
+    "late_arrival": {
+      "partition_key": "process_date",
+      "event_time": "interaction_date",
+      "observed_lag_days": [
+        -1,
+        0
+      ],
+      "cutoff_hour": 8,
+      "rule": "process_date = CAST(interaction_date - INTERVAL 8 HOUR AS DATE) (business-day cutoff at 08:00, 99.999% of rows agree); lag in [-1, 0] days; partition path date must equal process_date"
+    }
+  },
+  "call_transcripts": {
+    "table": "call_transcripts",
+    "kind": "fact",
+    "grain": "one row per transcript_id",
+    "primary_key": [
+      "transcript_id"
+    ],
+    "unique": [],
+    "required": [
+      "transcript_id",
+      "interaction_id",
+      "process_date",
+      "customer_id",
+      "agent_id",
+      "full_text",
+      "detected_language",
+      "transcription_model"
+    ],
+    "relaxed_not_null": [
+      "duration_seconds"
+    ],
+    "notes": [
+      "duration_seconds is declared NOT NULL but is null exactly when the linked interaction is Chat or Email; otherwise it equals call_center_interactions.duration_seconds. Contract: nullable, and must equal the interaction's value."
+    ],
+    "nullable": {
+      "detected_accent": {
+        "observed_null_rate": 0.3682,
+        "rule": "random at ~36.8%"
+      },
+      "accent_confidence": {
+        "observed_null_rate": 0.1001,
+        "rule": "random at ~10.0%"
+      },
+      "detected_keywords": {
+        "observed_null_rate": 0.0513,
+        "rule": "random at ~5.1%"
+      },
+      "mentioned_entities": {
+        "observed_null_rate": 0.1002,
+        "rule": "random at ~10.0%"
+      },
+      "detected_intents": {
+        "observed_null_rate": 0.0494,
+        "rule": "random at ~4.9%"
+      },
+      "audio_quality": {
+        "observed_null_rate": 0.0504,
+        "rule": "random at ~5.0%"
+      },
+      "duration_seconds": {
+        "observed_null_rate": 0.1403,
+        "rule": "random at ~14.0%"
+      }
+    },
+    "allowed_values": {
+      "agent_text": [
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Claro, estoy para servirle.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Claro, estoy para servirle.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Perfecto, ¿necesita algo más?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. No hay problema, que tenga buen día.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. No hay problema, que tenga buen día.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Perfecto, ¿necesita algo más?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Claro, estoy para servirle. No hay problema, que tenga buen día.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle? Claro, estoy para servirle.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Perfecto, ¿necesita algo más? Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. No hay problema, que tenga buen día. No hay problema, que tenga buen día.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle? No hay problema, que tenga buen día.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. No hay problema, que tenga buen día. Claro, estoy para servirle.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. No hay problema, que tenga buen día. Perfecto, ¿necesita algo más?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Perfecto, ¿necesita algo más? No hay problema, que tenga buen día.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. No hay problema, que tenga buen día. Claro, estoy para servirle.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Perfecto, ¿necesita algo más? Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle? No hay problema, que tenga buen día.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Perfecto, ¿necesita algo más? Perfecto, ¿necesita algo más?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Claro, estoy para servirle. No hay problema, que tenga buen día.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle? Perfecto, ¿necesita algo más?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Claro, estoy para servirle. Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Claro, estoy para servirle. Claro, estoy para servirle.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. No hay problema, que tenga buen día. Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle? Claro, estoy para servirle.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Perfecto, ¿necesita algo más? No hay problema, que tenga buen día.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Claro, estoy para servirle. Claro, estoy para servirle.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle? Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Perfecto, ¿necesita algo más? Claro, estoy para servirle.",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Claro, estoy para servirle. Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. No hay problema, que tenga buen día. Perfecto, ¿necesita algo más?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle? Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Con gusto. ¿Hay algo más en lo que pueda ayudarle? Perfecto, ¿necesita algo más?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Claro, estoy para servirle. Perfecto, ¿necesita algo más?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Perfecto, ¿necesita algo más? Perfecto, ¿necesita algo más?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. No hay problema, que tenga buen día. Con gusto. ¿Hay algo más en lo que pueda ayudarle?",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. No hay problema, que tenga buen día. No hay problema, que tenga buen día.",
+        "Buenos días, con gusto le ayudo. Permítame un momento para verificar su saldo. Su saldo actual es de {monto} {moneda}. Claro, estoy para servirle. Perfecto, ¿necesita algo más?",
+        "Buenas tardes, claro que sí. Déjeme revisar esa información. Su saldo actual es {monto} {moneda} y su límite disponible es de {limite} {moneda}. Perfecto, ¿necesita algo más? Claro, estoy para servirle."
+      ],
+      "detected_language": [
+        "es"
+      ],
+      "detected_accent": [
+        "mexican",
+        "colombian",
+        "argentine"
+      ],
+      "detected_keywords": [
+        "banco, servicio, cuenta",
+        "cuenta, servicio, banco",
+        "cuenta, banco, servicio",
+        "servicio, banco, cuenta",
+        "servicio, cuenta, banco",
+        "banco, cuenta, servicio",
+        "cuenta, banco",
+        "cuenta, servicio",
+        "banco, servicio",
+        "servicio, cuenta",
+        "servicio, banco",
+        "banco, cuenta"
+      ],
+      "detected_intents": [
+        "consulta_general"
+      ],
+      "main_topics": [
+        "Transaccional",
+        "Producto",
+        "Queja",
+        "Técnico",
+        "Comercial",
+        "Retención"
+      ],
+      "transcription_model": [
+        "AWS Transcribe",
+        "Whisper v3",
+        "Google STT",
+        "Azure Speech"
+      ],
+      "audio_quality": [
+        "High",
+        "Medium",
+        "Low"
+      ]
+    },
+    "numeric_ranges": {
+      "accent_confidence": {
+        "observed": [
+          0.75,
+          0.99
+        ],
+        "declared": [
+          0,
+          1
+        ]
+      },
+      "duration_seconds": {
+        "observed": [
+          30,
+          1151
+        ],
+        "declared": [
+          0,
+          null
+        ]
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "customer_id",
+        "references": "customers.customer_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "agent_id",
+        "references": "service_agents.agent_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "interaction_id",
+        "references": "call_center_interactions.interaction_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      }
+    ],
+    "row_rules": [],
+    "dedup_rule": "unique on transcript_id. On violation keep the row with the latest process_date, then latest source_file; alert if the kept and dropped rows differ outside process_date/source_file",
+    "late_arrival": {
+      "partition_key": "process_date",
+      "event_time": "call_center_interactions.interaction_date (via interaction_id)",
+      "observed_lag_days": [
+        -1,
+        0
+      ],
+      "cutoff_hour": 8,
+      "rule": "process_date = process_date of the linked interaction (100% observed); the row can land in a partition before its own event time; partition path date must equal process_date"
+    }
+  },
+  "satisfaction_surveys": {
+    "table": "satisfaction_surveys",
+    "kind": "fact",
+    "grain": "one row per survey_id",
+    "primary_key": [
+      "survey_id"
+    ],
+    "unique": [],
+    "required": [
+      "survey_id",
+      "survey_date",
+      "process_date",
+      "customer_id",
+      "survey_type",
+      "send_channel",
+      "main_score"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "nps_category": {
+        "observed_null_rate": 0.7161,
+        "rule": "null when `survey_type` = `CSAT`, `CES`; otherwise random at ~5.1%"
+      },
+      "question_1_text": {
+        "observed_null_rate": 0.4299,
+        "rule": "random at ~43.0%"
+      },
+      "question_1_response": {
+        "observed_null_rate": 0.4295,
+        "rule": "random at ~43.0%"
+      },
+      "question_2_text": {
+        "observed_null_rate": 0.6175,
+        "rule": "random at ~61.8%"
+      },
+      "question_2_response": {
+        "observed_null_rate": 0.617,
+        "rule": "random at ~61.7%"
+      },
+      "question_3_text": {
+        "observed_null_rate": 0.8113,
+        "rule": "random at ~81.1%"
+      },
+      "question_3_response": {
+        "observed_null_rate": 0.8115,
+        "rule": "random at ~81.2%"
+      },
+      "open_comments": {
+        "observed_null_rate": 0.5244,
+        "rule": "random at ~52.4%"
+      },
+      "comment_sentiment": {
+        "observed_null_rate": 0.5241,
+        "rule": "random at ~52.4%"
+      },
+      "campaign_response_rate": {
+        "observed_null_rate": 0.1506,
+        "rule": "random at ~15.1%"
+      }
+    },
+    "allowed_values": {
+      "survey_type": [
+        "CSAT",
+        "NPS",
+        "CES"
+      ],
+      "send_channel": [
+        "Email",
+        "SMS",
+        "App",
+        "IVR",
+        "Web"
+      ],
+      "nps_category": [
+        "Detractor",
+        "Passive"
+      ],
+      "question_1_text": [
+        "¿Cómo calificaría la atención brindada?",
+        "¿El agente resolvió su consulta satisfactoriamente?",
+        "¿Qué tan satisfecho está con el servicio recibido?"
+      ],
+      "question_2_text": [
+        "¿El tiempo de espera fue aceptable?"
+      ],
+      "question_3_text": [
+        "¿Volvería a contactarnos por este canal?"
+      ],
+      "open_comments": [
+        "Tardaron mucho en atenderme.",
+        "No resolvieron mi problema completamente.",
+        "Tuve que esperar demasiado tiempo.",
+        "No estoy satisfecho con la solución.",
+        "El agente no fue muy claro en sus explicaciones.",
+        "Normal, sin problemas mayores.",
+        "El servicio estuvo bien.",
+        "Aceptable.",
+        "Resolvieron mi problema rápidamente.",
+        "Muy satisfecho con el servicio.",
+        "Excelente atención, muy amable el agente.",
+        "El agente fue muy profesional y eficiente.",
+        "Buena experiencia, gracias."
+      ],
+      "comment_sentiment": [
+        "Negative",
+        "Neutral",
+        "Positive"
+      ]
+    },
+    "numeric_ranges": {
+      "main_score": {
+        "observed": [
+          1,
+          7
+        ],
+        "declared": [
+          0,
+          10
+        ]
+      },
+      "question_1_response": {
+        "observed": [
+          1,
+          5
+        ],
+        "declared": [
+          1,
+          5
+        ]
+      },
+      "question_2_response": {
+        "observed": [
+          1,
+          5
+        ],
+        "declared": [
+          1,
+          5
+        ]
+      },
+      "question_3_response": {
+        "observed": [
+          1,
+          5
+        ],
+        "declared": [
+          1,
+          5
+        ]
+      },
+      "response_time_hours": {
+        "observed": [
+          1.01,
+          35.97
+        ],
+        "declared": null
+      },
+      "campaign_response_rate": {
+        "observed": [
+          15.0,
+          45.0
+        ],
+        "declared": null
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "customer_id",
+        "references": "customers.customer_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "agent_id",
+        "references": "service_agents.agent_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "interaction_id",
+        "references": "call_center_interactions.interaction_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      }
+    ],
+    "row_rules": [
+      "CSAT main_score in [1, 5]",
+      "NPS main_score in [0, 10]",
+      "nps_category only for NPS",
+      "nps_category consistent with main_score (9-10 / 7-8 / 0-6)",
+      "question_k_text null <=> question_k_response null"
+    ],
+    "dedup_rule": "unique on survey_id. On violation keep the row with the latest process_date, then latest source_file; alert if the kept and dropped rows differ outside process_date/source_file",
+    "late_arrival": {
+      "partition_key": "process_date",
+      "event_time": "survey_date",
+      "observed_lag_days": [
+        -2,
+        0
+      ],
+      "cutoff_hour": 12,
+      "rule": "process_date = process_date of the linked interaction (100% observed); the row can land in a partition before its own event time; partition path date must equal process_date"
+    }
+  },
+  "digital_events": {
+    "table": "digital_events",
+    "kind": "fact",
+    "grain": "one row per event_id",
+    "primary_key": [
+      "event_id"
+    ],
+    "unique": [],
+    "required": [
+      "event_id",
+      "event_date",
+      "process_date",
+      "session_id",
+      "event_type",
+      "event_category",
+      "channel",
+      "is_mobile"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "customer_id": {
+        "observed_null_rate": 0.2398,
+        "rule": "random at ~24.0%"
+      },
+      "platform": {
+        "observed_null_rate": 0.05,
+        "rule": "random at ~5.0%"
+      },
+      "browser": {
+        "observed_null_rate": 0.6202,
+        "rule": "null when `channel` = `Android App`, `iOS App`; otherwise random at ~5.0%"
+      },
+      "app_version": {
+        "observed_null_rate": 0.4298,
+        "rule": "null when `channel` = `Desktop Web`, `Mobile Web`; otherwise random at ~5.0%"
+      },
+      "page_url": {
+        "observed_null_rate": 0.05,
+        "rule": "random at ~5.0%"
+      },
+      "page_title": {
+        "observed_null_rate": 0.0499,
+        "rule": "random at ~5.0%"
+      },
+      "action": {
+        "observed_null_rate": 0.1,
+        "rule": "random at ~10.0%"
+      },
+      "element_id": {
+        "observed_null_rate": 0.15,
+        "rule": "random at ~15.0%"
+      },
+      "product_id": {
+        "observed_null_rate": 0.9078,
+        "rule": "null when `event_type` = `Login`, `Logout`, `FormSubmit`, `Error`, `Purchase`; otherwise random at ~84.9%"
+      },
+      "event_value": {
+        "observed_null_rate": 0.9491,
+        "rule": "null when `event_type` = `PageView`, `Click`, `Login`, `Logout`, `Error`; otherwise random at ~5.0%"
+      },
+      "duration_seconds": {
+        "observed_null_rate": 0.6367,
+        "rule": "null when `event_type` = `Click`, `Login`, `Logout`, `FormSubmit`, `Error`, `Purchase`; otherwise random at ~5.0%"
+      },
+      "ip_address": {
+        "observed_null_rate": 0.05,
+        "rule": "random at ~5.0%"
+      },
+      "ip_city": {
+        "observed_null_rate": 0.2798,
+        "rule": "co-null with `customer_id` (null in 85.0% of rows where it is null, 10.0% where it is not)"
+      },
+      "referrer": {
+        "observed_null_rate": 0.9329,
+        "rule": "random at ~93.3%"
+      },
+      "utm_source": {
+        "observed_null_rate": 0.9463,
+        "rule": "null when `utm_medium` = `<NULL>`; otherwise random at ~5.0%"
+      },
+      "utm_medium": {
+        "observed_null_rate": 0.9463,
+        "rule": "null when `utm_source` = `<NULL>`; otherwise random at ~5.0%"
+      },
+      "utm_campaign": {
+        "observed_null_rate": 0.9463,
+        "rule": "null when `utm_source` = `<NULL>`; otherwise random at ~5.0%"
+      }
+    },
+    "allowed_values": {
+      "event_type": [
+        "PageView",
+        "Click",
+        "Login",
+        "Logout",
+        "FormSubmit",
+        "Error",
+        "Purchase"
+      ],
+      "event_category": [
+        "Authentication",
+        "Navigation",
+        "Product",
+        "Transaction"
+      ],
+      "channel": [
+        "Android App",
+        "iOS App",
+        "Desktop Web",
+        "Mobile Web"
+      ],
+      "platform": [
+        "Android",
+        "iOS",
+        "Windows",
+        "Linux",
+        "MacOS"
+      ],
+      "browser": [
+        "Safari",
+        "Chrome",
+        "Samsung Internet",
+        "Firefox",
+        "Edge"
+      ],
+      "page_url": [
+        "/login",
+        "/logout",
+        "/products/loans",
+        "/products/savings",
+        "/products/credit-card",
+        "/payments",
+        "/transfer",
+        "/transactions",
+        "/accounts",
+        "/products",
+        "/home",
+        "/help"
+      ],
+      "page_title": [
+        "Cerrar Sesión",
+        "Iniciar Sesión",
+        "Préstamos",
+        "Cuenta de Ahorro",
+        "Tarjeta de Crédito",
+        "Pagar Servicios",
+        "Transferir",
+        "Mis Movimientos",
+        "Mis Cuentas",
+        "Productos",
+        "Inicio",
+        "Ayuda"
+      ],
+      "action": [
+        "view_product",
+        "logout",
+        "login",
+        "initiate_payment",
+        "initiate_transfer",
+        "view_transactions",
+        "view_accounts",
+        "view_products",
+        "view_help",
+        "view_home"
+      ],
+      "element_id": [
+        "login_form",
+        "logout_btn",
+        "loans_product",
+        "cc_product",
+        "savings_product",
+        "payment_form",
+        "transfer_form",
+        "transactions_page",
+        "accounts_page",
+        "products_page",
+        "help_page",
+        "home_page"
+      ],
+      "ip_country": [
+        "México",
+        "Colombia",
+        "Argentina",
+        "Mexico"
+      ],
+      "ip_city": [
+        "Guadalajara",
+        "Querétaro",
+        "Tijuana",
+        "Puebla",
+        "Ciudad de México",
+        "Monterrey",
+        "Bogotá",
+        "Barranquilla",
+        "Medellín",
+        "Cali",
+        "Cartagena",
+        "Rosario",
+        "La Plata",
+        "Buenos Aires",
+        "Mendoza",
+        "Córdoba"
+      ],
+      "referrer": [
+        "https://www.instagram.com",
+        "https://email.marketing.com",
+        "https://www.google.com",
+        "https://www.facebook.com"
+      ],
+      "utm_source": [
+        "email",
+        "direct",
+        "google",
+        "facebook"
+      ],
+      "utm_medium": [
+        "organic",
+        "email",
+        "social",
+        "cpc"
+      ],
+      "utm_campaign": [
+        "retention",
+        "spring_promo",
+        "new_users"
+      ]
+    },
+    "numeric_ranges": {
+      "event_value": {
+        "observed": [
+          10.01,
+          4999.98
+        ],
+        "declared": null
+      },
+      "duration_seconds": {
+        "observed": [
+          5,
+          300
+        ],
+        "declared": [
+          0,
+          null
+        ]
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "customer_id",
+        "references": "customers.customer_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "product_id",
+        "references": "products.product_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      }
+    ],
+    "row_rules": [
+      "is_mobile consistent with channel"
+    ],
+    "dedup_rule": "unique on event_id. On violation keep the row with the latest process_date, then latest source_file; alert if the kept and dropped rows differ outside process_date/source_file",
+    "late_arrival": {
+      "partition_key": "process_date",
+      "event_time": "event_date",
+      "observed_lag_days": [
+        -1,
+        0
+      ],
+      "cutoff_hour": 6,
+      "rule": "process_date = CAST(event_date - INTERVAL 6 HOUR AS DATE) (business-day cutoff at 06:00, 99.820% of rows agree); lag in [-1, 0] days; partition path date must equal process_date"
+    }
+  },
+  "complaints": {
+    "table": "complaints",
+    "kind": "fact",
+    "grain": "one row per complaint_id",
+    "primary_key": [
+      "complaint_id"
+    ],
+    "unique": [],
+    "required": [
+      "complaint_id",
+      "creation_date",
+      "process_date",
+      "customer_id",
+      "case_type",
+      "category",
+      "reception_channel",
+      "description",
+      "priority",
+      "status",
+      "sla_breached",
+      "is_repeat_complainer"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "subcategory": {
+        "observed_null_rate": 0.0998,
+        "rule": "random at ~10.0%"
+      },
+      "affected_product_id": {
+        "observed_null_rate": 0.3357,
+        "rule": "random at ~33.6%"
+      },
+      "related_branch_id": {
+        "observed_null_rate": 0.7142,
+        "rule": "random at ~71.4%"
+      },
+      "claimed_amount": {
+        "observed_null_rate": 0.6758,
+        "rule": "random at ~67.6%"
+      },
+      "currency": {
+        "observed_null_rate": 0.6754,
+        "rule": "co-null with `claimed_amount` (null in 97.7% of rows where it is null, 4.8% where it is not)"
+      },
+      "assigned_agent_id": {
+        "observed_null_rate": 0.3445,
+        "rule": "null when `status` = `Open`, `Rejected`; otherwise random at ~4.9%"
+      },
+      "assignment_date": {
+        "observed_null_rate": 0.3447,
+        "rule": "null when `status` = `Open`, `Rejected`; otherwise random at ~5.0%"
+      },
+      "first_response_date": {
+        "observed_null_rate": 0.3911,
+        "rule": "null when `status` = `Open`, `Escalated`, `Rejected`; otherwise random at ~4.9%"
+      },
+      "resolution_date": {
+        "observed_null_rate": 0.7712,
+        "rule": "null when `status` = `In Process`, `Open`, `Escalated`, `Rejected`; otherwise random at ~4.8%"
+      },
+      "closing_date": {
+        "observed_null_rate": 0.963,
+        "rule": "null when `status` = `In Process`, `Open`, `Resolved`, `Escalated`, `Rejected`; otherwise random at ~4.9%"
+      },
+      "resolution_days": {
+        "observed_null_rate": 0.771,
+        "rule": "null when `status` = `In Process`, `Open`, `Escalated`, `Rejected`; otherwise random at ~4.7%"
+      },
+      "resolution": {
+        "observed_null_rate": 0.7718,
+        "rule": "null when `status` = `In Process`, `Open`, `Escalated`, `Rejected`; otherwise random at ~5.0%"
+      },
+      "compensation_granted": {
+        "observed_null_rate": 0.9308,
+        "rule": "random at ~93.1%"
+      },
+      "resolution_satisfaction": {
+        "observed_null_rate": 0.963,
+        "rule": "null when `status` = `In Process`, `Open`, `Resolved`, `Escalated`, `Rejected`; otherwise random at ~4.8%"
+      }
+    },
+    "allowed_values": {
+      "case_type": [
+        "Complaint",
+        "Claim",
+        "Request",
+        "Suggestion"
+      ],
+      "category": [
+        "Transactions",
+        "Fees",
+        "Technical",
+        "Branch",
+        "Service"
+      ],
+      "subcategory": [
+        "Cargo no reconocido",
+        "Cobro indebido",
+        "Problema con app",
+        "Atención en sucursal",
+        "Calidad de servicio"
+      ],
+      "reception_channel": [
+        "Call Center",
+        "Email",
+        "Web",
+        "App",
+        "Branch",
+        "Regulator"
+      ],
+      "origin_interaction_id": [],
+      "description": [
+        "Queja relacionada con transactions",
+        "Queja relacionada con fees",
+        "Queja relacionada con technical",
+        "Queja relacionada con branch",
+        "Queja relacionada con service"
+      ],
+      "currency": [
+        "MXN",
+        "COP",
+        "USD",
+        "ARS"
+      ],
+      "priority": [
+        "Medium",
+        "Low",
+        "High",
+        "Critical"
+      ],
+      "status": [
+        "In Process",
+        "Open",
+        "Resolved",
+        "Escalated",
+        "Closed",
+        "Rejected"
+      ],
+      "resolution": [
+        "Se revisó el caso y se realizó el ajuste correspondiente en la cuenta del cliente.",
+        "Se escaló a área correspondiente y se aplicó la solución definitiva.",
+        "Se brindó explicación detallada al cliente y se resolvió la situación.",
+        "Se otorgó compensación al cliente por las molestias ocasionadas.",
+        "Se verificó la información y se procedió con la corrección solicitada."
+      ]
+    },
+    "numeric_ranges": {
+      "claimed_amount": {
+        "observed": [
+          50.27,
+          4999.93
+        ],
+        "declared": null
+      },
+      "resolution_days": {
+        "observed": [
+          1,
+          30
+        ],
+        "declared": [
+          0,
+          null
+        ]
+      },
+      "compensation_granted": {
+        "observed": [
+          10.15,
+          499.98
+        ],
+        "declared": null
+      },
+      "resolution_satisfaction": {
+        "observed": [
+          1,
+          5
+        ],
+        "declared": [
+          1,
+          5
+        ]
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "customer_id",
+        "references": "customers.customer_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "related_branch_id",
+        "references": "branches.branch_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "assigned_agent_id",
+        "references": "service_agents.agent_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "affected_product_id",
+        "references": "products.product_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "origin_interaction_id",
+        "references": "call_center_interactions.interaction_id",
+        "observed_orphan_rate": null,
+        "policy": "column is always null: FK unusable; drop or treat as unknown"
+      }
+    ],
+    "row_rules": [
+      "first_response_date >= creation_date",
+      "resolution_date >= creation_date",
+      "closing_date >= resolution_date",
+      "resolution_days = days(creation_date, resolution_date)",
+      "claimed_amount null <=> currency null"
+    ],
+    "dedup_rule": "unique on complaint_id. On violation keep the row with the latest process_date, then latest source_file; alert if the kept and dropped rows differ outside process_date/source_file",
+    "late_arrival": {
+      "partition_key": "process_date",
+      "event_time": "creation_date",
+      "observed_lag_days": [
+        -1,
+        0
+      ],
+      "cutoff_hour": 8,
+      "rule": "process_date = CAST(creation_date - INTERVAL 8 HOUR AS DATE) (business-day cutoff at 08:00, 99.999% of rows agree); lag in [-1, 0] days; partition path date must equal process_date"
+    }
+  },
+  "campaign_sends": {
+    "table": "campaign_sends",
+    "kind": "fact",
+    "grain": "one row per send_id",
+    "primary_key": [
+      "send_id"
+    ],
+    "unique": [],
+    "required": [
+      "send_id",
+      "send_date",
+      "process_date",
+      "campaign_id",
+      "customer_id",
+      "send_channel",
+      "send_status",
+      "was_delivered",
+      "had_conversion"
+    ],
+    "relaxed_not_null": [],
+    "notes": [],
+    "nullable": {
+      "template_used": {
+        "observed_null_rate": 0.1003,
+        "rule": "random at ~10.0%"
+      },
+      "subject": {
+        "observed_null_rate": 0.6803,
+        "rule": "null when `send_channel` = `SMS`, `WhatsApp`, `Push`, `Voice`; otherwise random at ~10.0%"
+      },
+      "was_opened": {
+        "observed_null_rate": 0.2772,
+        "rule": "null when `send_channel` = `WhatsApp`, `Voice`; otherwise random at ~6.0%"
+      },
+      "open_date": {
+        "observed_null_rate": 0.721,
+        "rule": "structural: null determined by `was_opened` = `false`, `<NULL>`"
+      },
+      "click_date": {
+        "observed_null_rate": 0.944,
+        "rule": "structural: null determined by `was_clicked` = `false`"
+      },
+      "click_count": {
+        "observed_null_rate": 0.944,
+        "rule": "structural: null determined by `was_clicked` = `false`"
+      },
+      "conversion_date": {
+        "observed_null_rate": 0.9944,
+        "rule": "structural: null determined by `had_conversion` = `false`"
+      },
+      "conversion_value": {
+        "observed_null_rate": 0.9944,
+        "rule": "structural: null determined by `had_conversion` = `false`"
+      },
+      "open_device": {
+        "observed_null_rate": 0.749,
+        "rule": "null when `was_opened` = `false`, `<NULL>`; otherwise random at ~10.0%"
+      },
+      "open_country": {
+        "observed_null_rate": 0.749,
+        "rule": "null when `was_opened` = `false`, `<NULL>`; otherwise random at ~10.0%"
+      },
+      "failure_reason": {
+        "observed_null_rate": 0.943,
+        "rule": "null when `send_status` = `Sent`; otherwise random at ~4.9%"
+      },
+      "send_cost": {
+        "observed_null_rate": 0.15,
+        "rule": "random at ~15.0%"
+      }
+    },
+    "allowed_values": {
+      "send_channel": [
+        "Email",
+        "SMS",
+        "WhatsApp",
+        "Push",
+        "Voice"
+      ],
+      "subject": [
+        "¡Oferta especial en Tarjeta Crédito!",
+        "¡Oferta especial en Préstamo Personal!",
+        "¡Oferta especial en Cuenta Corriente!",
+        "¡Oferta especial en Cuenta Ahorro!",
+        "¡Oferta especial en Inversión!",
+        "¡Oferta especial en nan!",
+        "¡Oferta especial en Seguro!",
+        "¡Oferta especial en Préstamo Hipotecario!"
+      ],
+      "send_status": [
+        "Sent",
+        "Failed",
+        "Bounced",
+        "Blocked"
+      ],
+      "open_device": [
+        "Desktop",
+        "Tablet",
+        "Mobile"
+      ],
+      "open_country": [
+        "México",
+        "Colombia",
+        "Argentina"
+      ],
+      "failure_reason": [
+        "SMTP error",
+        "Invalid email address",
+        "User blocked sender"
+      ]
+    },
+    "numeric_ranges": {
+      "click_count": {
+        "observed": [
+          1,
+          5
+        ],
+        "declared": [
+          0,
+          null
+        ]
+      },
+      "conversion_value": {
+        "observed": [
+          100.88,
+          4999.75
+        ],
+        "declared": null
+      },
+      "send_cost": {
+        "observed": [
+          0.0001,
+          0.3
+        ],
+        "declared": null
+      }
+    },
+    "foreign_keys": [
+      {
+        "column": "customer_id",
+        "references": "customers.customer_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      },
+      {
+        "column": "campaign_id",
+        "references": "marketing_campaigns.campaign_id",
+        "observed_orphan_rate": 0.0,
+        "policy": "enforce (fail on orphan)"
+      }
+    ],
+    "row_rules": [
+      "was_opened = true => was_delivered = true",
+      "open_date >= send_date",
+      "click_date >= open_date",
+      "had_conversion = true => conversion_date not null",
+      "was_delivered = (send_status = 'Sent')"
+    ],
+    "dedup_rule": "unique on send_id. On violation keep the row with the latest process_date, then latest source_file; alert if the kept and dropped rows differ outside process_date/source_file",
+    "late_arrival": {
+      "partition_key": "process_date",
+      "event_time": "send_date",
+      "observed_lag_days": [
+        -1,
+        0
+      ],
+      "cutoff_hour": 6,
+      "rule": "process_date = CAST(send_date - INTERVAL 6 HOUR AS DATE) (business-day cutoff at 06:00, 99.998% of rows agree); lag in [-1, 0] days; partition path date must equal process_date"
+    },
+    "text_rules": [
+      "`subject` must not contain a rendered null ('nan'/'None')"
+    ]
+  }
+}
