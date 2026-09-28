@@ -1,1 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900');
+
 @import 'tailwindcss';
+
+@theme {    
+    --color-gris-primario: #D2D3D5;
+    --color-gris-secundario: #1F2937;
+    --color-blanco-primario: #F0FDF4;
+    --font-roboto: 'Roboto', sans-serif;
+}
+
+@utility separar-letras {    
+    letter-spacing: 0.1rem;    
+}
+
+.contenedor {
+    @apply mx-auto overflow-hidden w-[90%] md:w-[80%]
+}
+
+section h1 {
+    @apply font-medium text-4xl md:text-5xl
+}
+
+section h2 {
+    @apply text-3xl md:text-4xl
+}
+
+section h3 {
+    @apply text-2xl md:text-3xl
+}
+
+section h4 {
+    @apply text-sm md:text-base
+}
+
+section p {
+    @apply text-gris-secundario/62 text-base md:text-lg
+}
+
+section a {
+    @apply px-4 py-3 rounded-3xl transition-colors hover:bg-red-500 hover:text-white;
+}
