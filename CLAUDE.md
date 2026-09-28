@@ -13,9 +13,9 @@ Team: Aldair and Martín. Monorepo:
 ## Reference docs (read when relevant, don't treat as decided)
 - docs/problem_statement.pdf: challenge rules and scoring criteria. Source of truth.
 - docs/data_dictionary.pdf: schemas for the 13 tables.
-- docs/proposal.md: DRAFT proposal. Track A vs B is NOT decided yet; it depends on
-  the Day 1 hypotheses.
-- docs/hypotheses.md: validation plan and status.
+- docs/proposal.md: proposal v2. Track B was chosen on Day 1 (see docs/decision_day1.md);
+  docs/proposal.pdf is the Spanish v1 draft from before the decision.
+- ml/docs/hypotheses.md: validation plan and status.
 
 ## Rules
 - Never read, print or write AWS credentials. Never read ~/.aws.
