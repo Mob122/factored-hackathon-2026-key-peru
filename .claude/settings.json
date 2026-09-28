@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ml/.venv/Scripts/python:*)",
+      "Bash(.venv/Scripts/python:*)",
+      "Bash(uv:*)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(ls:*)"
+    ],
+    "deny": [
+      "Read(~/.aws/**)",
+      "Read(ml/conf/local/**)",
+      "Bash(rm:*)",
+      "Bash(aws:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}
