@@ -1,6 +1,6 @@
 # Propuesta v3: Consultas de tarjetas y transacciones
 
-Factored AI & Data Hackathon 2026 | Aldair y Martín | v3, 28 de septiembre de 2026 | Reemplaza v1 y v2
+Factored AI & Data Hackathon 2026 | Aldair y Martín | v3, 28 de septiembre de 2026; revisión de consistencia del 29 de septiembre (secciones 6 a 8, sin cambio de alcance) | Reemplaza v1 y v2
 
 ## 1. Qué vamos a construir
 
@@ -40,25 +40,30 @@ Lo que el sistema no hace, por decisión explícita: no explica causas de rechaz
 
 Clasificador de intención y slots en español y portugués, con conjuntos de predicción conformales: un solo candidato, actuar; varios, pedir aclaración; vacío o demasiado grande, transferir a humano.
 
-Labels: utterances generadas por el equipo (tres variantes de español y portugués), declaradas como tales, más el label nativo de transcripts si la verificación P5 muestra que sirve. Split por grupo de semilla para que las paráfrasis no crucen entre train y test, portugués evaluado aparte y una muestra validada por humano con kappa. Baselines: reglas, TF-IDF con regresión logística y LLM zero-shot. Métricas: macro-F1, cobertura empírica de los conjuntos, tasa de aclaración y resultados por idioma y variante.
+Labels: utterances generadas por el equipo (tres variantes de español y portugués), declaradas como tales. El label nativo de transcripts se descartó: la verificación P5 lo refutó (`docs/findings/day2/personas.md`). Split por grupo de semilla para que las paráfrasis y traducciones no crucen entre train, calibración y test, portugués evaluado aparte y una muestra validada por humano con kappa. Baselines: reglas, TF-IDF con regresión logística y LLM zero-shot. Métricas: macro-F1, cobertura empírica de los conjuntos, tasa de aclaración y resultados por idioma y variante. Detalle en `docs/eval_plan.md` sección 8.
 
 ## 7. Evaluación
 
-Comparamos un agente LLM ingenuo, con las mismas tools pero sin policy engine, contra nuestro sistema, sobre los mismos escenarios held-out con estado oculto, usando pass^k. Reportamos las métricas de las bases: safe automated resolution, containment, escalation quality (transferencias faltantes e innecesarias), unsafe outcomes con conteos y denominadores, p50 y p95 de latencia y costo por caso. Casos adversos: sesión expirada, tarjeta de otro cliente, prompt injection, falla de tool y ambigüedad multilingüe. Como la actividad real con tarjeta es escasa, las transacciones parecidas para la escena de desambiguación se inyectan como fixture declarado.
+Comparamos un agente LLM ingenuo, con las mismas tools pero sin policy engine, contra nuestro sistema, sobre los mismos escenarios held-out con estado oculto, usando pass^k. Reportamos las métricas de las bases: safe automated resolution, containment, escalation quality (transferencias faltantes e innecesarias), unsafe outcomes con conteos y denominadores, p50 y p95 de latencia y costo por caso. Casos adversos: sesión expirada, tarjeta de otro cliente, prompt injection, falla de tool, datos incorrectos o faltantes y ambigüedad multilingüe. Como la actividad real con tarjeta es escasa, las transacciones parecidas para la escena de desambiguación se inyectan como fixture declarado. Plan pre-registrado, definiciones de métricas y metas: `docs/eval_plan.md`; formato del reporte: `docs/contracts/eval_report.schema.json`.
 
 ## 8. Contratos a congelar hoy
 
 | Tool | Entrada | Salida |
 |---|---|---|
-| `authenticate` / `step_up` | credenciales de prueba | sesión con expiración y nivel |
-| `list_cards` | sesión | últimos 4, tipo, estado |
-| `get_card_status` | sesión, tarjeta | estado actual |
+| `authenticate` | credenciales de prueba | sesión con expiración, nivel L1 e idioma preferido |
+| `step_up` | sesión, tarjeta, acción, código de un solo uso | nivel L2, ligado a esa tarjeta y acción, con expiración |
+| `list_cards` | sesión | id interno, últimos 4, tipo, estado |
+| `get_card_status` | sesión, tarjeta | últimos 4, tipo, estado actual |
 | `list_transactions` | sesión, tarjeta, rango y filtros | transacciones del titular |
-| `describe_transaction` | sesión, transacción | descripción con plantilla fija |
-| `block_card` | sesión step-up, tarjeta, token de confirmación | estado verificado después de la acción |
+| `describe_transaction` | sesión, transacción | campos de la transacción y plantillas que aplican |
+| `block_card` | sesión step-up, tarjeta, token de confirmación | aceptación de la solicitud (`accepted`, `request_id`). El action gateway verifica el resultado releyendo `get_card_status`; solo un estado `Blocked` releído se reporta como hecho |
 | `open_handoff` | sesión, expediente | id del caso |
+| `list_balance_products` | sesión | productos con saldo consultable: tarjetas de crédito y cuentas de ahorro (política 0.2, **pendiente de aprobación de Martín**) |
+| `get_balance` | sesión, producto | saldo, límite (solo crédito), moneda y `as_of` (política 0.2, **pendiente de aprobación de Martín**) |
 
-También se congelan hoy: esquemas de gold, eventos del audit log y formato JSON del eval report.
+Las dos últimas tools vienen de la consulta de saldo que la política `cards-synthetic-0.2` agregó a partir del hallazgo P4 (los transcripts solo contienen consultas de saldo). No están en el alcance de la sección 4 hasta que el equipo las apruebe; ver la primera brecha abierta de `docs/requirements_matrix.md`.
+
+También se congelan hoy: esquemas de gold (`docs/contracts/gold_tables.md`), política de refresco (`docs/contracts/freshness_policy.md`), máquina de estados (`docs/contracts/state_machine.md`), eventos del audit log (`docs/contracts/audit_log.md`) y formato JSON del eval report (`docs/contracts/eval_report.schema.json`). La política escrita es `docs/policy_cards.md` (SINTÉTICA).
 
 ## 9. Reparto
 

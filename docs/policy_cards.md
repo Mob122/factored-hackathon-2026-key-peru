@@ -7,7 +7,7 @@
 
 | Field | Value |
 |---|---|
-| Policy version | `cards-synthetic-0.2` |
+| Policy version | `cards-synthetic-0.3` |
 | Date | 2026-09-29 |
 | Scope | Card and transaction inquiries assistant, plus balance inquiries for credit cards and savings accounts, in Spanish and Portuguese (`docs/proposal.md` v3, extended in v0.2) |
 | Owner | Aldair (policy text) · Martín (enforcement in services, gateway and orchestrator) |
@@ -20,6 +20,7 @@
 |---|---|---|
 | 0.1 | 2026-09-29 | First version. |
 | 0.2 | 2026-09-29 | Fixes for the flag register of `docs/golden_conversations.md` (F-02, F-06, F-08 to F-11, F-13, F-15 to F-19, F-21 to F-26). Balance inquiry for credit cards and savings accounts (POL-ANS-14 narrowed; POL-ANS-15 to 17 and POL-BAL-* added). Language is the customer's preference (POL-GEN-03). Stale-data rule (POL-GEN-07). Two new tools, `list_balance_products` and `get_balance`, which change the tool contracts frozen in `docs/proposal.md` section 8 and need Martín's sign-off. |
+| 0.3 | 2026-09-29 | Consistency fixes against `docs/contracts/`, no new scope. POL-ANS-02: `get_card_status` also returns card type and last 4 (POL-ACT-11 renders `{tipo}` from the verification read). POL-PII-05 and POL-PII-07: raw third-party identifiers are not stored anywhere; the audit log keeps a keyed hash (`docs/contracts/audit_log.md` AL-P5), matching POL-PII-04. References in section 3b and POL-PII-06 updated. |
 
 ## 0. How to read and cite this policy
 
@@ -72,7 +73,7 @@ only with data returned by the tool listed.
 | ID | The assistant may answer | Tool | Fields it may state | Limits |
 |---|---|---|---|---|
 | POL-ANS-01 | Which cards the customer has | `list_cards` | last 4 digits, card type (credit/debit), status | Never the full card number. |
-| POL-ANS-02 | A card's current status | `get_card_status` | status (`Active`, `Blocked`, `Suspended`, `Closed`) | Current status only. No history, date or cause of a status change (P2: blocked cards have no history). Cause questions go to POL-ESC-02. |
+| POL-ANS-02 | *(changed in 0.3)* A card's current status | `get_card_status` | status (`Active`, `Blocked`, `Suspended`, `Closed`), with the card type and last 4 digits | Current status only. No history, date or cause of a status change (P2: blocked cards have no history). Cause questions go to POL-ESC-02. |
 | POL-ANS-03 | *(changed in 0.2, F-08)* Recent transactions on a card | `list_transactions` | date, amount, currency, transaction type, merchant (if present), status | Window defaults to the last `TX_DEFAULT_DAYS` days, capped at `TX_MAX_DAYS` days and `TX_MAX_ROWS` rows. If the customer needs older history, the assistant states the limit and offers a transfer. If the list is empty, say so and nothing more (POL-ANS-06). |
 | POL-ANS-04 | What one transaction is | `describe_transaction` | the POL-ANS-03 fields plus status meaning (POL-TXS) and response-code meaning (POL-DEC) | Fixed templates only. No root cause. |
 | POL-ANS-05 | What the assistant can and cannot do | none (static text) | this list and the section 4 actions | Static text versioned with this policy. |
@@ -125,9 +126,9 @@ number convention of the customer's country (México: 1,234.56; Colombia and Arg
 | POL-BAL-04 | Balance above the recorded limit | "No puedo confirmar el límite de crédito de esta tarjeta." | "Não consigo confirmar o limite de crédito deste cartão." |
 | POL-BAL-05 | Available credit requested | "No puedo calcular el crédito disponible; solo puedo indicarle el saldo y el límite registrados. Si lo necesita, puedo transferirle con un asesor." | "Não consigo calcular o crédito disponível; só posso informar o saldo e o limite registrados. Se precisar, posso transferir você para um atendente." |
 
-`as_of` is the time the mock bank loaded the gold snapshot (the batch load of the freshness
-policy, requirements matrix G-1). It is not `products.last_updated`: that field is not tied
-to the balance, and 6.27% of its values are after the end of the data.
+`as_of` is the time the daily gold load finished, `max(gold_loaded_at)`
+(`docs/contracts/freshness_policy.md` section 2). It is not `products.last_updated`: that field
+is not tied to the balance, and 6.27% of its values are after the end of the data.
 
 ## 4. Actions (ACT)
 
@@ -266,9 +267,9 @@ The dataset is synthetic, but the prototype treats it as if it were real custome
 | POL-PII-02 | Never sent to an LLM, not even redacted: credentials and one-time codes, `credit_score`, `estimated_monthly_income`, `gender`, `marital_status`, `education_level`, `occupation`, `fraud_score`, `is_fraud`. Tool results are reduced to the fields listed in section 3 before they reach the LLM. | Tool gateway (field allowlist) |
 | POL-PII-03 | *(changed in 0.2)* The LLM may see: card type, last 4, status, and transaction date, amount, currency, type, merchant name, status and response code; for balance inquiries, product kind, last 4, `current_balance`, `credit_limit`, currency and `as_of`. | Tool gateway (field allowlist) |
 | POL-PII-04 | Customer-typed secrets (passwords, codes, full card numbers) are redacted before the LLM, the logs and the traces. The raw text is not stored, except that the gateway's ownership check (POL-ESC-10) sees a typed full card number in memory for that one check. | Redaction layer |
-| POL-PII-05 | *(changed in 0.2, F-19)* Logs, traces and stored transcripts hold only redacted text. The case file may hold `customer_id` and internal card and transaction IDs of the session customer, because the human agent works inside the bank's perimeter. Identifiers of **third parties** typed by the customer (another customer's ID, name or card) stay redacted in the case file. The raw value is kept only in the audit store, readable by the security role. | Audit log, tracing, case store |
-| POL-PII-06 | Retention in the prototype (synthetic, see section 11): transcripts `RETAIN_TRANSCRIPT_DAYS`, traces `RETAIN_TRACE_DAYS`, case files and audit log `RETAIN_CASE_DAYS`. Expired records are deleted by created date. The deletion procedure and the production values the bank would set belong in `docs/operations.md` (requirements matrix gap G-4). | Operations (planned) |
-| POL-PII-07 | Access: customers see only their own session. Human agents see case files. Operators see traces and the audit log. The security role sees raw third-party identifiers in the audit store (POL-PII-05). Nobody sees raw credentials. | Backend roles |
+| POL-PII-05 | *(changed in 0.3, F-19)* Logs, traces and stored transcripts hold only redacted text. The case file may hold `customer_id` and internal card and transaction IDs of the session customer, because the human agent works inside the bank's perimeter. Identifiers of **third parties** typed by the customer (another customer's ID, name or card) stay redacted in the case file. The raw value is not stored anywhere. The audit log keeps only a keyed hash of it (`docs/contracts/audit_log.md` AL-P5), which the security role can match against a known identifier. | Audit log, tracing, case store |
+| POL-PII-06 | Retention in the prototype (synthetic, see section 11): transcripts `RETAIN_TRANSCRIPT_DAYS`, traces `RETAIN_TRACE_DAYS`, case files and audit log `RETAIN_CASE_DAYS`. Expired records are deleted by created date. The deletion procedure and the production values the bank would set belong in `docs/operations.md` (requirements matrix gaps G-3 and G-4). | Operations (planned) |
+| POL-PII-07 | *(changed in 0.3)* Access: customers see only their own session. Human agents see case files. Operators see traces and the audit log. Only the security role can re-identify the keyed pseudonyms and hashes in the audit log, through the backend (POL-PII-05). Nobody sees raw credentials. | Backend roles |
 | POL-PII-08 | No real customer data, credentials or `ml/data/` files go into the repository, the public submission or any external model request. Demos use the synthetic personas in `docs/findings/day2/personas.md`. | Git rules, review before submission |
 | POL-PII-09 | The LLM provider and its data-handling terms are declared in `docs/data_card.md`. Settings that stop the provider from training on or retaining data must be confirmed before any deployment beyond the prototype. | Documentation |
 

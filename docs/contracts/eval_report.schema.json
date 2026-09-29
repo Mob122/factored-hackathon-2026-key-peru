@@ -1,0 +1,1227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/key-peru/factored-hackathon-2026/docs/contracts/eval_report.schema.json",
+  "title": "Evaluation report",
+  "description": "Format of eval/report.json. Definitions of every metric are in docs/eval_plan.md (eval-plan-0.1); section numbers in descriptions refer to that plan. All results are offline simulations on synthetic data.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_id",
+    "generated_at",
+    "evidence_label",
+    "plan",
+    "run_config",
+    "workload",
+    "systems",
+    "human_status_quo",
+    "results",
+    "comparison",
+    "breakdowns",
+    "disparities",
+    "targets",
+    "classifier_eval",
+    "grader_validation",
+    "failures",
+    "cases",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": { "const": "eval-report-0.1" },
+    "report_id": { "type": "string", "minLength": 1 },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "evidence_label": {
+      "description": "Section 0 and 10: the results in this file are offline simulations. Human baseline numbers are offline historical data. Projections are not allowed in this file.",
+      "const": "offline_simulation"
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan_version", "plan_commit", "deviations"],
+      "properties": {
+        "plan_version": { "type": "string", "examples": ["eval-plan-0.1"] },
+        "plan_commit": { "$ref": "#/$defs/git_sha" },
+        "deviations": {
+          "description": "Every change from the pre-registered plan, with its reason. Empty list if none.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["section", "change", "reason", "decided_after_results"],
+            "properties": {
+              "section": { "type": "string" },
+              "change": { "type": "string" },
+              "reason": { "type": "string" },
+              "decided_after_results": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "run_config": {
+      "description": "Section 6.2. The harness refuses to run with unknown fields or a dirty tree.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "git_commit",
+        "git_dirty",
+        "policy_version",
+        "state_machine_version",
+        "runs_per_case",
+        "simulated_clock",
+        "customer_sampling_seed",
+        "run_seeds",
+        "simulator",
+        "judge",
+        "environment",
+        "cost_assumptions",
+        "started_at",
+        "finished_at"
+      ],
+      "properties": {
+        "git_commit": { "$ref": "#/$defs/git_sha" },
+        "git_dirty": { "const": false },
+        "policy_version": { "type": "string", "examples": ["cards-synthetic-0.3"] },
+        "state_machine_version": { "type": "string", "examples": ["sm-0.2"] },
+        "runs_per_case": { "type": "integer", "minimum": 1, "examples": [5] },
+        "simulated_clock": { "type": "string", "format": "date-time" },
+        "customer_sampling_seed": { "type": "integer" },
+        "run_seeds": { "type": "array", "items": { "type": "integer" }, "minItems": 1 },
+        "simulator": { "$ref": "#/$defs/prompted_model_ref" },
+        "judge": {
+          "allOf": [
+            { "$ref": "#/$defs/prompted_model_ref" },
+            {
+              "type": "object",
+              "required": ["rubric_version", "rubric_sha256"],
+              "properties": {
+                "rubric_version": { "type": "string" },
+                "rubric_sha256": { "$ref": "#/$defs/sha256" }
+              }
+            }
+          ]
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["python_lock_sha256", "hardware", "os", "deployment", "concurrency"],
+          "properties": {
+            "python_lock_sha256": { "$ref": "#/$defs/sha256" },
+            "hardware": { "type": "string" },
+            "os": { "type": "string" },
+            "deployment": { "enum": ["local", "deployed"] },
+            "llm_region": { "type": "string" },
+            "concurrency": { "type": "integer", "minimum": 1 }
+          }
+        },
+        "cost_assumptions": {
+          "description": "Section 5.7. List prices used for every model, and the costs set to zero.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["currency", "prices", "excluded_costs"],
+          "properties": {
+            "currency": { "const": "USD" },
+            "prices": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["model_id", "input_per_mtok", "cached_input_per_mtok", "output_per_mtok", "source", "as_of"],
+                "properties": {
+                  "model_id": { "type": "string" },
+                  "input_per_mtok": { "type": "number", "minimum": 0 },
+                  "cached_input_per_mtok": { "type": "number", "minimum": 0 },
+                  "output_per_mtok": { "type": "number", "minimum": 0 },
+                  "source": { "type": "string" },
+                  "as_of": { "type": "string", "format": "date" }
+                }
+              }
+            },
+            "excluded_costs": {
+              "type": "array",
+              "items": { "type": "string" },
+              "examples": [["classifier inference", "tool calls", "hosting", "human handling after transfer", "simulator and judge calls"]]
+            }
+          }
+        },
+        "started_at": { "type": "string", "format": "date-time" },
+        "finished_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "workload": {
+      "description": "Section 3. Number and mix of cases.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenario_set", "n_templates", "n_cases", "n_runs_per_system", "mix", "reference_mix", "fixtures", "excluded_runs"],
+      "properties": {
+        "scenario_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["set_id", "version", "sha256"],
+          "properties": {
+            "set_id": { "enum": ["heldout_a", "heldout_b"] },
+            "version": { "type": "string" },
+            "sha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "n_templates": { "type": "integer", "minimum": 1 },
+        "n_cases": { "type": "integer", "minimum": 1 },
+        "n_runs_per_system": { "type": "integer", "minimum": 1 },
+        "mix": {
+          "description": "Case counts by each attribute. Keys are group values (for example normal, es-MX, Basic).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["category", "sub_type", "language", "variant", "country", "segment"],
+          "properties": {
+            "category": { "$ref": "#/$defs/count_map" },
+            "sub_type": { "$ref": "#/$defs/count_map" },
+            "language": { "$ref": "#/$defs/count_map" },
+            "variant": { "$ref": "#/$defs/count_map" },
+            "country": { "$ref": "#/$defs/count_map" },
+            "segment": { "$ref": "#/$defs/count_map" }
+          }
+        },
+        "reference_mix": {
+          "description": "Counts of reference labels (section 4).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["in_scope", "eligible", "requires_handoff", "expected_terminal"],
+          "properties": {
+            "in_scope": { "type": "integer", "minimum": 0 },
+            "eligible": { "type": "integer", "minimum": 0 },
+            "requires_handoff": { "type": "integer", "minimum": 0 },
+            "expected_terminal": { "$ref": "#/$defs/count_map" }
+          }
+        },
+        "fixtures": {
+          "description": "Section 3.5. Number of cases using each injected fixture.",
+          "$ref": "#/$defs/count_map"
+        },
+        "excluded_runs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["system_id", "case_id", "run_idx", "reason"],
+            "properties": {
+              "system_id": { "$ref": "#/$defs/system_id" },
+              "case_id": { "type": "string" },
+              "run_idx": { "type": "integer", "minimum": 0 },
+              "reason": { "enum": ["simulator_error", "harness_crash", "other"] },
+              "note": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "systems": {
+      "description": "Section 1 and 6.2. Exactly the two systems compared on the workload.",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["system_id", "description", "llm", "prompts", "classifier", "components"],
+        "properties": {
+          "system_id": { "$ref": "#/$defs/system_id" },
+          "description": { "type": "string" },
+          "llm": { "$ref": "#/$defs/model_ref" },
+          "prompts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "version", "sha256"],
+              "properties": {
+                "name": { "type": "string" },
+                "version": { "type": "string" },
+                "sha256": { "$ref": "#/$defs/sha256" }
+              }
+            }
+          },
+          "classifier": {
+            "description": "Null for the naive agent.",
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["artifact_sha256", "model_type", "training_data_version", "conformal_alpha", "conformal_threshold", "conformal_max_set", "mondrian_by_language"],
+                "properties": {
+                  "artifact_sha256": { "$ref": "#/$defs/sha256" },
+                  "model_type": { "type": "string" },
+                  "training_data_version": { "type": "string" },
+                  "conformal_alpha": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+                  "conformal_threshold": { "type": "number" },
+                  "conformal_max_set": { "type": "integer", "minimum": 1 },
+                  "mondrian_by_language": { "type": "boolean" }
+                }
+              }
+            ]
+          },
+          "components": {
+            "description": "Which policy components are on (section 1.2 table).",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["state_machine", "action_gateway", "grounding_check", "templates", "pii_redaction", "session_scoped_tools", "read_retries"],
+            "properties": {
+              "state_machine": { "type": "boolean" },
+              "action_gateway": { "type": "boolean" },
+              "grounding_check": { "type": "boolean" },
+              "templates": { "type": "boolean" },
+              "pii_redaction": { "type": "boolean" },
+              "session_scoped_tools": { "type": "boolean" },
+              "read_retries": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "human_status_quo": {
+      "description": "Section 1.1. Context only; never compared as an improvement.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "comparable_one_to_one", "source", "population", "metrics", "caveats"],
+      "properties": {
+        "label": { "const": "offline_historical_data_synthetic" },
+        "comparable_one_to_one": { "const": false },
+        "source": { "type": "string", "examples": ["docs/findings/day1/P1_contact_prioritization.md"] },
+        "population": { "type": "string", "examples": ["call_center_interactions, contact_reason = Transaccional, 2023-06-17 to 2026-06-18"] },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "value", "unit", "n", "closest_system_metric"],
+            "properties": {
+              "name": { "enum": ["fcr", "mean_handle_time", "mean_wait", "escalation_rate", "csat_satisfied"] },
+              "value": { "type": "number" },
+              "unit": { "enum": ["share", "seconds"] },
+              "n": { "type": "integer", "minimum": 0 },
+              "closest_system_metric": { "type": "string" }
+            }
+          }
+        },
+        "caveats": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      }
+    },
+    "results": {
+      "description": "Sections 5 and 6, one entry per system.",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "$ref": "#/$defs/system_results" }
+    },
+    "comparison": {
+      "description": "Paired tests, proposed vs naive_agent, on the same cases (section 9.1, T2 and T3).",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["metric", "proposed", "naive_agent", "difference", "test", "p_value", "interval"],
+        "properties": {
+          "metric": { "type": "string" },
+          "proposed": { "type": "number" },
+          "naive_agent": { "type": "number" },
+          "difference": { "type": "number" },
+          "test": { "enum": ["mcnemar_exact_one_sided", "paired_bootstrap", "none"] },
+          "p_value": { "type": ["number", "null"] },
+          "interval": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/interval" }] },
+          "discordant_pairs": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "proposed_only": { "type": "integer", "minimum": 0 },
+              "naive_only": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "breakdowns": {
+      "description": "Section 9.3 step 1. Metrics per slice for both systems.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["system_id", "attribute", "group", "n_cases", "metrics", "descriptive_only"],
+        "properties": {
+          "system_id": { "$ref": "#/$defs/system_id" },
+          "attribute": { "enum": ["category", "language", "variant", "country", "segment", "language_x_segment"] },
+          "group": { "type": "string" },
+          "n_cases": { "type": "integer", "minimum": 0 },
+          "descriptive_only": { "type": "boolean", "description": "True for cells too small to test (language_x_segment)." },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["passed", "sar_rate", "unsafe_case_rate", "missed_transfer_rate", "clarification_rate", "transfer_rate", "latency_turn_p95_ms"],
+            "properties": {
+              "passed": { "$ref": "#/$defs/rate" },
+              "sar_rate": { "$ref": "#/$defs/rate" },
+              "unsafe_case_rate": { "$ref": "#/$defs/rate" },
+              "missed_transfer_rate": { "$ref": "#/$defs/rate" },
+              "clarification_rate": { "$ref": "#/$defs/rate" },
+              "transfer_rate": { "$ref": "#/$defs/rate" },
+              "latency_turn_p95_ms": { "type": ["number", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "disparities": {
+      "description": "Section 9.3 steps 2 to 4. One entry per attribute x metric x system tested; flagged entries need an investigation.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["system_id", "attribute", "metric", "max_gap", "groups", "p_value", "p_holm", "flagged", "flag_reason", "investigation"],
+        "properties": {
+          "system_id": { "$ref": "#/$defs/system_id" },
+          "attribute": { "enum": ["language", "variant", "country", "segment"] },
+          "metric": { "type": "string" },
+          "max_gap": { "type": "number" },
+          "groups": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": { "type": "string" },
+            "description": "The two groups that define max_gap."
+          },
+          "p_value": { "type": ["number", "null"] },
+          "p_holm": { "type": ["number", "null"] },
+          "flagged": { "type": "boolean" },
+          "flag_reason": { "enum": ["gap_and_significant", "unsafe_event_in_one_group", "not_flagged"] },
+          "investigation": {
+            "oneOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["failing_runs", "root_causes", "within_card_count_strata_gap", "location", "same_gap_in_naive_agent", "summary"],
+                "properties": {
+                  "failing_runs": { "type": "array", "items": { "$ref": "#/$defs/run_ref" } },
+                  "root_causes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["cause", "n_runs"],
+                      "properties": {
+                        "cause": { "$ref": "#/$defs/root_cause" },
+                        "n_runs": { "type": "integer", "minimum": 0 }
+                      }
+                    }
+                  },
+                  "within_card_count_strata_gap": { "type": ["number", "null"], "description": "Segment gaps only; null otherwise." },
+                  "location": { "enum": ["system", "test_material", "both", "undetermined"] },
+                  "same_gap_in_naive_agent": { "type": ["boolean", "null"] },
+                  "summary": { "type": "string" }
+                }
+              }
+            ]
+          }
+        },
+        "if": { "properties": { "flagged": { "const": true } } },
+        "then": { "properties": { "investigation": { "type": "object" } } }
+      }
+    },
+    "targets": {
+      "description": "Section 9.1 and 9.2. Thresholds copied from the plan; never edited after results.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target_id", "metric", "system_id", "comparator", "threshold", "observed", "status"],
+        "properties": {
+          "target_id": { "type": "string", "pattern": "^(T|C)[0-9]+[a-z]?$" },
+          "metric": { "type": "string" },
+          "system_id": { "enum": ["proposed", "naive_agent", "proposed_vs_naive", "classifier"] },
+          "comparator": { "enum": ["<=", ">=", "<", ">", "==", "interval_excludes_zero", "lower_bound_above"] },
+          "threshold": { "type": "number" },
+          "observed": { "type": ["number", "null"] },
+          "status": { "enum": ["met", "not_met", "not_evaluable"] },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "classifier_eval": { "$ref": "#/$defs/classifier_eval" },
+    "grader_validation": {
+      "description": "Section 7.4.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["judge_sample", "deterministic_check"],
+      "properties": {
+        "judge_sample": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["n_decisions", "sampling_seed", "inter_annotator_kappa", "overall", "per_criterion", "accepted_criteria", "rejected_criteria_handling"],
+          "properties": {
+            "n_decisions": { "type": "integer", "minimum": 0 },
+            "sampling_seed": { "type": "integer" },
+            "inter_annotator_kappa": { "type": ["number", "null"] },
+            "overall": { "$ref": "#/$defs/agreement" },
+            "per_criterion": {
+              "type": "array",
+              "items": {
+                "allOf": [
+                  { "$ref": "#/$defs/agreement" },
+                  {
+                    "type": "object",
+                    "required": ["criterion"],
+                    "properties": { "criterion": { "$ref": "#/$defs/judge_criterion" } }
+                  }
+                ]
+              }
+            },
+            "accepted_criteria": { "type": "array", "items": { "$ref": "#/$defs/judge_criterion" } },
+            "rejected_criteria_handling": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["criterion", "handling"],
+                "properties": {
+                  "criterion": { "$ref": "#/$defs/judge_criterion" },
+                  "handling": { "enum": ["hand_scored_all_cases", "dropped_from_policy_compliant"] }
+                }
+              }
+            }
+          }
+        },
+        "deterministic_check": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["n_runs_hand_graded", "agreement_per_check", "bugs_found", "regraded"],
+          "properties": {
+            "n_runs_hand_graded": { "type": "integer", "minimum": 0 },
+            "agreement_per_check": {
+              "type": "object",
+              "propertyNames": { "pattern": "^D[1-9]$" },
+              "additionalProperties": { "$ref": "#/$defs/rate" }
+            },
+            "bugs_found": { "type": "array", "items": { "type": "string" } },
+            "regraded": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "failures": {
+      "description": "Section 10. Every run that did not pass, plus flaky cases.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["failed_runs", "flaky_cases", "by_cause"],
+      "properties": {
+        "failed_runs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["run", "category", "variant", "failed_checks", "root_cause"],
+            "properties": {
+              "run": { "$ref": "#/$defs/run_ref" },
+              "category": { "$ref": "#/$defs/category" },
+              "variant": { "$ref": "#/$defs/variant" },
+              "failed_checks": { "type": "array", "items": { "type": "string", "pattern": "^(D[1-9]|J[1-7]|U(1|2|3|4a|4b|5)|INV-[0-9]{2}|timeout)$" }, "minItems": 1 },
+              "root_cause": { "$ref": "#/$defs/root_cause" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "flaky_cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["system_id", "case_id", "passed_runs", "total_runs"],
+            "properties": {
+              "system_id": { "$ref": "#/$defs/system_id" },
+              "case_id": { "type": "string" },
+              "passed_runs": { "type": "integer", "minimum": 0 },
+              "total_runs": { "type": "integer", "minimum": 1 }
+            }
+          }
+        },
+        "by_cause": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["system_id", "cause", "n_runs"],
+            "properties": {
+              "system_id": { "$ref": "#/$defs/system_id" },
+              "cause": { "$ref": "#/$defs/root_cause" },
+              "n_runs": { "type": "integer", "minimum": 0 },
+              "policy_rule_ids": { "type": "array", "items": { "$ref": "#/$defs/rule_id" } }
+            }
+          }
+        }
+      }
+    },
+    "cases": {
+      "description": "Per-case reference labels and per-run grades for both systems. Traces are referenced, not embedded.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/case" }
+    },
+    "limitations": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+  },
+
+  "$defs": {
+    "git_sha": { "type": "string", "pattern": "^[0-9a-f]{7,40}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "system_id": { "enum": ["proposed", "naive_agent"] },
+    "category": { "enum": ["normal", "ambiguous", "handoff", "adversarial"] },
+    "variant": { "enum": ["es-MX", "es-CO", "es-AR", "pt-BR"] },
+    "language": { "enum": ["es", "pt"] },
+    "country": { "enum": ["México", "Colombia", "Argentina"] },
+    "segment": { "enum": ["Basic", "Plus", "Premium", "Student"] },
+    "rule_id": { "type": "string", "pattern": "^POL-[A-Z]{2,4}-[0-9]{2}$" },
+    "judge_criterion": { "enum": ["J1", "J2", "J3", "J4", "J5", "J6", "J7"] },
+    "root_cause": {
+      "enum": [
+        "classifier",
+        "slot_extraction",
+        "template_or_rendering",
+        "llm_wording",
+        "tool_or_data",
+        "policy_gap",
+        "state_machine",
+        "simulator_artifact",
+        "reference_label_error",
+        "grader_error",
+        "undetermined"
+      ]
+    },
+    "count_map": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "not_defined": {
+      "description": "Used when a denominator is zero, for example cost per successful automated resolution with no successes (section 5.7).",
+      "const": "not defined"
+    },
+    "interval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["low", "high", "level", "method"],
+      "properties": {
+        "low": { "type": "number" },
+        "high": { "type": "number" },
+        "level": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+        "method": { "enum": ["wilson", "clopper_pearson_one_sided", "bootstrap_cases", "bootstrap_seed_groups", "paired_bootstrap"] }
+      }
+    },
+    "rate": {
+      "description": "numerator / denominator. value is 'not defined' when the denominator is 0.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["numerator", "denominator", "value", "interval"],
+      "properties": {
+        "numerator": { "type": "integer", "minimum": 0 },
+        "denominator": { "type": "integer", "minimum": 0 },
+        "value": { "oneOf": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "$ref": "#/$defs/not_defined" }] },
+        "interval": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/interval" }] }
+      },
+      "if": { "properties": { "denominator": { "const": 0 } } },
+      "then": { "properties": { "value": { "$ref": "#/$defs/not_defined" }, "interval": { "type": "null" } } }
+    },
+    "money": {
+      "oneOf": [{ "type": "number", "minimum": 0 }, { "$ref": "#/$defs/not_defined" }]
+    },
+    "spread": {
+      "description": "Section 6.1: variability of a metric across runs.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mean", "sd", "min", "max", "per_run"],
+      "properties": {
+        "mean": { "type": ["number", "null"] },
+        "sd": { "type": ["number", "null"] },
+        "min": { "type": ["number", "null"] },
+        "max": { "type": ["number", "null"] },
+        "per_run": { "type": "array", "items": { "type": ["number", "null"] } }
+      }
+    },
+    "pooled_rate": {
+      "description": "A rate pooled over all runs (numerator and denominator summed over runs), with its spread across runs.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pooled", "across_runs"],
+      "properties": {
+        "pooled": { "$ref": "#/$defs/rate" },
+        "across_runs": { "$ref": "#/$defs/spread" }
+      }
+    },
+    "latency_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["n", "p50_ms", "p95_ms", "p50_interval", "p95_interval", "across_runs_p50", "across_runs_p95"],
+      "properties": {
+        "n": { "type": "integer", "minimum": 0, "description": "Number of turns (or cases) pooled." },
+        "p50_ms": { "type": ["number", "null"], "description": "Median across runs of the per-run nearest-rank p50." },
+        "p95_ms": { "type": ["number", "null"] },
+        "p50_interval": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/interval" }] },
+        "p95_interval": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/interval" }] },
+        "across_runs_p50": { "$ref": "#/$defs/spread" },
+        "across_runs_p95": { "$ref": "#/$defs/spread" }
+      }
+    },
+    "unsafe_category": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "events", "case_rate", "run_rate", "case_rate_upper_bound_95", "extra_denominators"],
+      "properties": {
+        "category": { "enum": ["U1", "U2", "U3", "U4a", "U4b", "U5", "U1_to_U4_total"] },
+        "events": { "type": "integer", "minimum": 0 },
+        "case_rate": { "$ref": "#/$defs/rate", "description": "Cases with at least one event in any run / cases." },
+        "run_rate": { "$ref": "#/$defs/rate", "description": "Runs with at least one event / (cases x runs)." },
+        "case_rate_upper_bound_95": { "type": "number", "minimum": 0, "maximum": 1, "description": "One-sided 95% Clopper-Pearson upper bound on case_rate." },
+        "extra_denominators": {
+          "description": "Category-specific denominators (section 5.5), for example U2 over runs where block_card was called.",
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/$defs/rate" },
+              { "type": "object", "required": ["label"], "properties": { "label": { "type": "string" } } }
+            ]
+          }
+        },
+        "example_runs": { "type": "array", "items": { "$ref": "#/$defs/run_ref" } }
+      }
+    },
+    "system_results": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system_id",
+        "safe_automated_resolution",
+        "containment",
+        "escalation",
+        "unsafe",
+        "latency",
+        "cost",
+        "pass_hat_k",
+        "clarification_rate"
+      ],
+      "properties": {
+        "system_id": { "$ref": "#/$defs/system_id" },
+        "safe_automated_resolution": {
+          "description": "Section 5.2. sar_rate is over all in-scope cases (headline).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sar_rate", "attempt_share", "sar_eligible", "sar_ceiling", "sar_attempted"],
+          "properties": {
+            "sar_rate": { "$ref": "#/$defs/pooled_rate" },
+            "attempt_share": { "$ref": "#/$defs/pooled_rate" },
+            "sar_eligible": { "$ref": "#/$defs/pooled_rate" },
+            "sar_ceiling": { "$ref": "#/$defs/rate" },
+            "sar_attempted": { "$ref": "#/$defs/pooled_rate" }
+          }
+        },
+        "containment": {
+          "description": "Section 5.3. Never presented as success on its own.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["containment", "containment_in_scope", "contained_and_resolved", "contained_correctly_unresolved", "contained_wrong"],
+          "properties": {
+            "containment": { "$ref": "#/$defs/pooled_rate" },
+            "containment_in_scope": { "$ref": "#/$defs/pooled_rate" },
+            "contained_and_resolved": { "$ref": "#/$defs/pooled_rate" },
+            "contained_correctly_unresolved": { "$ref": "#/$defs/pooled_rate" },
+            "contained_wrong": { "$ref": "#/$defs/pooled_rate" }
+          }
+        },
+        "escalation": {
+          "description": "Section 5.4.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["missed_transfer_rate", "unnecessary_transfer_rate", "correct_transfer_rate", "case_file_valid_rate", "j5_score_distribution", "confusion", "offered_and_accepted", "system_initiated"],
+          "properties": {
+            "missed_transfer_rate": { "$ref": "#/$defs/pooled_rate" },
+            "unnecessary_transfer_rate": { "$ref": "#/$defs/pooled_rate" },
+            "correct_transfer_rate": { "$ref": "#/$defs/pooled_rate" },
+            "case_file_valid_rate": { "$ref": "#/$defs/pooled_rate" },
+            "j5_score_distribution": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["0", "1", "2"],
+              "properties": {
+                "0": { "type": "integer", "minimum": 0 },
+                "1": { "type": "integer", "minimum": 0 },
+                "2": { "type": "integer", "minimum": 0 }
+              }
+            },
+            "confusion": {
+              "description": "Runs pooled: requires_handoff x transferred.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["required_and_transferred", "required_not_transferred", "not_required_transferred", "not_required_not_transferred"],
+              "properties": {
+                "required_and_transferred": { "type": "integer", "minimum": 0 },
+                "required_not_transferred": { "type": "integer", "minimum": 0 },
+                "not_required_transferred": { "type": "integer", "minimum": 0 },
+                "not_required_not_transferred": { "type": "integer", "minimum": 0 }
+              }
+            },
+            "offered_and_accepted": { "type": "integer", "minimum": 0 },
+            "system_initiated": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "unsafe": {
+          "description": "Section 5.5. One entry per category, plus the U1_to_U4_total entry.",
+          "type": "array",
+          "minItems": 7,
+          "items": { "$ref": "#/$defs/unsafe_category" }
+        },
+        "latency": {
+          "description": "Section 5.6.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["per_turn", "per_turn_without_fault_fixtures", "time_to_first_reply", "per_case_system_time"],
+          "properties": {
+            "per_turn": { "$ref": "#/$defs/latency_summary" },
+            "per_turn_without_fault_fixtures": { "$ref": "#/$defs/latency_summary" },
+            "time_to_first_reply": { "$ref": "#/$defs/latency_summary" },
+            "per_case_system_time": { "$ref": "#/$defs/latency_summary" }
+          }
+        },
+        "cost": {
+          "description": "Section 5.7. USD at the list prices in run_config.cost_assumptions.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["total_usd", "n_attempted", "n_safe_resolved", "cost_per_attempted_case_usd", "cost_per_sar_usd", "tokens", "evaluation_cost_usd"],
+          "properties": {
+            "total_usd": { "type": "number", "minimum": 0 },
+            "n_attempted": { "type": "integer", "minimum": 0 },
+            "n_safe_resolved": { "type": "integer", "minimum": 0 },
+            "cost_per_attempted_case_usd": { "$ref": "#/$defs/money" },
+            "cost_per_sar_usd": { "$ref": "#/$defs/money" },
+            "tokens": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["input", "cached_input", "output"],
+              "properties": {
+                "input": { "type": "integer", "minimum": 0 },
+                "cached_input": { "type": "integer", "minimum": 0 },
+                "output": { "type": "integer", "minimum": 0 }
+              }
+            },
+            "evaluation_cost_usd": {
+              "description": "Simulator and judge spend, reported separately and excluded from the system cost.",
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "if": { "properties": { "n_safe_resolved": { "const": 0 } } },
+          "then": { "properties": { "cost_per_sar_usd": { "$ref": "#/$defs/not_defined" } } }
+        },
+        "pass_hat_k": {
+          "description": "Section 6.1: unbiased pass^k = mean over cases of C(s,k)/C(n,k).",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["n_runs", "overall", "by_category", "by_variant"],
+          "properties": {
+            "n_runs": { "type": "integer", "minimum": 1 },
+            "overall": { "$ref": "#/$defs/pass_k_curve" },
+            "by_category": {
+              "type": "object",
+              "propertyNames": { "$ref": "#/$defs/category" },
+              "additionalProperties": { "$ref": "#/$defs/pass_k_curve" }
+            },
+            "by_variant": {
+              "type": "object",
+              "propertyNames": { "$ref": "#/$defs/variant" },
+              "additionalProperties": { "$ref": "#/$defs/pass_k_curve" }
+            }
+          }
+        },
+        "clarification_rate": { "$ref": "#/$defs/pooled_rate" }
+      }
+    },
+    "pass_k_curve": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["k", "value", "n_cases"],
+        "properties": {
+          "k": { "type": "integer", "minimum": 1 },
+          "value": { "type": "number", "minimum": 0, "maximum": 1 },
+          "n_cases": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "agreement": {
+      "type": "object",
+      "properties": {
+        "n": { "type": "integer", "minimum": 0 },
+        "percent_agreement": { "type": ["number", "null"] },
+        "cohen_kappa": { "type": ["number", "null"] },
+        "judge_false_pass": { "$ref": "#/$defs/rate", "description": "Judge pass, adjudicated human fail / human fails." },
+        "judge_false_fail": { "$ref": "#/$defs/rate" }
+      },
+      "required": ["n", "percent_agreement", "cohen_kappa", "judge_false_pass", "judge_false_fail"]
+    },
+    "run_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system_id", "case_id", "run_idx"],
+      "properties": {
+        "system_id": { "$ref": "#/$defs/system_id" },
+        "case_id": { "type": "string" },
+        "run_idx": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "template_id", "category", "sub_type", "language", "variant", "country", "segment", "customer_ref", "fixtures", "reference", "runs"],
+      "properties": {
+        "case_id": { "type": "string" },
+        "template_id": { "type": "string" },
+        "category": { "$ref": "#/$defs/category" },
+        "sub_type": { "type": "string" },
+        "language": { "$ref": "#/$defs/language" },
+        "variant": { "$ref": "#/$defs/variant" },
+        "country": { "$ref": "#/$defs/country" },
+        "segment": { "$ref": "#/$defs/segment" },
+        "customer_ref": {
+          "description": "Synthetic customer_id of the dataset (no names, POL-PII-08).",
+          "type": "string",
+          "pattern": "^CLI-[A-Z0-9]{12}$"
+        },
+        "fixtures": {
+          "type": "array",
+          "items": { "enum": ["similar_transactions", "tool_fault", "session_expiry", "unknown_response_code", "third_party_card", "injection_text"] }
+        },
+        "reference": {
+          "description": "Section 4. Computed by the reference oracle.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["in_scope", "eligible", "requires_handoff", "expected_terminal", "expected_priority", "expected_reason_rules", "expected_clarification", "n_expected_facts", "n_forbidden"],
+          "properties": {
+            "in_scope": { "type": "boolean" },
+            "eligible": { "type": "boolean" },
+            "requires_handoff": { "type": "boolean" },
+            "expected_terminal": { "enum": ["resolved", "contained_unresolved", "handed_off"] },
+            "expected_priority": { "enum": ["normal", "security", "urgent", null] },
+            "expected_reason_rules": { "type": "array", "items": { "$ref": "#/$defs/rule_id" } },
+            "expected_clarification": { "enum": ["none", "intent", "card", "transaction", "language"] },
+            "n_expected_facts": { "type": "integer", "minimum": 0 },
+            "n_forbidden": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["system_id", "run_idx", "seed", "valid", "terminal", "flags", "failed_checks", "unsafe_events", "turns", "latency_turn_ms", "cost_usd", "trace_ref"],
+            "properties": {
+              "system_id": { "$ref": "#/$defs/system_id" },
+              "run_idx": { "type": "integer", "minimum": 0 },
+              "seed": { "type": "integer" },
+              "valid": { "type": "boolean", "description": "False when excluded (simulator error or harness crash)." },
+              "terminal": { "enum": ["resolved", "contained_unresolved", "handed_off", "handed_off_fallback", "timeout", "error"] },
+              "flags": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["transferred", "attempted", "outcome_correct", "policy_compliant", "safe_resolved", "passed", "clarified"],
+                "properties": {
+                  "transferred": { "type": "boolean" },
+                  "attempted": { "type": "boolean" },
+                  "outcome_correct": { "type": "boolean" },
+                  "policy_compliant": { "type": "boolean" },
+                  "safe_resolved": { "type": "boolean" },
+                  "passed": { "type": "boolean" },
+                  "clarified": { "type": "boolean" }
+                }
+              },
+              "failed_checks": { "type": "array", "items": { "type": "string" } },
+              "unsafe_events": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["category", "turn", "evidence"],
+                  "properties": {
+                    "category": { "enum": ["U1", "U2", "U3", "U4a", "U4b", "U5"] },
+                    "turn": { "type": "integer", "minimum": 0 },
+                    "evidence": { "type": "string", "description": "Redacted quote or tool-call ID." }
+                  }
+                }
+              },
+              "handoff": {
+                "oneOf": [
+                  { "type": "null" },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["case_file_valid", "priority", "reason_rule_ids", "j5_score", "handoff_ok"],
+                    "properties": {
+                      "case_file_valid": { "type": "boolean" },
+                      "priority": { "enum": ["normal", "security", "urgent", null] },
+                      "reason_rule_ids": { "type": "array", "items": { "type": "string" } },
+                      "j5_score": { "enum": [0, 1, 2, null] },
+                      "handoff_ok": { "type": "boolean" }
+                    }
+                  }
+                ]
+              },
+              "turns": { "type": "integer", "minimum": 0 },
+              "latency_turn_ms": { "type": "array", "items": { "type": "number", "minimum": 0 } },
+              "cost_usd": { "type": "number", "minimum": 0 },
+              "trace_ref": { "type": "string", "description": "Path or ID of the redacted trace." }
+            }
+          }
+        }
+      }
+    },
+    "classifier_eval": {
+      "description": "Section 8.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dataset", "label_quality", "leakage_checks", "selection", "models", "conformal", "alpha_sweep"],
+      "properties": {
+        "dataset": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["provenance", "version", "n_utterances", "n_seed_groups", "intents", "splits"],
+          "properties": {
+            "provenance": { "const": "team_generated" },
+            "version": { "type": "string" },
+            "n_utterances": { "type": "integer", "minimum": 0 },
+            "n_seed_groups": { "type": "integer", "minimum": 0 },
+            "intents": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+            "splits": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["train", "calibration", "test"],
+              "properties": {
+                "train": { "$ref": "#/$defs/split_counts" },
+                "calibration": { "$ref": "#/$defs/split_counts" },
+                "test": { "$ref": "#/$defs/split_counts" }
+              }
+            },
+            "pt_native_test_n": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "label_quality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["n", "kappa_overall", "kappa_by_variant", "labels_changed_after_adjudication"],
+          "properties": {
+            "n": { "type": "integer", "minimum": 0 },
+            "kappa_overall": { "type": ["number", "null"] },
+            "kappa_by_variant": {
+              "type": "object",
+              "propertyNames": { "$ref": "#/$defs/variant" },
+              "additionalProperties": { "type": ["number", "null"] }
+            },
+            "labels_changed_after_adjudication": { "$ref": "#/$defs/rate" }
+          }
+        },
+        "leakage_checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["cross_split_exact_duplicates", "cross_split_near_duplicates", "excluded_fields"],
+          "properties": {
+            "cross_split_exact_duplicates": { "type": "integer", "minimum": 0 },
+            "cross_split_near_duplicates": { "type": "integer", "minimum": 0 },
+            "excluded_fields": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["chosen_model", "cv_folds", "cv_macro_f1", "decided_before_test"],
+          "properties": {
+            "chosen_model": { "type": "string" },
+            "cv_folds": { "type": "integer", "minimum": 2 },
+            "cv_macro_f1": {
+              "type": "object",
+              "additionalProperties": { "type": "number" }
+            },
+            "decided_before_test": { "const": true }
+          }
+        },
+        "models": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "role", "macro_f1", "accuracy", "by_variant", "per_intent_f1", "block_card", "vs_chosen"],
+            "properties": {
+              "name": { "enum": ["majority", "keyword_rules", "tfidf_logreg", "llm_zero_shot", "embeddings_logreg", "other"] },
+              "role": { "enum": ["baseline", "candidate", "chosen"] },
+              "macro_f1": { "$ref": "#/$defs/estimate" },
+              "accuracy": { "type": "number", "minimum": 0, "maximum": 1 },
+              "by_variant": {
+                "type": "object",
+                "description": "Keys: es-MX, es-CO, es-AR, pt-BR, es (all Spanish), pt_native.",
+                "additionalProperties": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["n", "macro_f1"],
+                  "properties": {
+                    "n": { "type": "integer", "minimum": 0 },
+                    "macro_f1": { "$ref": "#/$defs/estimate" }
+                  }
+                }
+              },
+              "per_intent_f1": { "type": "object", "additionalProperties": { "type": "number" } },
+              "slot_f1": { "type": "object", "additionalProperties": { "type": "number" } },
+              "block_card": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["precision", "recall"],
+                "properties": {
+                  "precision": { "type": ["number", "null"] },
+                  "recall": { "type": ["number", "null"] }
+                }
+              },
+              "vs_chosen": {
+                "description": "Paired bootstrap of macro-F1 (chosen minus this model). Null for the chosen model.",
+                "oneOf": [
+                  { "type": "null" },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["difference", "interval"],
+                    "properties": {
+                      "difference": { "type": "number" },
+                      "interval": { "$ref": "#/$defs/interval" }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "conformal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["method", "score", "alpha", "max_set", "overall", "by_variant", "by_intent_coverage", "block_card_false_singletons", "mondrian"],
+          "properties": {
+            "method": { "const": "split_conformal" },
+            "score": { "enum": ["aps", "lac", "raps"] },
+            "alpha": { "type": "number" },
+            "max_set": { "type": "integer", "minimum": 1 },
+            "overall": { "$ref": "#/$defs/conformal_stats" },
+            "by_variant": {
+              "type": "object",
+              "propertyNames": { "$ref": "#/$defs/variant" },
+              "additionalProperties": { "$ref": "#/$defs/conformal_stats" }
+            },
+            "by_intent_coverage": { "type": "object", "additionalProperties": { "$ref": "#/$defs/rate" } },
+            "block_card_false_singletons": { "type": "integer", "minimum": 0 },
+            "mondrian": {
+              "description": "Section 8.4 fallback; null if not triggered.",
+              "oneOf": [
+                { "type": "null" },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["triggered_by", "overall", "by_variant", "used_in_proposed"],
+                  "properties": {
+                    "triggered_by": { "$ref": "#/$defs/variant" },
+                    "overall": { "$ref": "#/$defs/conformal_stats" },
+                    "by_variant": {
+                      "type": "object",
+                      "propertyNames": { "$ref": "#/$defs/variant" },
+                      "additionalProperties": { "$ref": "#/$defs/conformal_stats" }
+                    },
+                    "used_in_proposed": { "type": "boolean" }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "alpha_sweep": {
+          "description": "Classifier-level sweep on the test split, and the end-to-end trade-off on the dev set only (section 8.4).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["alpha", "classifier", "end_to_end_dev"],
+            "properties": {
+              "alpha": { "type": "number" },
+              "classifier": { "$ref": "#/$defs/conformal_stats" },
+              "end_to_end_dev": {
+                "oneOf": [
+                  { "type": "null" },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["n_cases", "sar_rate", "unsafe_case_rate", "transfer_rate", "latency_turn_p95_ms", "cost_per_attempted_case_usd"],
+                    "properties": {
+                      "n_cases": { "type": "integer", "minimum": 0 },
+                      "sar_rate": { "type": "number" },
+                      "unsafe_case_rate": { "type": "number" },
+                      "transfer_rate": { "type": "number" },
+                      "latency_turn_p95_ms": { "type": "number" },
+                      "cost_per_attempted_case_usd": { "$ref": "#/$defs/money" }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "split_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["n_utterances", "n_seed_groups", "by_variant"],
+      "properties": {
+        "n_utterances": { "type": "integer", "minimum": 0 },
+        "n_seed_groups": { "type": "integer", "minimum": 0 },
+        "by_variant": { "$ref": "#/$defs/count_map" }
+      }
+    },
+    "estimate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "interval"],
+      "properties": {
+        "value": { "type": "number" },
+        "interval": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/interval" }] }
+      }
+    },
+    "conformal_stats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["n", "coverage", "mean_set_size", "singleton_share", "clarify_share", "transfer_share", "empty_share"],
+      "properties": {
+        "n": { "type": "integer", "minimum": 0 },
+        "coverage": { "$ref": "#/$defs/rate" },
+        "mean_set_size": { "type": ["number", "null"] },
+        "singleton_share": { "type": ["number", "null"], "description": "Set size 1: act." },
+        "clarify_share": { "type": ["number", "null"], "description": "Set size 2 to max_set: clarify." },
+        "transfer_share": { "type": ["number", "null"], "description": "Empty or larger than max_set: transfer." },
+        "empty_share": { "type": ["number", "null"] }
+      }
+    },
+    "prompted_model_ref": {
+      "description": "A model driven by a single prompt (simulator, judge): the prompt hash is required.",
+      "allOf": [{ "$ref": "#/$defs/model_ref" }, { "type": "object", "required": ["prompt_sha256"] }]
+    },
+    "model_ref": {
+      "type": "object",
+      "required": ["provider", "model_id", "temperature"],
+      "properties": {
+        "provider": { "type": "string" },
+        "model_id": { "type": "string", "description": "Exact dated model ID, not an alias." },
+        "temperature": { "type": "number", "minimum": 0 },
+        "top_p": { "type": ["number", "null"] },
+        "max_tokens": { "type": ["integer", "null"] },
+        "prompt_sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

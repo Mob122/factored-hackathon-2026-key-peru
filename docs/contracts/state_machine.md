@@ -4,7 +4,7 @@
 |---|---|
 | Contract version | `sm-0.2` |
 | Date | 2026-09-29 |
-| Policy | `docs/policy_cards.md`, version `cards-synthetic-0.2` (SYNTHETIC) |
+| Policy | `docs/policy_cards.md`, version `cards-synthetic-0.3` (SYNTHETIC) |
 | Owners | Aldair (specification) · Martín (implementation in the orchestrator and tool gateway) |
 | Tools | the contracts in `docs/proposal.md` section 8, plus `list_balance_products` and `get_balance` (added in 0.2; contract change pending Martín's sign-off) |
 
