@@ -2,15 +2,20 @@
 
 | Field | Value |
 |---|---|
-| Contract version | `sm-0.2` |
+| Contract version | `sm-0.3` |
 | Date | 2026-09-29 |
-| Policy | `docs/policy_cards.md`, version `cards-synthetic-0.3` (SYNTHETIC) |
+| Policy | `docs/policy_cards.md`, version `cards-synthetic-0.4` (SYNTHETIC) |
+| Intents | `docs/intents.md` (`intents-1.0`) |
 | Owners | Aldair (specification) · Martín (implementation in the orchestrator and tool gateway) |
-| Tools | the contracts in `docs/proposal.md` section 8, plus `list_balance_products` and `get_balance` (added in 0.2; contract change pending Martín's sign-off) |
+| Tools | the contracts in `docs/proposal.md` section 8 (v3.1), including `list_balance_products` and `get_balance` |
 
 Changes in 0.2: new state `OFFER_BLOCK`; `SELECT_CARD` also selects savings accounts for
 balance inquiries; changed T-05 to T-09, T-16, T-17, T-20, T-24, T-31, T-33 to T-35, G-02, G-04,
 G-05; new T-38 to T-50. Existing transition IDs keep their meaning or are marked *changed*.
+
+Changes in 0.3: final intent names from `docs/intents.md` (the provisional names are gone);
+balance tools approved; `authenticate` returns `customer_status`; changed T-01, T-10, T-11,
+G-02; new T-51 (POL-AUTH-09) and INV-14.
 
 The state machine is deterministic code in the orchestrator. The LLM never chooses a state or
 a transition and never calls a tool directly. It receives verified facts and a decision, and
@@ -74,7 +79,12 @@ New tool contracts (0.2):
 | Tool | Input | Output |
 |---|---|---|
 | `list_balance_products` | session | eligible products (POL-ANS-17): `product_id`, kind (`credit_card` / `savings_account`), last 4, status |
-| `get_balance` | session, `product_id` | kind, last 4, status, currency, `current_balance`, `credit_limit` (credit cards only), `as_of` (snapshot load time) |
+| `get_balance` | session, `product_id` | kind, last 4, status, currency, `current_balance`, `credit_limit` (credit cards only; may be null), `as_of` (snapshot load time) |
+
+`authenticate` *(changed in 0.3)* also returns the session customer's `customer_status` from
+gold `customers` (`docs/contracts/gold_tables.md` section 2). It is kept in `session` and
+checked by T-01, T-51 and G-02 (POL-AUTH-09). The balance tools read the gold table
+`balance_products` (`gold-0.2`).
 
 ## 3. Conversation context
 
@@ -83,13 +93,13 @@ The orchestrator keeps this context. The LLM receives only the redacted parts it
 
 | Field | Content | Reset when |
 |---|---|---|
-| `session` | `session_id`, `customer_id`, `auth_level` (L0/L1/L2), `expires_at`, `step_up` `{card_id, expires_at, used}` | expiry (POL-AUTH-03, 07) |
+| `session` | `session_id`, `customer_id`, `customer_status`, `auth_level` (L0/L1/L2), `expires_at`, `step_up` `{card_id, expires_at, used}` | expiry (POL-AUTH-03, 07) |
 | `language` | `es` or `pt`, the customer's preference (POL-GEN-03) | changed only by the customer |
 | `pending_intent` | the intent being served and its slots (product kind, last 4, date, amount, merchant) | intent served, cancelled or transferred |
 | `resume_intent` | *(new in 0.2)* intent name and customer-typed slots only, kept across expiry (POL-AUTH-07) | resumed, declined, or conversation end |
 | `selected_card_id` | internal product ID once it is unique | new request naming another product; expiry |
 | `candidates` | products or transactions offered for selection | selection done |
-| `dispute` | *(new in 0.2)* set while a `dispute_charge` is being served (POL-ESC-01) | handoff opened |
+| `dispute` | *(new in 0.2)* set while a `charge_dispute` is being served (POL-ESC-01) | handoff opened |
 | `pending_action` | `{action, card_id, confirmation_token, token_expires_at}` | executed, cancelled, expired (POL-ACT-03, AUTH-07) |
 | `then_handoff` | set when facts are gathered or a block is run before a transfer (POL-ESC-01, 02) | handoff opened |
 | `facts` | every tool result with its read time, for POL-GEN-07 | expiry |
@@ -111,32 +121,33 @@ transition (section 6) before the per-state logic runs.
    not one, the state's "other" transition applies).
 6. **Transition** per section 5, and tool calls allowed by section 2. Facts older than
    `FACT_MAX_AGE_SEC` are re-read before use (POL-GEN-07).
-7. **Reply**: templates (POL-TXS, POL-DEC, POL-BAL, POL-ACT-10/11, POL-HND-03 to 05) are
+7. **Reply**: templates (POL-TXS, POL-DEC, POL-BAL, POL-ACT-10/11, POL-HND-03 to 05, 07) are
    rendered by code, and the LLM words the rest from verified facts. Then the **grounding
    check** runs (POL-GEN-02), with a template fallback (POL-REL-04).
 8. **Audit event** (POL-AUD-01).
 
 ## 5. Transitions
 
-Intent names are provisional. The final taxonomy goes in `docs/intents.md`. "Read intent" =
-`list_cards`, `card_status`, `list_transactions`, `describe_transaction`, `balance_inquiry`.
-"Transfer intent" = `dispute_charge`, `why_blocked`, `unblock_card`, `talk_to_human`.
+Intent names are final (`docs/intents.md`, `intents-1.0`). "Read intent" = `balance_inquiry`,
+`card_list`, `card_status`, `transaction_list`, `transaction_detail`. "Action intent" =
+`card_block`. "Transfer intent" = `charge_dispute`, `block_reason`, `card_unblock`,
+`human_request`. Intent names never reuse tool names.
 "Resolved" product = named by the customer and matching an eligible product, or the only
 eligible product (POL-ANS-07).
 
 | ID | From | Event / guard | To | What happens | Policy rules |
 |---|---|---|---|---|---|
-| T-01 | `UNAUTHENTICATED` | `authenticate` succeeds | `IDLE` | Session at L1 created. | POL-AUTH-01 |
+| T-01 | `UNAUTHENTICATED` | *(changed)* `authenticate` succeeds and `customer_status` is `Active` or `Inactive` | `IDLE` | Session at L1 created. | POL-AUTH-01, 09 |
 | T-02 | `UNAUTHENTICATED` | any other message, or authentication fails | `UNAUTHENTICATED` | Ask the customer to sign in. No data is disclosed. Identifiers typed in chat are ignored. | POL-AUTH-01, 02, 08 |
 | T-03 | `IDLE` | conformal set size is 2 to `CONFORMAL_MAX_SET` | `CLARIFY_INTENT` | Ask one question naming the candidate intents. No action runs. | POL-ESC-06 |
 | T-04 | `IDLE` | conformal set is empty or larger than `CONFORMAL_MAX_SET` | `HANDOFF` | Transfer with reason "request not understood". | POL-ESC-06 |
 | T-05 | `IDLE` | *(changed)* single intent that needs a product, 2+ eligible, none named | `SELECT_CARD` | `list_cards` or `list_balance_products`, then list the eligible candidates as type + last 4. | POL-ANS-07, 17 |
 | T-06 | `IDLE` | *(changed)* single read intent, product resolved or none needed | `ANSWERING` | If the product was resolved as the only eligible one, the reply names it. | POL-ANS-01 to 04, 07, 15 to 17 |
-| T-07 | `IDLE` | *(changed)* single intent `block_card`, card resolved | `ACTION_PRECHECK` | | POL-ACT-01, POL-ANS-07 |
-| T-08 | `IDLE` | *(changed)* single intent `why_blocked` with card resolved; or `unblock_card`, `talk_to_human` | `ANSWERING` with `then_handoff` (`why_blocked`), else `HANDOFF` | For `why_blocked` the status is read and stated first, then T-20. | POL-ESC-02, 03, 09, POL-ANS-07 |
-| T-09 | `IDLE` | *(changed)* single intent `dispute_charge`, card resolved | `ANSWERING` with `dispute` | Search the card's transactions with the customer's details (or the last 30 days if none given). | POL-ESC-01, POL-ANS-09, 12 |
-| T-10 | `IDLE` | single intent `out_of_scope` | `IDLE` | Say what the assistant can do and offer a transfer. If the customer accepts, G-03. | POL-GEN-04, POL-ANS-05, 14 |
-| T-11 | `IDLE` | customer ends the conversation | `ENDED` | | — |
+| T-07 | `IDLE` | *(changed)* single intent `card_block`, card resolved | `ACTION_PRECHECK` | | POL-ACT-01, POL-ANS-07 |
+| T-08 | `IDLE` | *(changed)* single intent `block_reason` with card resolved; or `card_unblock`, `human_request` | `ANSWERING` with `then_handoff` (`block_reason`), else `HANDOFF` | For `block_reason` the status is read and stated first, then T-20. | POL-ESC-02, 03, 09, POL-ANS-07 |
+| T-09 | `IDLE` | *(changed)* single intent `charge_dispute`, card resolved | `ANSWERING` with `dispute` | Search the card's transactions with the customer's details (or the last 30 days if none given). | POL-ESC-01, POL-ANS-09, 12 |
+| T-10 | `IDLE` | *(changed)* single intent `out_of_scope`, or an intent whose `product_kind` slot names a product the intent does not serve (`docs/intents.md` section 2) | `IDLE` | Say what the assistant can do and offer a transfer. If the customer accepts, G-03. | POL-GEN-04, POL-ANS-05, 14 |
+| T-11 | `IDLE` | *(changed)* single intent `conversation_end` | `ENDED` | Closing reply, no tool. | POL-GEN-01 |
 | T-12 | `CLARIFY_INTENT` | reply resolves to a single intent | `IDLE` routing (T-05 to T-10, T-39, T-42) | The clarified intent is routed in the same turn. `clarify_turns` += 1. | POL-ESC-06 |
 | T-13 | `CLARIFY_INTENT` | still ambiguous and `clarify_turns` < `MAX_CLARIFY_TURNS` | `CLARIFY_INTENT` | Ask again. | POL-ESC-06 |
 | T-14 | `CLARIFY_INTENT` | still ambiguous and `clarify_turns` = `MAX_CLARIFY_TURNS` | `HANDOFF` | | POL-ESC-06 |
@@ -176,6 +187,7 @@ eligible product (POL-ANS-07).
 | T-48 | `OFFER_BLOCK` | *(new)* clear yes | `ACTION_PRECHECK` with `then_handoff` | The normal block flow (T-24 to T-35) runs, then the transfer. | POL-ESC-01, POL-ACT-01 |
 | T-49 | `OFFER_BLOCK` | *(new)* no, or anything else | `HANDOFF` | No block. The case file records that the block was offered and declined. | POL-ESC-01 |
 | T-50 | `IDLE` | *(new)* `resume_intent` set and the customer accepts the resume question | route of `resume_intent` (T-05 to T-09) | All facts read again, new step-up if needed. If the customer declines, `resume_intent` is cleared and the state stays `IDLE`. | POL-AUTH-07, POL-GEN-07 |
+| T-51 | `UNAUTHENTICATED` | *(new)* `authenticate` succeeds and `customer_status` is `Suspended` or `Closed` | `HANDOFF` | No classification and no read tool. Case file: `request` = "no request yet (handoff at sign-in)"; `verified_facts` = `customer_status` from the `authenticate` result; `unresolved_questions` = "customer status requires human review"; `reason_rule_ids` = [`POL-AUTH-09`]; priority `normal`. Reply POL-HND-07 + POL-HND-03 once `open_handoff` returns (T-36). Later messages are appended by T-38. | POL-AUTH-09, POL-HND-07, 10 to 15 |
 
 ## 6. Global transitions
 
@@ -185,7 +197,7 @@ and are checked before the per-state logic in the turn pipeline.
 | ID | From | Event / guard | To | What happens | Policy rules |
 |---|---|---|---|---|---|
 | G-01 | any authenticated state except `EXECUTING` | session expired (at turn start, or a tool returned `SESSION_EXPIRED`) | `SESSION_EXPIRED` | Pending action, token, step-up and facts dropped; `resume_intent` kept. No data in the reply. Ask the customer to sign in again. | POL-AUTH-03, 07 |
-| G-02 | `SESSION_EXPIRED` | *(changed)* `authenticate` succeeds | `IDLE` | New session. If `resume_intent` is set, ask a fact-free resume question (T-50). | POL-AUTH-07 |
+| G-02 | `SESSION_EXPIRED` | *(changed)* `authenticate` succeeds | `IDLE`; `HANDOFF` if `customer_status` is `Suspended` or `Closed` (as T-51, `resume_intent` dropped) | New session. If `resume_intent` is set, ask a fact-free resume question (T-50). | POL-AUTH-07, 09 |
 | G-03 | any authenticated state except `EXECUTING` | customer asks for a human | `HANDOFF` | Immediate. From `EXECUTING`, the action and its verification finish first, then the transfer happens. | POL-ESC-09 |
 | G-04 | any authenticated state except `EXECUTING` | *(changed)* second suspected injection in the session (first one: `injection_hits` = 1, stay in the state, ignore the injected content) | `HANDOFF` (priority `security`) | After the first hit, any later handoff in the session also gets priority `security`. | POL-ESC-08, POL-HND-15 |
 | G-05 | any authenticated state except `EXECUTING` | *(changed)* second unauthorized attempt (POL-ESC-10 (a) or (b)); first one: refuse with the POL-ANS-18 reply or the plain refusal, stay | `HANDOFF` (priority `security`) | | POL-ESC-10, POL-AUTH-05 |
@@ -202,6 +214,7 @@ block does not stop the verification read, which runs under the same gateway cal
 stateDiagram-v2
     [*] --> UNAUTHENTICATED
     UNAUTHENTICATED --> IDLE: T-01 authenticate
+    UNAUTHENTICATED --> HANDOFF: T-51 status Suspended/Closed
     IDLE --> CLARIFY_INTENT: T-03 set size 2..max
     CLARIFY_INTENT --> IDLE: T-12 resolved
     IDLE --> SELECT_CARD: T-05 2+ eligible / T-39 miss
@@ -261,6 +274,7 @@ as an unsafe outcome or a contract defect.
 | INV-08 | Every audit event for a transition lists at least one rule ID and the `policy_version`. | POL-AUD-01 |
 | INV-09 | No LLM request contains a value from the POL-PII-01 or POL-PII-02 lists. | POL-PII-01, 02 |
 | INV-10 | *(new)* The reply to a card miss is identical whether or not the ownership check found the number on another customer's card. | POL-ANS-18, POL-ESC-10 |
-| INV-11 | *(new)* Every transfer that follows a `dispute_charge` has a customer turn confirming the transaction, or an unresolved question saying it was not identified. No `block_card` runs in a dispute without T-48. | POL-ANS-09, POL-ESC-01 |
+| INV-11 | *(new)* Every transfer that follows a `charge_dispute` has a customer turn confirming the transaction, or an unresolved question saying it was not identified. No `block_card` runs in a dispute without T-48. | POL-ANS-09, POL-ESC-01 |
 | INV-12 | *(new)* After T-35 the case priority is `urgent` and the reply contains POL-ACT-10. | POL-ACT-05, 10, POL-HND-15 |
 | INV-13 | *(new)* Every transfer in a session with `injection_hits` ≥ 1 has priority `security` or `urgent`. | POL-ESC-08, POL-HND-15 |
+| INV-14 | *(new in 0.3)* In a session whose `customer_status` is `Suspended` or `Closed`, no tool except `authenticate` and `open_handoff` runs, the sign-in turn ends in `HANDOFF` with POL-AUTH-09 in `reason_rule_ids`, and no reply contains customer data, the status included. | POL-AUTH-09 |

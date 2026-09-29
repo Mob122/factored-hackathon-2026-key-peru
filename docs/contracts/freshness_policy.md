@@ -2,10 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Contract version | `fresh-0.1` |
+| Contract version | `fresh-0.2` |
 | Date | 2026-09-29 |
 | Owner | Aldair (pipeline, fixture, test) · Martín (mock bank overlay, `as_of`) |
-| Tables | `docs/contracts/gold_tables.md` (`gold-0.1`) |
+| Tables | `docs/contracts/gold_tables.md` (`gold-0.2`) |
+| Changes in 0.2 | Fourth gold table `balance_products` (upsert key in section 3, load log in section 4); stale-gold check owned by `docs/operations.md` |
 | Closes | `docs/requirements_matrix.md` gap G-1 (D4-5, A-2, A-3) at the design level |
 
 ## 1. What the source delivers
@@ -42,7 +43,7 @@ made explicit here so it can be tested:
 | When | Once a day at 06:30, for partition D-1 (closed at 06:00 on day D) | The 06:00 business-day cutoff closes a partition; 30 minutes of slack for the file to land |
 | Freshness SLA | Gold contains every partition up to D-1 by 07:00 on day D | Worst case, a transaction is visible 25 hours after it happens (06:00 on D-1 → 07:00 on D) |
 | `as_of` | `max(gold_loaded_at)` of the table, returned by the mock bank with balances and statuses | Policy section 3b; `BALANCE_SNAPSHOT_MAX_AGE_H` = 24 h triggers POL-BAL-03 |
-| Stale gold | If the newest processed partition is older than D-1 at 07:00, the load log marks gold `stale` and the backend health check reports it | `docs/operations.md` monitoring (planned; gap G-4) |
+| Stale gold | If the newest processed partition is older than D-1 at 07:00, the load log marks gold `stale` and the backend health check reports it | `docs/operations.md` section 3 (monitoring signal M-6) |
 | Initial load | Backfill of all 1,097 partitions and both snapshots, as one batch | Same code path as a daily load, with all partitions as input |
 
 In the prototype, "day D" is the simulated clock (2026-06-18, as in the golden conversations and
@@ -53,7 +54,7 @@ production would run.
 ## 3. How an incremental partition is processed
 
 Input: a list of partition dates (and any dimension delta files for those dates). Output: new
-versions of the three gold tables, published atomically.
+versions of the four gold tables, published atomically.
 
 1. **Register.** For each input file compute SHA-256. If `_load_log` already has the same path
    with the same checksum and status `published`, skip the file (a replay is a no-op). A
@@ -63,7 +64,7 @@ versions of the three gold tables, published atomically.
    and the `data_quality` checks of the C1 contracts, producing the partition's
    `02_intermediate` / `03_primary` rows.
 3. **Build staged rows.** Apply the gold column mapping (`gold_tables.md` sections 2 to 4) to
-   the new rows: card filter, `last4`, `card_number_hmac`, column renames.
+   the new rows: card filter, balance-product filter, `last4`, `card_number_hmac`, column renames.
 4. **Upsert by key** into a staging copy of each gold table:
 
    | Table | Key | Which row wins when the key already exists |
@@ -71,12 +72,13 @@ versions of the three gold tables, published atomically.
    | `customers` | `customer_id` | The row from the later delivery (`process_date` of the file; a snapshot counts as its load date). Same delivery: the later `source_file` name. |
    | `cards` | `card_id` | Same rule. `last_updated` is **not** used to order deliveries, because 6.2% of its values are in the future (GQ-10); within one delivery, ties break on the greater `last_updated`. |
    | `card_transactions` | `transaction_id` | The row with the later `process_date`, then the later `source_file` (the C1 transaction dedup rule). A status change of an existing transaction (for example `Pending` → `Reversed`) arrives as the same key in a later partition and replaces the row. |
+   | `balance_products` | `product_id` | Same rule as `cards`: the later delivery wins; `last_updated` is not used. The row comes from the same product row as its `cards` row, so both change in the same load (GQ-28). |
 
    An incoming row whose content (all non-lineage columns) equals the stored row is
    **unchanged**: nothing is written and the row keeps its `gold_batch_id`, `gold_loaded_at` and
    `source_file`. This is what makes a replay a no-op (step 1 is only a shortcut).
    Rows are never deleted by an incremental load. A closed card stays with `status = Closed`.
-5. **Check.** Run the quality checks GQ-01 to GQ-22 on the staged tables.
+5. **Check.** Run the quality checks GQ-01 to GQ-29 on the staged tables.
 6. **Publish or reject.** If no `fail` check fired, write the staged tables to new files and
    switch them in with an atomic rename, then append the load log row with status `published`.
    Otherwise keep the previous gold untouched and log status `rejected` with the failing checks.
@@ -94,7 +96,7 @@ leaves gold unchanged.
 | Column | Content |
 |---|---|
 | `gold_batch_id` | `gold-YYYYMMDDTHHMMSS-<8 hex>` |
-| `table` | `customers`, `cards`, `card_transactions` |
+| `table` | `customers`, `cards`, `card_transactions`, `balance_products` |
 | `started_at`, `finished_at` | Timestamps |
 | `input_files` | List of `{path, sha256, process_date}` |
 | `rows_inserted`, `rows_updated`, `rows_unchanged`, `rows_rejected` | Counts over the incoming rows of the load |

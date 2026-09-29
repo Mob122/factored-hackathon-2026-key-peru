@@ -7,11 +7,12 @@
 
 | Field | Value |
 |---|---|
-| Policy version | `cards-synthetic-0.3` |
+| Policy version | `cards-synthetic-0.4` |
 | Date | 2026-09-29 |
-| Scope | Card and transaction inquiries assistant, plus balance inquiries for credit cards and savings accounts, in Spanish and Portuguese (`docs/proposal.md` v3, extended in v0.2) |
+| Scope | Card and account inquiries assistant, in Spanish and Portuguese: balance inquiries for credit cards and savings accounts (the core intent), card status, card transactions, card block and handoff (`docs/proposal.md` v3.1) |
 | Owner | Aldair (policy text) · Martín (enforcement in services, gateway and orchestrator) |
-| State machine | `docs/contracts/state_machine.md` (`sm-0.2`) |
+| State machine | `docs/contracts/state_machine.md` (`sm-0.3`) |
+| Intents | `docs/intents.md` (`intents-1.0`) |
 | Evidence used | `docs/proposal.md`, `docs/requirements_matrix.md`, `docs/findings/day1/P2_card_support.md`, `docs/findings/day2/personas.md`, `docs/golden_conversations.md` (flag register) |
 
 ## Change log
@@ -21,6 +22,7 @@
 | 0.1 | 2026-09-29 | First version. |
 | 0.2 | 2026-09-29 | Fixes for the flag register of `docs/golden_conversations.md` (F-02, F-06, F-08 to F-11, F-13, F-15 to F-19, F-21 to F-26). Balance inquiry for credit cards and savings accounts (POL-ANS-14 narrowed; POL-ANS-15 to 17 and POL-BAL-* added). Language is the customer's preference (POL-GEN-03). Stale-data rule (POL-GEN-07). Two new tools, `list_balance_products` and `get_balance`, which change the tool contracts frozen in `docs/proposal.md` section 8 and need Martín's sign-off. |
 | 0.3 | 2026-09-29 | Consistency fixes against `docs/contracts/`, no new scope. POL-ANS-02: `get_card_status` also returns card type and last 4 (POL-ACT-11 renders `{tipo}` from the verification read). POL-PII-05 and POL-PII-07: raw third-party identifiers are not stored anywhere; the audit log keeps a keyed hash (`docs/contracts/audit_log.md` AL-P5), matching POL-PII-04. References in section 3b and POL-PII-06 updated. |
+| 0.4 | 2026-09-29 | Balance inquiry approved by the team (proposal v3.1); the balance tools are part of the frozen contracts. New POL-AUTH-09 and template POL-HND-07: customers with `customer_status` `Suspended` or `Closed` get only an immediate handoff (requirements matrix gap 4). POL-ANS-15 and new template POL-BAL-06: a credit card with no recorded limit (5.05%) or a balance above it gets the balance alone with POL-BAL-04. Final intent names from `docs/intents.md` in the eligibility table. POL-ANS-14 is also reached when the customer names a product kind the intent does not serve. POL-PII-06 points to `docs/operations.md`. |
 
 ## 0. How to read and cite this policy
 
@@ -64,6 +66,7 @@
 | POL-AUTH-06 | After `STEPUP_MAX_FAILS` failed step-up attempts in a session, step-up is locked for that session, the pending action is cancelled and the case is transferred (POL-ESC-10). | Mock identity, orchestrator |
 | POL-AUTH-07 | *(changed in 0.2, F-23)* Re-authenticating after expiry starts a new session. Pending confirmations, confirmation tokens, step-up and tool results are not carried over. The orchestrator keeps only `resume_intent`: the intent name and the slots the customer typed, with no tool-derived data. After sign-in the assistant may ask a fact-free resume question (for example "¿Quiere retomar lo que estaba haciendo?"). If the customer accepts, the intent is routed from the start with fresh reads and a new step-up. | Orchestrator |
 | POL-AUTH-08 | Credentials and one-time codes are never entered in the chat. If a customer types one, it is redacted (POL-PII-04) and the customer is told not to share it in the chat. | Redaction layer |
+| POL-AUTH-09 | *(new in 0.4)* Customer status. `authenticate` returns the session customer's `customer_status` (gold `customers`). A customer whose status is `Suspended` or `Closed` may authenticate, but gets **no answers and no actions**: the orchestrator opens a handoff right after sign-in, with `reason_rule_ids` = [`POL-AUTH-09`], priority `normal` (unless POL-HND-15 gives a higher one), and the unresolved question "customer status requires human review". No tool except `authenticate` and `open_handoff` runs in that session. The reply is POL-HND-07 followed by POL-HND-03 and states no customer data, not even the status itself. Later messages are appended to the case (POL-HND-06). `Active` and `Inactive` customers are served normally. The same check runs on every re-authentication (POL-AUTH-07). | Mock identity (status in the session), orchestrator |
 
 ## 3. What the assistant may answer (ANS)
 
@@ -78,7 +81,7 @@ only with data returned by the tool listed.
 | POL-ANS-04 | What one transaction is | `describe_transaction` | the POL-ANS-03 fields plus status meaning (POL-TXS) and response-code meaning (POL-DEC) | Fixed templates only. No root cause. |
 | POL-ANS-05 | What the assistant can and cannot do | none (static text) | this list and the section 4 actions | Static text versioned with this policy. |
 | POL-ANS-06 | "No data" answers | the tool that returned nothing | the fact that no record was found in the searched window | Never infer anything from an absence (for example "so you were not charged"). |
-| POL-ANS-15 | *(new in 0.2)* A credit card's balance | `get_balance` | `current_balance`, `credit_limit`, currency, `as_of`, rendered with POL-BAL-01 | Values are stated as recorded. The assistant never computes or states available credit, a minimum payment or a due date: the data dictionary does not define the sign or meaning of a card balance, and 1.27% of credit cards have a balance above their limit. If `current_balance` > `credit_limit`, it states the balance only and adds POL-BAL-04. A request for available credit gets POL-BAL-05. |
+| POL-ANS-15 | *(new in 0.2)* A credit card's balance | `get_balance` | `current_balance`, `credit_limit`, currency, `as_of`, rendered with POL-BAL-01 | Values are stated as recorded. The assistant never computes or states available credit, a minimum payment or a due date: the data dictionary does not define the sign or meaning of a card balance, and 1.27% of credit cards have a balance above their limit. If `current_balance` > `credit_limit`, or *(0.4)* `credit_limit` is null (5.05% of credit cards, random), it states the balance only with POL-BAL-06 and adds POL-BAL-04. A request for available credit gets POL-BAL-05. |
 | POL-ANS-16 | *(new in 0.2)* A savings account's balance (`Cuenta Ahorro`) | `get_balance` | `current_balance`, currency, `as_of`, status if not `Active`, rendered with POL-BAL-02 | No interest, movements or statements. Account transactions are out of scope. |
 | POL-ANS-17 | *(new in 0.2)* Which products have a balance the assistant can give | `list_balance_products` | product kind (credit card or savings account), last 4, status | Eligible: credit cards and savings accounts with status other than `Closed`. Debit cards, current accounts, loans and investments are not eligible (a debit card's own `current_balance` has no defined relation to the linked account). |
 
@@ -95,12 +98,16 @@ Eligible products per intent (POL-ANS-07):
 
 | Intent | Eligible products |
 |---|---|
-| `list_cards` | none needed |
-| `card_status`, `list_transactions`, `describe_transaction`, `dispute_charge` | all the customer's cards |
-| `block_card` | cards with status `Active` |
-| `why_blocked` | cards with status `Blocked` or `Suspended` |
-| `unblock_card` | cards with status `Blocked` |
-| `balance_inquiry` | POL-ANS-17 products, narrowed by what the customer named ("tarjeta" → credit cards; "cuenta de ahorros"/"poupança" → savings accounts) |
+| `card_list` | none needed |
+| `card_status`, `transaction_list`, `transaction_detail`, `charge_dispute` | all the customer's cards |
+| `card_block` | cards with status `Active` |
+| `block_reason` | cards with status `Blocked` or `Suspended` |
+| `card_unblock` | cards with status `Blocked` |
+| `balance_inquiry` | POL-ANS-17 products, narrowed by the `product_kind` slot ("tarjeta" → credit cards; "cuenta de ahorros"/"caja de ahorro"/"poupança" → savings accounts) |
+
+Intent names and slots are defined in `docs/intents.md`. If the `product_kind` slot names a
+product the intent does not serve (a debit card or current account balance, savings account
+movements), no eligible products are computed and POL-ANS-14 applies.
 
 Explicitly not answered (each leads to the rule shown):
 
@@ -110,7 +117,7 @@ Explicitly not answered (each leads to the rule shown):
 | POL-ANS-11 | Why or when a card was blocked or suspended | No status history exists (P2) | POL-ESC-02 |
 | POL-ANS-12 | Whether a transaction is fraudulent, or any fraud score | `fraud_score` leaks the `is_fraud` label and is excluded (Day 1 A5). Fraud assessment is a human task. | POL-ESC-01 |
 | POL-ANS-13 | Card opening or expiration dates, or "your card is expired" | Validity dates contradict the transactions (P2: 29.88% of card transactions postdate the expiration date) | POL-ESC-04 |
-| POL-ANS-14 | *(changed in 0.2)* Available credit, minimum payments, due dates, debit-card or current-account balances, account movements, loans, investments, credit | Not in scope, or not defined in the data | POL-BAL-05 for available credit; POL-GEN-04 for the rest |
+| POL-ANS-14 | *(changed in 0.2)* Available credit, minimum payments, due dates, debit-card or current-account balances, account movements, loans, investments, credit | Not in scope, or not defined in the data | POL-BAL-05 for available credit; POL-GEN-04 for the rest (T-10) |
 
 ## 3b. Balance templates (BAL)
 
@@ -125,6 +132,7 @@ number convention of the customer's country (México: 1,234.56; Colombia and Arg
 | POL-BAL-03 | `as_of` older than `BALANCE_SNAPSHOT_MAX_AGE_H` | "Estos datos pueden no incluir los movimientos más recientes." | "Esses dados podem não incluir as movimentações mais recentes." |
 | POL-BAL-04 | Balance above the recorded limit | "No puedo confirmar el límite de crédito de esta tarjeta." | "Não consigo confirmar o limite de crédito deste cartão." |
 | POL-BAL-05 | Available credit requested | "No puedo calcular el crédito disponible; solo puedo indicarle el saldo y el límite registrados. Si lo necesita, puedo transferirle con un asesor." | "Não consigo calcular o crédito disponível; só posso informar o saldo e o limite registrados. Se precisar, posso transferir você para um atendente." |
+| POL-BAL-06 | *(new in 0.4)* Credit card balance without a usable limit (limit null, or balance above it) | "El saldo actual de su tarjeta de crédito terminada en {ultimos4} es de {saldo} {moneda}, según los datos del {as_of}." | "O saldo atual do seu cartão de crédito final {ultimos4} é de {saldo} {moeda}, segundo os dados de {as_of}." |
 
 `as_of` is the time the daily gold load finished, `max(gold_loaded_at)`
 (`docs/contracts/freshness_policy.md` section 2). It is not `products.last_updated`: that field
@@ -240,6 +248,7 @@ Templates never promise that money was or will be returned, or give a time frame
 |---|---|---|---|
 | POL-HND-03 | *(new in 0.2, F-15)* Case opened | "Un asesor revisará su caso, referencia {case_id}." | "Um atendente vai analisar o seu caso, referência {case_id}." |
 | POL-HND-04 | *(new in 0.2, F-16)* Message after transfer | "Agregué su mensaje a su caso, referencia {case_id}. Un asesor lo revisará." | "Adicionei sua mensagem ao seu caso, referência {case_id}. Um atendente vai analisá-la." |
+| POL-HND-07 | *(new in 0.4)* Customer status requires review (POL-AUTH-09) | "Para atender su solicitud, un asesor necesita revisar su caso." | "Para atender a sua solicitação, um atendente precisa analisar o seu caso." |
 | POL-HND-05 | *(new in 0.2)* `open_handoff` failed | "No pude registrar su caso en este momento. Por favor, comuníquese con el centro de contacto del banco." | "Não consegui registrar o seu caso agora. Por favor, entre em contato com a central de atendimento do banco." |
 
 ## 8. Handoff case file (HND)
@@ -268,7 +277,7 @@ The dataset is synthetic, but the prototype treats it as if it were real custome
 | POL-PII-03 | *(changed in 0.2)* The LLM may see: card type, last 4, status, and transaction date, amount, currency, type, merchant name, status and response code; for balance inquiries, product kind, last 4, `current_balance`, `credit_limit`, currency and `as_of`. | Tool gateway (field allowlist) |
 | POL-PII-04 | Customer-typed secrets (passwords, codes, full card numbers) are redacted before the LLM, the logs and the traces. The raw text is not stored, except that the gateway's ownership check (POL-ESC-10) sees a typed full card number in memory for that one check. | Redaction layer |
 | POL-PII-05 | *(changed in 0.3, F-19)* Logs, traces and stored transcripts hold only redacted text. The case file may hold `customer_id` and internal card and transaction IDs of the session customer, because the human agent works inside the bank's perimeter. Identifiers of **third parties** typed by the customer (another customer's ID, name or card) stay redacted in the case file. The raw value is not stored anywhere. The audit log keeps only a keyed hash of it (`docs/contracts/audit_log.md` AL-P5), which the security role can match against a known identifier. | Audit log, tracing, case store |
-| POL-PII-06 | Retention in the prototype (synthetic, see section 11): transcripts `RETAIN_TRANSCRIPT_DAYS`, traces `RETAIN_TRACE_DAYS`, case files and audit log `RETAIN_CASE_DAYS`. Expired records are deleted by created date. The deletion procedure and the production values the bank would set belong in `docs/operations.md` (requirements matrix gaps G-3 and G-4). | Operations (planned) |
+| POL-PII-06 | Retention in the prototype (synthetic, see section 11): transcripts `RETAIN_TRANSCRIPT_DAYS`, traces `RETAIN_TRACE_DAYS`, case files and audit log `RETAIN_CASE_DAYS`. Expired records are deleted by created date. The deletion procedure and the production values the bank would set are in `docs/operations.md` section 4. | Operations (`docs/operations.md`) |
 | POL-PII-07 | *(changed in 0.3)* Access: customers see only their own session. Human agents see case files. Operators see traces and the audit log. Only the security role can re-identify the keyed pseudonyms and hashes in the audit log, through the backend (POL-PII-05). Nobody sees raw credentials. | Backend roles |
 | POL-PII-08 | No real customer data, credentials or `ml/data/` files go into the repository, the public submission or any external model request. Demos use the synthetic personas in `docs/findings/day2/personas.md`. | Git rules, review before submission |
 | POL-PII-09 | The LLM provider and its data-handling terms are declared in `docs/data_card.md`. Settings that stop the provider from training on or retaining data must be confirmed before any deployment beyond the prototype. | Documentation |
@@ -317,12 +326,12 @@ is updated to match.
 | D2-3, D2-4 (grounding in data and policy) | POL-GEN-02, POL-GEN-07, POL-ANS-*, POL-BAL-*, POL-DEC-*, POL-TXS-* |
 | D2-2 (clarify ambiguity) | POL-ANS-07, 08, 09, 18, POL-ESC-06 |
 | D2-6 (report only verified actions) | POL-ACT-05, POL-ACT-09, POL-ACT-10, POL-ACT-11 |
-| D3-1 (what it can answer) | POL-ANS-01 to 18, POL-GEN-04, POL-GEN-06 |
+| D3-1 (what it can answer) | POL-ANS-01 to 18, POL-GEN-04, POL-GEN-06, POL-AUTH-09; intents in `docs/intents.md` |
 | D3-2 (which actions need confirmation) | POL-ACT-01 to 04, POL-ESC-01 (offered block) |
-| D3-3 (abstain or transfer) | POL-ESC-01 to 12 |
+| D3-3 (abstain or transfer) | POL-ESC-01 to 12, POL-AUTH-09 |
 | D3-4, B-9 (enforcement outside prose) | POL-GEN-01, POL-AUTH-05, "Enforced in" column |
 | D3-5 to D3-9 (handoff contents) | POL-HND-10 to 15 |
-| B-7, B-8, D5-3 (authentication, expired session) | POL-AUTH-01 to 08 |
+| B-7, B-8, D5-3 (authentication, expired session, customer status) | POL-AUTH-01 to 09 |
 | D5-4, D5-5, D5-6, D5-7 (adverse cases) | POL-ESC-10, POL-ESC-08, POL-ESC-07 / POL-REL-*, POL-ESC-11 |
 | D5-2 (incorrect or missing data) | POL-ESC-05, POL-DEC-90/91, POL-BAL-04 |
 | S-8, S-9, S-10 (languages and their limits) | POL-GEN-03 |

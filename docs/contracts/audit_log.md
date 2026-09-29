@@ -2,11 +2,13 @@
 
 | Field | Value |
 |---|---|
-| Contract version | `audit-0.1` |
+| Contract version | `audit-0.2` |
 | Date | 2026-09-29 |
 | Owner | Aldair (specification) · Martín (emission in orchestrator, tool gateway, action gateway, handoff service) |
-| Policy | `docs/policy_cards.md` `cards-synthetic-0.3` (SYNTHETIC): POL-AUD-01, POL-AUD-02, POL-PII-01 to 07, POL-ACT-09, POL-HND-10 to 15 |
-| State machine | `docs/contracts/state_machine.md` `sm-0.2` |
+| Policy | `docs/policy_cards.md` `cards-synthetic-0.4` (SYNTHETIC): POL-AUD-01, POL-AUD-02, POL-PII-01 to 07, POL-ACT-09, POL-HND-10 to 15, POL-AUTH-09 |
+| State machine | `docs/contracts/state_machine.md` `sm-0.3` |
+| Intents | `docs/intents.md` `intents-1.0` (values of `intent`, `top_intent`, `conformal_set`) |
+| Changes in 0.2 | `session.customer_status`; intent fields use the final names; `transition_id` runs to `T-51`; version values updated |
 | Readers | Operators and the security role (POL-PII-07); the evaluation grader (`docs/eval_plan.md` section 7); explanations to customers and agents (POL-AUD-02) |
 
 The audit log is the execution record. Explanations of what the system did are rebuilt from it:
@@ -46,7 +48,7 @@ Every event has these fields:
 
 | Field | Type | Required | Content |
 |---|---|---|---|
-| `schema_version` | string | yes | `audit-0.1` |
+| `schema_version` | string | yes | `audit-0.2` |
 | `event_id` | UUIDv7 | yes | |
 | `event_type` | enum | yes | Section 4 |
 | `occurred_at` | timestamp, UTC, ms | yes | Server time (in evaluation, the simulated clock plus real elapsed time) |
@@ -57,8 +59,8 @@ Every event has these fields:
 | `actor` | enum | yes | `customer`, `orchestrator`, `tool_gateway`, `action_gateway`, `identity`, `handoff_service`, `human_agent` |
 | `customer_ref` | string or null | yes | AL-P3; null before authentication |
 | `auth_level` | enum | yes | `L0`, `L1`, `L2` at the time of the event |
-| `state` | enum | yes | State-machine state when the event happened (`sm-0.2` section 1) |
-| `policy_version`, `state_machine_version` | string | yes | `cards-synthetic-0.3`, `sm-0.2` |
+| `state` | enum | yes | State-machine state when the event happened (`sm-0.3` section 1) |
+| `policy_version`, `state_machine_version` | string | yes | `cards-synthetic-0.4`, `sm-0.3` |
 | `rule_ids` | list of string | yes | Policy rules applied; may be empty only for `tool_call` and `llm_call` |
 | `prev_event_hash`, `event_hash` | hex | yes | Section 1 |
 | `pii_scan` | object | yes | `{"blocked": bool, "placeholders": {"NAME": n, ...}}` |
@@ -94,6 +96,7 @@ are added because POL-AUD-01, the eval plan (cost, model versions, U5) and POL-H
 | `step_up` | object or null | `{step_up_id, card_ref, action: "block_card", expires_at, used}` (POL-AUTH-04) |
 | `failure_count` | integer | Step-up failures so far (POL-AUTH-06) |
 | `language_preference` | `es` or `pt` or null | Set at sign-in (POL-GEN-03) |
+| `customer_status` | enum or null | On `authenticated` and `resumed`: `Active`, `Inactive`, `Suspended`, `Closed` from the `authenticate` result (POL-AUTH-09); null otherwise |
 | `resume_intent` | object or null | `{intent, slots}` with customer-typed slots only (POL-AUTH-07); slot values redacted per AL-P1 |
 
 Never: the credentials, the one-time code, or whether a wrong code was close.
@@ -113,7 +116,7 @@ Never: the credentials, the one-time code, or whether a wrong code was close.
 | Field | Type | Content |
 |---|---|---|
 | `classifier_artifact_sha256` | hex | |
-| `top_intent`, `top_score` | string, number | |
+| `top_intent`, `top_score` | string, number | Intent names from `docs/intents.md` |
 | `conformal_set` | list of string | |
 | `conformal_alpha`, `conformal_threshold`, `max_set` | number, number, integer | |
 | `slots` | object | Product kind, last 4, date or range, amount, merchant (redacted per AL-P1 if they contain PII) |
@@ -126,7 +129,7 @@ Never: the credentials, the one-time code, or whether a wrong code was close.
 | `tool_call_id` | string | Unique in the conversation; cited by case files (POL-HND-11, 13) and replies |
 | `tool` | enum | `authenticate`, `step_up`, `list_cards`, `list_balance_products`, `get_card_status`, `list_transactions`, `describe_transaction`, `get_balance`, `block_card`, `open_handoff` |
 | `attempt`, `retry_of` | integer, string or null | Retries are separate calls (POL-REL-01) |
-| `allowed_in_state` | bool | False → `TOOL_NOT_ALLOWED_IN_STATE` (`sm-0.2` section 2) |
+| `allowed_in_state` | bool | False → `TOOL_NOT_ALLOWED_IN_STATE` (`sm-0.3` section 2) |
 | `args` | object | Pseudonymized and allowlisted (AL-P3, AL-P6), for example `{"card_ref": "…", "days": 30}` |
 | `status` | enum | `ok`, `empty`, `error`, `timeout`, `refused`, `session_expired`, `not_allowed_in_state` |
 | `error_code` | string or null | |
@@ -142,7 +145,7 @@ Never: the credentials, the one-time code, or whether a wrong code was close.
 |---|---|---|
 | `llm_call_id` | string | |
 | `purpose` | enum | `reply_wording`, `summary` (case-file `request` summary, POL-HND-10), `other` |
-| `provider`, `model_id` | string | Exact dated model ID |
+| `provider`, `model_id` | string | Exact model ID (pinned version, no moving alias) |
 | `prompt_template`, `prompt_sha256` | string, hex | |
 | `temperature`, `max_tokens` | number, integer | |
 | `input_tokens`, `cached_input_tokens`, `output_tokens` | integer | |
@@ -157,16 +160,16 @@ One per turn, written last, before the reply is sent.
 | Field | Type | Content |
 |---|---|---|
 | `state_before`, `state_after` | enum | |
-| `transition_id` | string | `T-01` … `T-50`, `G-01` … `G-07` |
+| `transition_id` | string | `T-01` … `T-51`, `G-01` … `G-07` |
 | `decision` | enum | `answer`, `clarify`, `act`, `abstain`, `transfer`, `refuse`, `authenticate`, `none` |
-| `intent` | string or null | Intent being served |
+| `intent` | string or null | Intent being served (`docs/intents.md`), for example `card_block`; never a tool name |
 | `rule_ids` | list | In the envelope; at least one (INV-08) |
 | `tool_call_ids` | list | Calls made in this turn |
 | `facts_used` | list | `{fact, value, tool_call_id, read_at}`; value per AL-P4 (POL-GEN-02, 07) |
 | `grounding_check` | object | `{"passed": bool, "unsupported_facts": n, "fallback_template": "POL-REL-04" or null}` |
 | `reply` | object | `{"text_redacted": "...", "language": "es", "templates": ["POL-TXS-02", "POL-DEC-51"], "llm_call_ids": [...]}` |
 | `counters` | object | `clarify_turns`, `card_misses`, `stepup_fails`, `tool_fail_rounds`, `llm_fails`, `injection_hits`, `unauthorized_hits` after the turn |
-| `then_handoff`, `dispute` | bool | Flags of `sm-0.2` section 3 |
+| `then_handoff`, `dispute` | bool | Flags of `sm-0.3` section 3 |
 
 ### 4.7 `confirmation`
 

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/key-peru/factored-hackathon-2026/docs/contracts/eval_report.schema.json",
   "title": "Evaluation report",
-  "description": "Format of eval/report.json. Definitions of every metric are in docs/eval_plan.md (eval-plan-0.1); section numbers in descriptions refer to that plan. All results are offline simulations on synthetic data.",
+  "description": "Format of eval/report.json. Definitions of every metric are in docs/eval_plan.md (eval-plan-0.2); section numbers in descriptions refer to that plan. All results are offline simulations on synthetic data.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -27,7 +27,7 @@
     "limitations"
   ],
   "properties": {
-    "schema_version": { "const": "eval-report-0.1" },
+    "schema_version": { "const": "eval-report-0.2" },
     "report_id": { "type": "string", "minLength": 1 },
     "generated_at": { "type": "string", "format": "date-time" },
     "evidence_label": {
@@ -39,7 +39,7 @@
       "additionalProperties": false,
       "required": ["plan_version", "plan_commit", "deviations"],
       "properties": {
-        "plan_version": { "type": "string", "examples": ["eval-plan-0.1"] },
+        "plan_version": { "type": "string", "examples": ["eval-plan-0.2"] },
         "plan_commit": { "$ref": "#/$defs/git_sha" },
         "deviations": {
           "description": "Every change from the pre-registered plan, with its reason. Empty list if none.",
@@ -67,6 +67,7 @@
         "git_dirty",
         "policy_version",
         "state_machine_version",
+        "intents_version",
         "runs_per_case",
         "simulated_clock",
         "customer_sampling_seed",
@@ -81,9 +82,16 @@
       "properties": {
         "git_commit": { "$ref": "#/$defs/git_sha" },
         "git_dirty": { "const": false },
-        "policy_version": { "type": "string", "examples": ["cards-synthetic-0.3"] },
-        "state_machine_version": { "type": "string", "examples": ["sm-0.2"] },
-        "runs_per_case": { "type": "integer", "minimum": 1, "examples": [5] },
+        "policy_version": { "type": "string", "examples": ["cards-synthetic-0.4"] },
+        "state_machine_version": { "type": "string", "examples": ["sm-0.3"] },
+        "intents_version": { "type": "string", "examples": ["intents-1.0"] },
+        "runs_per_case": {
+          "description": "Section 6.1. An integer when every case of every system runs the same number of times; otherwise runs per system_id, with the budget fallback (section 13.5) described in plan.deviations.",
+          "oneOf": [
+            { "type": "integer", "minimum": 1, "examples": [5] },
+            { "type": "object", "additionalProperties": { "type": "integer", "minimum": 1 }, "examples": [{ "proposed": 5, "naive_agent": 3 }] }
+          ]
+        },
         "simulated_clock": { "type": "string", "format": "date-time" },
         "customer_sampling_seed": { "type": "integer" },
         "run_seeds": { "type": "array", "items": { "type": "integer" }, "minItems": 1 },
@@ -1053,7 +1061,7 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["name", "role", "macro_f1", "accuracy", "by_variant", "per_intent_f1", "block_card", "vs_chosen"],
+            "required": ["name", "role", "macro_f1", "accuracy", "by_variant", "per_intent_f1", "card_block", "vs_chosen"],
             "properties": {
               "name": { "enum": ["majority", "keyword_rules", "tfidf_logreg", "llm_zero_shot", "embeddings_logreg", "other"] },
               "role": { "enum": ["baseline", "candidate", "chosen"] },
@@ -1074,7 +1082,8 @@
               },
               "per_intent_f1": { "type": "object", "additionalProperties": { "type": "number" } },
               "slot_f1": { "type": "object", "additionalProperties": { "type": "number" } },
-              "block_card": {
+              "card_block": {
+                "description": "Precision and recall of the action intent card_block (section 8.4; intent names in docs/intents.md).",
                 "type": "object",
                 "additionalProperties": false,
                 "required": ["precision", "recall"],
@@ -1104,7 +1113,7 @@
         "conformal": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["method", "score", "alpha", "max_set", "overall", "by_variant", "by_intent_coverage", "block_card_false_singletons", "mondrian"],
+          "required": ["method", "score", "alpha", "max_set", "overall", "by_variant", "by_intent_coverage", "card_block_false_singletons", "mondrian"],
           "properties": {
             "method": { "const": "split_conformal" },
             "score": { "enum": ["aps", "lac", "raps"] },
@@ -1117,7 +1126,7 @@
               "additionalProperties": { "$ref": "#/$defs/conformal_stats" }
             },
             "by_intent_coverage": { "type": "object", "additionalProperties": { "$ref": "#/$defs/rate" } },
-            "block_card_false_singletons": { "type": "integer", "minimum": 0 },
+            "card_block_false_singletons": { "type": "integer", "minimum": 0 },
             "mondrian": {
               "description": "Section 8.4 fallback; null if not triggered.",
               "oneOf": [
@@ -1216,8 +1225,8 @@
       "required": ["provider", "model_id", "temperature"],
       "properties": {
         "provider": { "type": "string" },
-        "model_id": { "type": "string", "description": "Exact dated model ID, not an alias." },
-        "temperature": { "type": "number", "minimum": 0 },
+        "model_id": { "type": "string", "description": "Exact model ID as sent to the provider: a pinned version, not a moving alias." },
+        "temperature": { "type": ["number", "null"], "minimum": 0, "description": "null = model default, for models that reject sampling parameters (section 13.1)." },
         "top_p": { "type": ["number", "null"] },
         "max_tokens": { "type": ["integer", "null"] },
         "prompt_sha256": { "$ref": "#/$defs/sha256" }
