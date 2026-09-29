@@ -53,3 +53,13 @@ The choice does not depend on B2. B already fails on B-i, so a B2 pass would sti
 8. **Synthetic data with little cross-row structure.** A3, A4, B1, B3 and B4 all find rows that behave as drawn independently given a few marginals. Results describe the generator, not a real bank, and models that depend on behavioral signal are expected to perform near their baselines.
 9. **`fraud_score` leaks `is_fraud` (A5).** Not relevant to B's models, but any fraud reference in the demo or the mock bank must not use it.
 10. **Criterion A-ii has no quantified threshold.** It does not affect the outcome, because A already fails on A-i.
+
+## Amendment (2026-09-29): workflow re-chosen from P1-P3
+
+Neither A nor B passed on its own premises, so the section 4 fallback (B with declared limitations) chose a track whose core thesis the data had refuted (B-i: rate ratio 1.016 [0.996, 1.034]). We dropped it and re-chose the workflow from contact-reason and feasibility evidence, as problem statement point 1 asks ("use this evidence to prioritize the workflow"). This choice is **post hoc**: P1-P3 were run after the Day 1 rule was applied, and the rule did not name them.
+
+- **P1 (contact reasons).** Transaccional is the largest reason: 34.98% of 686,296 contacts, 91.51% FCR. Queja is 17.05% of contacts but 41.18% of unresolved ones. Reason differences are real (FCR range 47.91% vs 0.74% shuffled). Card servicing has no source label of its own.
+- **P2 (card support).** Partially supported. 140,040 cards, 5.03% Blocked and 2.04% Suspended; 30.99% of holders have 2+ Active cards, so "which card?" is real ambiguity. Limits: the 4 decline codes are uniform across statuses (p 0.723), blocked/suspended cards have no history, and a card customer has a median of 0 card transactions per 30 days.
+- **P3 (credit risk).** Refuted. `credit_score` and application features rank delinquency at chance (test AUC 0.4972-0.5048 vs shuffled 95th percentile 0.5060-0.5096), which rules out a credit-eligibility workflow.
+
+**Choice: card and transaction inquiries assistant** (`docs/proposal.md`, v3). It covers the highest-volume reason (P1 FCR is the status-quo baseline) and rests on entities the data does carry (P2). Per P2 it does not explain decline or block causes, and unblocking always goes to a human. Limitations 3-10 above still apply where relevant.

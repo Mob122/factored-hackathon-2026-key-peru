@@ -6,3 +6,4 @@ duckdb
 polars
 pyarrow
 kedro-viz
+scikit-learn
