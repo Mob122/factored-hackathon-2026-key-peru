@@ -13,9 +13,17 @@ Team: Aldair and Martín. Monorepo:
 ## Reference docs (read when relevant, don't treat as decided)
 - docs/problem_statement.pdf: challenge rules and scoring criteria. Source of truth.
 - docs/data_dictionary.pdf: schemas for the 13 tables.
-- docs/proposal.md: proposal v2. Track B was chosen on Day 1 (see docs/decision_day1.md);
-  docs/proposal.pdf is the Spanish v1 draft from before the decision.
+- docs/proposal.md: current plan (v3.1, replaces v1, v2 and v3). docs/proposal.pdf is the Spanish v1
+  draft from before the Day 1 decision.
 - ml/docs/hypotheses.md: validation plan and status.
+
+## Decision (final)
+Track: card and account inquiries assistant (docs/proposal.md v3.1; rationale in the Amendment
+of docs/decision_day1.md). Scope: a Spanish/Portuguese assistant whose core intent is balance
+inquiry for credit cards and savings accounts (the only demand in the transcripts, Day 2 P4). On
+top of that it identifies the card or account, reads card status, lists and describes card
+transactions, blocks a card with confirmation and verification, and hands off to a human with a
+case file; it only states what it verified in the data.
 
 ## Rules
 - Never read, print or write AWS credentials. Never read ~/.aws.
