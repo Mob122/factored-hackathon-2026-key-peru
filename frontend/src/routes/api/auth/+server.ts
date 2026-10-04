@@ -1,6 +1,7 @@
+import { env } from '$env/dynamic/private';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({request, cookies, url}) => {
+export const POST: RequestHandler = async ({request, cookies, url}) => {    
     try {
         const urlParams = new URLSearchParams(url.search);
         const tipoAuth = urlParams.get('tipoAuth');
@@ -10,7 +11,7 @@ export const POST: RequestHandler = async ({request, cookies, url}) => {
 
         if (tipoAuth === 'registrarse') {
             const { correo_electronico, password, nombre } = data;
-            const respuesta = await fetch('http://localhost:8000/autenticacion/registrar', {
+            const respuesta = await fetch(`${env.API_BCKD_8}/autenticacion/registrar`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -36,7 +37,7 @@ export const POST: RequestHandler = async ({request, cookies, url}) => {
         } else if (tipoAuth === 'login') {            
             const { correo_electronico, password } = data;
 
-            const respuesta = await fetch('http://localhost:8000/autenticacion/iniciar-sesion', {
+            const respuesta = await fetch(`${env.API_BCKD_8}/autenticacion/iniciar-sesion`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -48,6 +49,9 @@ export const POST: RequestHandler = async ({request, cookies, url}) => {
             });
 
             cuerpo = await respuesta.json();            
+
+            console.log(cuerpo);
+            
 
             if (!respuesta.ok) {
                 return new Response(JSON.stringify(cuerpo), {
