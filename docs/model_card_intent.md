@@ -2,21 +2,30 @@
 
 | Field | Value |
 |---|---|
-| Card version | `model-card-intent-0.2`, 2026-10-04 (0.1: 2026-10-03) |
+| Card version | `model-card-intent-0.3`, 2026-10-04 (0.2: 2026-10-04; 0.1: 2026-10-03) |
 | Status | **Provisional.** The utterances have still not been reviewed by a person (eval plan 8.1), and the label-quality sample is not labeled (C7). The test split was **rescored** after training data was added on the basis of test errors (section 3.2). |
 | Owner | Aldair |
-| Deployed artifact | `ml/artifacts/nlu/model.joblib` (TF-IDF + logistic regression), SHA-256 `67c1b919b3c5b2352521a838ab613ff2c2b329d34b726c65f7e1f8eaa21c4676`, scikit-learn 1.9.1 |
-| Conformal | `ml/artifacts/nlu/conformal.json`: split conformal, **LAC** (`docs/eval_plan.md` 8.4, amendment 0.3), `CONFORMAL_ALPHA` = 0.10, threshold 0.6684, `CONFORMAL_MAX_SET` = 2; APS kept as an alternative. Runtime block safety override (section 8.3) |
-| Training code | `ml/src/banking_cs/nlu/`, commit `889759a` (recorded in `metadata.json`) |
+| Deployed artifact | `ml/artifacts/nlu/model.joblib` (TF-IDF + logistic regression), SHA-256 `a03e2969febf16b860e87d4020f01b6ab0a3be99f4325191a60bb6b8d6969c82`, scikit-learn 1.9.1 |
+| Conformal | `ml/artifacts/nlu/conformal.json`: split conformal, **LAC** (`docs/eval_plan.md` 8.4, amendment 0.3), `CONFORMAL_ALPHA` = 0.10, threshold 0.6684, `CONFORMAL_MAX_SET` = 2; APS kept as an alternative. Runtime safety overrides: block and dispute (section 8.3) |
+| Training code | `ml/src/banking_cs/nlu/`, commit `f053468` (recorded in `metadata.json`) |
 | Data | `nlu-utt-0.2`, corpus SHA-256 `70d8a62b…` (`ml/nlu_corpus/`, 4,444 utterances) |
-| Taxonomy, plan, policy | `docs/intents.md` `intents-1.0` · `docs/eval_plan.md` `eval-plan-0.3` sections 8 and 9.2 · `docs/policy_cards.md` `cards-synthetic-0.5` POL-ESC-06, POL-ESC-13 |
-| Decisions | `docs/decisions_log.md` D-01 to D-10 |
+| Taxonomy, plan, policy | `docs/intents.md` `intents-1.0` · `docs/eval_plan.md` `eval-plan-0.3` sections 8 and 9.2 · `docs/policy_cards.md` `cards-synthetic-0.6` POL-ESC-06, POL-ESC-13, POL-ACT-12 |
+| Decisions | `docs/decisions_log.md` D-01 to D-16 |
 | Full results | `ml/artifacts/nlu/eval_results.json`, `ml/artifacts/nlu/llm_baseline.json` |
 
 Every number here is an **offline result on team-generated, synthetic messages**. None of it is a
 measurement on real customers.
 
 ## 0. Summary
+
+**Card 0.3 (2026-10-04).** A dispute safety override joins the block override in `predict()`:
+on dispute or fraud wording, `charge_dispute` is added to the conformal set, so a lone
+`card_block` becomes a clarifying question. With both overrides, false `card_block`
+singletons on test fall from **7 to 3** (calibration: 1 to 1). C6 is still not met (section
+8.4). Policy 0.6 adds POL-ACT-12: after a verified block whose request carried theft or fraud
+wording, the assistant invites the customer to name charges they do not recognize. The
+classifier was retrained on the same data; every metric outside the overrides is identical
+to card 0.2.
 
 ### 0.1 What changed since card 0.1
 
@@ -52,9 +61,10 @@ measurement on real customers.
   95% singletons. **C4 and C5 are met.**
 - **Override:** `card_block` coverage goes from 0.961 to **1.000** on test. It fires on 7
   messages, 4 of them block requests.
-- **C6 not met:** 7 non-block messages get a {`card_block`} singleton (0 in card 0.1). Four come
-  from one charge-dispute group, "reportar un fraude…", that now resembles the new "reportar el
-  robo" training wording (section 8.4).
+- **C6 not met:** the model alone gives 7 non-block messages a {`card_block`} singleton (0 in
+  card 0.1). Four come from one charge-dispute group, "reportar un fraude…", that now resembles
+  the new "reportar el robo" training wording. The dispute override (card 0.3) fixes those 4;
+  3 remain (section 8.4).
 
 ## 1. Intended use
 
@@ -70,9 +80,12 @@ measurement on real customers.
   languages other than Spanish and Portuguese, or any decision without the policy layer. A label
   never authorizes an action: blocks still need step-up and confirmation (POL-ACT).
 - **Runtime:** `from banking_cs.nlu.predict import predict` returns
-  `predict(text) -> {intent_set, slots, scores, safety_override}`.
-  - `safety_override` is new in 0.2, for the audit log.
-  - `method="aps"` gives the APS set, and `override=False` turns the override off for
+  `predict(text) -> {intent_set, slots, scores, safety_override, signals}`.
+  - `safety_override` lists the intents the overrides added (`[]`, `["card_block"]`,
+    `["charge_dispute"]` or both), for the audit log. It was a boolean in card 0.2.
+  - `signals` gives the rule signals `block_or_theft`, `theft` and `dispute_or_fraud`. The
+    orchestrator keeps them with a pending block for POL-ACT-12.
+  - `method="aps"` gives the APS set, and `override=False` turns the overrides off for
     evaluation.
   - Before unpickling, the loader checks the model's SHA-256 and the scikit-learn version. It
     has no Kedro import.
@@ -368,7 +381,13 @@ antes de eso? Creo que me rechazaron algo." as `transaction_detail`.
 | 0.15 | 0.882 | 0.94 | 93% |
 | 0.20 | 0.859 | 0.90 | 90% |
 
-### 8.3 Block safety override
+### 8.3 Safety overrides
+
+Two rule-based overrides adjust the conformal set after it is computed. Neither applies when the
+set holds `human_request` (POL-ESC-09). Both detectors are separate from the frozen rules
+baseline.
+
+**Block override (card 0.2).**
 
 `rules.block_signal` detects requests to block, freeze ("congelar", "travar", "apagar la
 tarjeta", "pausar"), and reports of loss or theft. When it fires and the set lacks `card_block`,
@@ -403,27 +422,61 @@ separate from the frozen rules baseline. It went through two versions (decisions
 - **What it does not fix:** the override only adds `card_block`; it cannot remove a false
   {`card_block`} singleton (section 8.4).
 
-### 8.4 C6 regression: false `card_block` singletons
+**Dispute override (card 0.3, decisions log D-11).** `rules.dispute_signal` detects dispute or
+fraud wording: the baseline's dispute patterns plus "fraude", "golpe", "estafa", "no
+reconozco" or "não reconheço", "cobro que no hice", "contestar" with a charge word, "no
+autorizado", "clonaron". When it fires and the set lacks `charge_dispute`, `predict()` adds
+`charge_dispute` after the block override has run, with the same rules for singletons and
+empty sets. A lone `card_block` with fraud wording therefore becomes a clarifying question,
+instead of a block flow that would skip the dispute handoff (POL-ESC-01).
 
-With LAC, the 0.2 TF-IDF model gives a {`card_block`} singleton to **7 non-block test messages**
-(card 0.1: 0):
+**TF-IDF with LAC: no override, block only (card 0.2), and block + dispute (card 0.3):**
 
-| Gold intent | Message | Rows |
-|---|---|---|
-| charge_dispute | "Quiero reportar / denunciar un fraude en la tarjeta terminada en 1188." (es and pt) | 4 |
-| card_unblock | "Achei o cartão, dá pra destravar?" | 1 |
-| block_reason | "¿La tarjeta se bloqueó por poner mal la clave?" | 1 |
-| transaction_list | "extrato do cartão" | 1 |
+| Split | Overrides | Coverage | Mean set size | Singletons | `card_block` coverage | `charge_dispute` coverage | False `card_block` singletons | Singletons turned into a question |
+|---|---|---|---|---|---|---|---|---|
+| Calibration | none | 0.901 | 1.023 | 91.0% | 0.865 | 0.891 | 1 | 0 |
+| Calibration | block | 0.917 | 1.040 | 90.0% | 1.000 | 0.891 | 1 | 10 |
+| Calibration | **block + dispute** | 0.922 | 1.053 | 88.7% | 1.000 | 0.953 | **1** | 21 |
+| Test | none | 0.920 | 1.000 | 94.8% | 0.961 | 0.886 | 7 | 0 |
+| Test | block | 0.925 | 1.009 | 94.1% | 1.000 | 0.886 | 7 | 6 |
+| Test | **block + dispute** | 0.932 | 1.017 | 93.5% | 1.000 | 0.971 | **3** | 11 |
+
+- **Where the dispute override fired:** on test, 6 times, all on dispute messages. On
+  calibration, 11 times: 4 on dispute messages and 7 on block-reason questions such as "¿El
+  bloqueo de la tarjeta fue por un intento de fraude?", each of which costs one question.
+- **Signal statistics:** it catches 73% of test and 72% of calibration dispute messages. It
+  fires on 0% of other test messages and 3.1% of other calibration messages; 16 of those are
+  requests for a person, where the override is skipped anyway.
+- **No set grows past `CONFORMAL_MAX_SET`** because of the two overrides together.
+- **Read the test row as post-hoc.** The dispute detector was written after the 7 false
+  singletons were seen, and its word list was chosen to cover them. The calibration rows,
+  where false singletons stay at 1, are the clean view: that remaining calibration case,
+  "¿Me dieron tarjeta de débito o no?", has no dispute wording.
+
+### 8.4 C6: false `card_block` singletons
+
+With LAC and no override, the TF-IDF model gives a {`card_block`} singleton to **7 non-block
+test messages** (card 0.1: 0). The block override cannot remove any of them; the dispute
+override (card 0.3) turns the 4 fraud reports into clarifying questions:
+
+| Gold intent | Message | Rows | With both overrides |
+|---|---|---|---|
+| charge_dispute | "Quiero reportar / denunciar un fraude en la tarjeta terminada en 1188." (es and pt) | 4 | {`card_block`, `charge_dispute`}: clarifying question |
+| card_unblock | "Achei o cartão, dá pra destravar?" | 1 | still {`card_block`} |
+| block_reason | "¿La tarjeta se bloqueó por poner mal la clave?" | 1 | still {`card_block`} |
+| transaction_list | "extrato do cartão" | 1 | still {`card_block`} |
 
 **Cause:** the new "reportar / denunciar el robo" and "travar" training wording generalized to
 fraud reports and to "destravar". The block flow asks for confirmation naming the card
 (POL-ACT-02), so no block runs without a "yes". But a fraud report routed to the block flow
 skips the dispute handoff (POL-ESC-01).
 
-**Not patched in 0.2** (decisions log D-07). Recommended:
-- contrast seed groups: fraud report → `charge_dispute`, "destravar" → `card_unblock`;
-- a precedence guard: when the rules detect `charge_dispute` (which outranks `card_block`,
-  labeling rule 2), add it to a {`card_block`} singleton so the customer is asked.
+**Result:** **3** false `card_block` singletons remain on test (0.4% of 778 non-block
+messages), so C6 is still not met. None of the three has dispute or fraud wording. Each would
+reach a block confirmation prompt naming the card, which the customer can decline
+(POL-ACT-02). Remaining fix: contrast seed groups for "destravar" → `card_unblock` and
+"se bloqueó por…" → `block_reason`, plus a retrain. No override can remove them, because
+both overrides only add intents.
 
 ## 9. Accuracy versus size and latency (CV winner not deployed)
 
@@ -433,7 +486,7 @@ skips the dispute handoff (POL-ESC-01).
 | Artifact | 1.5 MB | 1.13 GB encoder weights + head |
 | CPU latency per message (p50 / p95) | 1.6 / 2.0 ms | 26.6 / 33.0 ms |
 | Runtime dependencies | scikit-learn, numpy, scipy, joblib | + torch, transformers, sentence-transformers |
-| False `card_block` singletons (LAC) | 7 | 6 |
+| False `card_block` singletons (LAC, model only, before the overrides) | 7 | 6 |
 
 The accuracy gap narrowed from +0.038 to +0.030, and its lower bound is 0.001. e5 no longer
 has a worse action-intent profile than TF-IDF: both have the dispute → block confusion. Size
@@ -469,7 +522,7 @@ and latency still favor TF-IDF for this prototype.
 | C3 | pt-BR ≥ Spanish − 0.05 | 0.898 vs 0.928 | **Met** |
 | C4 | Coverage ≥ 0.90; every variant ≥ 0.85 | LAC 0.920; minimum variant pt-BR 0.890 | **Met** (amended score) |
 | C5 | Mean set size ≤ 1.3; singletons ≥ 75% | LAC 1.00 and 94.8% (1.01 and 94.1% with the override) | **Met** (amended score; APS: not met) |
-| C6 | 0 false singletons on `card_block` | 7 | **Not met** (section 8.4) |
+| C6 | 0 false singletons on `card_block` | 3 with both overrides (7 with the model alone or the block override only) | **Not met** (section 8.4) |
 | C7 | Kappa ≥ 0.80 | Sample generated, not labeled | **Not evaluable** |
 
 C4 and C5 are met only under the amended score (eval plan 0.3), and C2 to C5 are on a test split
@@ -485,8 +538,9 @@ that was rescored after targeted additions. Report them with both caveats.
 4. **Targeted additions shift errors.** They fixed the missed meanings but created the
    dispute → block confusion (section 8.4). Each further round of targeted data needs contrast
    groups on the neighboring intents.
-5. **Post-hoc choices.** The LAC amendment and detector v2 were made after seeing results; both
-   are disclosed. The override's clean estimate is detector v1.
+5. **Post-hoc choices.** The LAC amendment, block detector v2 and the dispute detector were made
+   after seeing results; all are disclosed. The clean estimates are block detector v1 and the
+   calibration rows for the dispute override.
 6. **Single-turn classifier.** Elliptical follow-ups need the orchestrator's context.
 7. **Conformal guarantee is marginal and approximate.** Exchangeability holds at the group
    level (104 calibration groups). Per-intent coverage is not guaranteed (transaction_detail:

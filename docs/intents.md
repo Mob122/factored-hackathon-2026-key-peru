@@ -4,8 +4,8 @@
 |---|---|
 | Version | `intents-1.0` (final taxonomy), 2026-09-29 |
 | Owner | Aldair |
-| Policy | `docs/policy_cards.md` `cards-synthetic-0.4` (SYNTHETIC) |
-| State machine | `docs/contracts/state_machine.md` `sm-0.3` |
+| Policy | `docs/policy_cards.md` `cards-synthetic-0.6` (SYNTHETIC) |
+| State machine | `docs/contracts/state_machine.md` `sm-0.4` |
 | Used by | The intent and slot classifier (`docs/eval_plan.md` section 8), the utterance dataset, the label-quality sample (8.1), the audit log `classification` event, scenario templates |
 | Requirements | `docs/requirements_matrix.md` D3-1, D4-7, E-3 |
 
@@ -45,13 +45,13 @@ supported by the card data (Day 1 P2).
 | `card_status` | read | The current status of a card (active, blocked, suspended, closed). | "¿está activa?", "¿está bloqueada?", "habilitada" (AR) | Why or when it was blocked (→ `block_reason`); a declined purchase (→ `transaction_detail`); expiration date (→ `out_of_scope`) | `product_kind`, `last4` | T-05, T-06; POL-ANS-02 |
 | `transaction_list` | read | The customer wants to see transactions on a card, optionally filtered by date, amount, merchant or status. | "movimientos", "consumos" (AR), "lançamentos" (pt), spend in a period | One specific transaction explained (→ `transaction_detail`) | `product_kind`, `last4`, `date`, `amount`, `merchant`, `tx_status` | T-05, T-06, T-19; POL-ANS-03, 06 |
 | `transaction_detail` | read | The customer asks what one transaction is, what its status or response code means, or why it was declined, pending or reversed. | "¿por qué me rechazaron…?", "no me pasó la tarjeta" (AR), "¿qué significa el código 51?" | Saying the transaction is not theirs or asking for money back (→ `charge_dispute`) | `last4`, `date`, `amount`, `merchant`, `tx_status` | T-06, T-19, T-21; POL-ANS-04, 09, 10, POL-TXS-*, POL-DEC-* |
-| `card_block` | action | The customer wants a card blocked now, or reports it lost or stolen. | "bloquear", "perdí", "me robaron", "me afanaron" (AR), "roubaram" (pt) | Unrecognized charges, even with a block request (→ `charge_dispute`, whose flow offers the block); closing a card with no loss or theft (→ `out_of_scope`) | `product_kind`, `last4` | T-07; POL-ACT-01 to 11 |
+| `card_block` | action | The customer wants a card blocked now, or reports it lost or stolen. | "bloquear", "perdí", "me robaron", "me afanaron" (AR), "roubaram" (pt) | Unrecognized charges, even with a block request (→ `charge_dispute`, whose flow offers the block); closing a card with no loss or theft (→ `out_of_scope`) | `product_kind`, `last4` | T-07; POL-ACT-01 to 13 |
 | `charge_dispute` | transfer | The customer says a charge is not theirs, is duplicated or wrong, or wants it reversed or refunded. | "no reconozco", "me cobraron dos veces", "desconocer un consumo" (AR), "contestar uma cobrança" (pt) | Asking what a charge is without disputing it (→ `transaction_detail`) | `last4`, `date`, `amount`, `merchant` | T-09, T-43 to T-49; POL-ESC-01, POL-ANS-09 |
 | `block_reason` | transfer | Why or when a card was blocked or suspended. | "¿por qué me bloquearon?", "¿qué pasó que me inhabilitaron la tarjeta?" | Whether it is blocked (→ `card_status`); asking to unblock (→ `card_unblock`) | `product_kind`, `last4` | T-08, T-20; POL-ESC-02, POL-ANS-11 |
 | `card_unblock` | transfer | Unblock, reactivate or replace a card. | "desbloquear", "reposición", "rehabilitar" (AR), "segunda via do cartão" (pt), a new card to replace a lost or damaged one | Applying for a new card product (→ `out_of_scope`) | `product_kind`, `last4` | T-08; POL-ESC-03, POL-ACT-07 |
 | `human_request` | transfer | The customer asks for a person, in any wording. | "asesor", "ejecutivo" (MX), "operador" (AR), "atendente" (pt) | — (wins over every other intent in the same message, section 3 rule 2) | — | T-08, G-03; POL-ESC-09 |
 | `conversation_end` | end | The customer closes the conversation with no new request. | Thanks, goodbye, "nada más", "era isso" | Thanks followed by a request (→ that request) | — | T-11 |
-| `out_of_scope` | none | A request no other intent covers, or a greeting with no request. | Loans, transfers, payments, Pix, limit increases, closing a card, new products, address changes, exchange rates, card expiration dates, "Hola" alone | — | — | T-10; POL-GEN-04, POL-ANS-05, 13, 14 |
+| `out_of_scope` | none | A request no other intent covers, or a greeting with no request. | Loans, transfers, payments, Pix, limit increases, closing a card, new products, address changes, exchange rates, card expiration dates, "Hola" alone | — | — | T-10; POL-GEN-04, POL-ANS-05, 13, 14, POL-ESC-13 |
 
 "Kind" is the routing class used by `docs/contracts/state_machine.md` section 5: **read**
 intents run read tools and reply; the **action** intent runs the block flow; **transfer** intents

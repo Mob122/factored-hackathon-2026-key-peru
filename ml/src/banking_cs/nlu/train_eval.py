@@ -53,11 +53,12 @@ from banking_cs.nlu.dataset import (  # noqa: E402
     load_split_locks,
     near_duplicate_pairs,
 )
-from banking_cs.nlu.predict import apply_block_override  # noqa: E402
+from banking_cs.nlu.predict import apply_overrides  # noqa: E402
 from banking_cs.nlu.rules import (  # noqa: E402
     INTENTS,
     SLOTS,
     block_signal,
+    dispute_signal,
     extract_slots,
 )
 
@@ -370,51 +371,90 @@ def conformal_report(
 def override_report(
     probs: np.ndarray, df: pl.DataFrame, threshold: float, method: str
 ) -> dict:
-    """Conformal sets with and without the block-signal safety override (predict.py)."""
+    """Conformal sets without overrides, with the block override (0.2) and with block +
+    dispute overrides (0.3), as predict.apply_overrides applies them."""
     texts = df["text"].to_list()
     y = df["y"].to_numpy()
     block = INTENTS.index("card_block")
+    dispute = INTENTS.index("charge_dispute")
     base = [[INTENTS[i] for i in s] for s in conformal.SETS[method](probs, threshold)]
     tops = [INTENTS[i] for i in probs.argmax(axis=1)]
-    pairs = [apply_block_override(s, t, x) for s, t, x in zip(base, tops, texts)]
-    over = [s for s, _ in pairs]
-    fired = np.array([f for _, f in pairs])
-    signal = np.array([block_signal(x) for x in texts])
-    is_block = y == block
+    configs = {
+        "none": (),
+        "block": ("card_block",),
+        "block_dispute": ("card_block", "charge_dispute"),
+    }
+    sets, added = {}, {}
+    for name, kinds in configs.items():
+        pairs = [apply_overrides(b, t, x, kinds) for b, t, x in zip(base, tops, texts)]
+        sets[name] = [s for s, _ in pairs]
+        added[name] = [a for _, a in pairs]
+    signal = {
+        "block": np.array([block_signal(x) for x in texts]),
+        "dispute": np.array([dispute_signal(x) for x in texts]),
+    }
+    is_block, is_dispute = y == block, y == dispute
 
-    def summary(sets):
-        idx = [[INTENTS.index(i) for i in s] for s in sets]
+    def summary(name):
+        idx = [[INTENTS.index(i) for i in s] for s in sets[name]]
         out = set_stats(idx, df)
         out["card_block_coverage"] = float(
             np.mean([block in idx[i] for i in np.where(is_block)[0]])
         )
+        out["charge_dispute_coverage"] = float(
+            np.mean([dispute in idx[i] for i in np.where(is_dispute)[0]])
+        )
         out["false_card_block_singletons"] = int(
             sum(1 for s, t in zip(idx, y) if s == [block] and t != block)
         )
+        out["false_card_block_singleton_texts"] = [
+            x for s, t, x in zip(idx, y, texts) if s == [block] and t != block
+        ]
+        out["false_charge_dispute_singletons"] = int(
+            sum(1 for s, t in zip(idx, y) if s == [dispute] and t != dispute)
+        )
+        out["sets_over_max"] = int(sum(1 for s in idx if len(s) > MAX_SET))
+        out["singletons_turned_into_clarification"] = int(
+            sum(
+                1 for b, o in zip(base, sets[name]) if len(b) == 1 and len(o) == MAX_SET
+            )
+        )
+        out["fired"] = {
+            k: int(sum(1 for a in added[name] if k in a))
+            for k in ("card_block", "charge_dispute")
+        }
+        out["fired_on_own_intent_rows"] = {
+            "card_block": int(
+                sum(
+                    1
+                    for a, t in zip(added[name], y)
+                    if "card_block" in a and t == block
+                )
+            ),
+            "charge_dispute": int(
+                sum(
+                    1
+                    for a, t in zip(added[name], y)
+                    if "charge_dispute" in a and t == dispute
+                )
+            ),
+        }
         return out
 
     return {
         "method": method,
-        "without_override": summary(base),
-        "with_override": summary(over),
-        "override_fired": int(fired.sum()),
-        "fired_on_card_block_rows": int((fired & is_block).sum()),
-        "fired_on_other_rows": int((fired & ~is_block).sum()),
-        "card_block_rows_rescued": int(
-            sum(
-                1
-                for b, o, t in zip(base, over, y)
-                if t == block and "card_block" not in b and "card_block" in o
-            )
-        ),
-        "singletons_turned_into_clarification": int(
-            sum(1 for b, o in zip(base, over) if len(b) == 1 and len(o) == MAX_SET)
-        ),
-        "block_signal_recall_on_card_block": float(signal[is_block].mean()),
-        "block_signal_rate_on_other_intents": float(signal[~is_block].mean()),
-        "card_block_rows_signal_missed": [
-            t for t, sg, b in zip(texts, signal, is_block) if b and not sg
-        ],
+        "configs": {name: summary(name) for name in configs},
+        "block_signal": {
+            "recall_on_card_block": float(signal["block"][is_block].mean()),
+            "rate_on_other_intents": float(signal["block"][~is_block].mean()),
+            "card_block_rows_missed": [
+                t for t, sg, b in zip(texts, signal["block"], is_block) if b and not sg
+            ],
+        },
+        "dispute_signal": {
+            "recall_on_charge_dispute": float(signal["dispute"][is_dispute].mean()),
+            "rate_on_other_intents": float(signal["dispute"][~is_dispute].mean()),
+        },
     }
 
 
@@ -797,8 +837,8 @@ def main(argv=None):  # noqa: PLR0915
         if mondrian.get("adopted")
         else None,
         "status": METHOD_STATUS[DEPLOYED_METHOD],
-        "safety_override": "card_block is added to the set when rules.block_signal "
-        "fires (predict.apply_block_override)",
+        "safety_overrides": "card_block and charge_dispute are added to the set when "
+        "rules.block_signal or rules.dispute_signal fires (predict.apply_overrides)",
         "alternatives": {
             "aps": {
                 "threshold": aps["main"]["threshold"],

@@ -6,7 +6,7 @@
 | Date | 2026-10-04 (0.2: 2026-09-29) |
 | Status | **Pre-registered, amended once (0.3).** 0.2 was written before any system existed and before any result. 0.3 amends the classifier's conformal score (8.4) after the classifier results were seen; see the change log. No held-out case has been run. |
 | Owner | Aldair (plan, all scenario templates including the adversarial ones, grader, classifier) · Martín (the system's handling of the adversarial cases, tracing, latency and cost capture, run records) |
-| System under test | `docs/proposal.md` v3.1 · `docs/policy_cards.md` `cards-synthetic-0.5` (SYNTHETIC) · `docs/contracts/state_machine.md` `sm-0.3` · `docs/intents.md` `intents-1.0` |
+| System under test | `docs/proposal.md` v3.1 · `docs/policy_cards.md` `cards-synthetic-0.6` (SYNTHETIC) · `docs/contracts/state_machine.md` `sm-0.4` · `docs/intents.md` `intents-1.0` |
 | Report format | `docs/contracts/eval_report.schema.json` (`eval-report-0.2`) → `eval/report.json` |
 | Requirements covered | `docs/requirements_matrix.md` E-1 to E-22, D4-6 to D4-12, D5-1 to D5-13; closes gaps G-2, G-6 to G-11 at the plan level |
 
@@ -442,7 +442,7 @@ any field is unknown or the working tree is dirty.
 |---|---|
 | `git_commit`, `git_dirty` | Repository state (must be clean) |
 | `plan_commit` | Commit that froze this plan |
-| `policy_version`, `state_machine_version`, `intents_version` | `cards-synthetic-0.4`, `sm-0.3`, `intents-1.0` or later |
+| `policy_version`, `state_machine_version`, `intents_version` | `cards-synthetic-0.6`, `sm-0.4`, `intents-1.0` or later |
 | `scenario_set` | Set ID, version, SHA-256 manifest |
 | LLM | Provider, exact model ID (pinned version, no moving alias), temperature, top_p, max tokens, region |
 | Prompts | Name, version and SHA-256 of every prompt template (system prompt, reply wording, naive policy prompt) |
