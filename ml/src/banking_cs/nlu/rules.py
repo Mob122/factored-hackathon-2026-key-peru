@@ -1167,6 +1167,51 @@ def block_signal(text: str) -> bool:
     )
 
 
+# Theft wording only (not loss): POL-ACT-12 offers the dispute handoff after a block whose
+# request mentioned a theft or a fraud.
+THEFT_SIGNAL = _rx(
+    r"\b(?:robaron|robo|robad\w*|asaltaron|asaltad\w*|afanaron|chorearon|choraron|"
+    r"atracaron|raparon|bolsearon|roubaram|roubad\w*|roubo|furtaram|furtad\w*|furto|"
+    r"hurto|hurtad\w*|assaltad\w*|assaltaram|levaram)\b"
+)
+
+# Dispute or fraud signal: symmetric to block_signal (decisions log D-11). When it fires,
+# predict.py adds charge_dispute to the conformal set, so a lone card_block becomes a
+# clarifying question instead of skipping the dispute handoff (POL-ESC-01). Not used by
+# `classify`, so the rules baseline stays as committed at fb05246.
+DISPUTE_SIGNAL_EXTRA = [
+    _rx(
+        r"\b(?:fraude\w*|fraudulent\w*|estafa\w*|estafaron|estafad\w*|golpe|golpes|"
+        r"golpista\w*|chargeback|contracargo|clonaron|clonaram|clonad\w*)\b"
+    ),
+    _rx(r"\b(?:no|nao) (?:la |lo |le |a |o )?(?:reconozco|reconoce\w*|reconhe\w*)\b"),
+    _rx(
+        r"\b(?:cobro|cargo|compra|consumo|cobranca|debito|pago|pagamento|transac\w*)s?"
+        r"(?: que)?(?: yo| eu)? (?:no|nao) (?:hice|hize|fiz|realice|realizei|autorice|"
+        r"autorizei|reconozco|reconheco)\b"
+    ),
+    _rx(
+        r"\b(?:contest\w*|disput\w*|impugn\w*|desconoc\w*|reclam\w*)(?: \S+){0,3} "
+        r"(?:cargo|cobro|compra|consumo|cobranca|debito|pago|pagamento|transac\w*|"
+        r"lancamento)s?\b"
+    ),
+    _rx(r"\b(?:no autorizad\w*|nao autorizad\w*|indebid\w*|no fui yo|nao fui eu)\b"),
+]
+
+
+def theft_signal(text: str) -> bool:
+    """True when the message reports a theft (not a loss)."""
+    return bool(THEFT_SIGNAL.search(normalize(_ROBOT_PT.sub("robot", text))))
+
+
+def dispute_signal(text: str) -> bool:
+    """True when the message may dispute a charge or report a fraud."""
+    norm = normalize(text)
+    if any(p.search(norm) for p, _ in PATTERNS["charge_dispute"]):
+        return True
+    return any(p.search(norm) for p in DISPUTE_SIGNAL_EXTRA)
+
+
 def intent_scores(text: str) -> dict[str, float]:
     """Raw rule score per intent (before precedence), 0 when no pattern fires."""
     norm = normalize(text)

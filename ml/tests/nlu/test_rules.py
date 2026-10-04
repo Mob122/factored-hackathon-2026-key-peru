@@ -15,6 +15,7 @@ from banking_cs.nlu.rules import (
     INTENTS,
     PRODUCT_KINDS,
     block_signal,
+    dispute_signal,
     extract_slots,
     parse,
 )
@@ -312,3 +313,32 @@ def test_block_signal_does_not_change_the_rules_baseline():
     # "travar" is only in the safety signal; the frozen baseline does not know it.
     assert parse("Quero travar o cartão")["intent"] != "card_block"
     assert block_signal("Quero travar o cartão")
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "quiero reportar un fraude en mi tarjeta",
+        "não reconheço uma compra",
+        "Hay un cobro que no hice",
+        "Quero contestar uma cobrança",
+        "Caí num golpe, tem fraude no cartão",
+        "Me estafaron con la tarjeta",
+    ],
+)
+def test_dispute_signal_fires(text):
+    assert dispute_signal(text)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "¿Cuál es mi saldo?",
+        "Quiero bloquear mi tarjeta",
+        "Me robaron la tarjeta",
+        "¿Por qué me rechazaron la compra?",
+        "Quiero desbloquear mi tarjeta",
+    ],
+)
+def test_dispute_signal_quiet(text):
+    assert not dispute_signal(text)
