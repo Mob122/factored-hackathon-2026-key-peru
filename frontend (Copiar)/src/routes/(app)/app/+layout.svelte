@@ -1,0 +1,27 @@
+<script lang="ts">
+	import BarraLateral from '$lib/components/app/BarraLateral.svelte';
+	import BarraSuperior from '$lib/components/app/BarraSuperior.svelte';
+
+    import type { LayoutProps } from './$types';	
+	import { RUTAS } from '$lib/data/rutas';
+	import { page } from '$app/state';
+
+    let { data, children }: LayoutProps = $props();
+
+    let abrirBarraLateral = $state(false);
+</script>
+
+
+<div id="app" class="bg-red-50 font-roboto text-gris-secundario/62 ">
+    <div class={["grid md:grid-cols-[300px_1fr]", page.url.pathname.startsWith('/app/consultas') ? 'h-screen' : 'min-h-screen']}>            
+        <BarraLateral bind:abrir={abrirBarraLateral} rutas={RUTAS} />                            
+        
+        <main class="col-start-2 flex flex-col min-h-0 px-4 py-3"> 
+            <BarraSuperior bind:abrir={abrirBarraLateral} />
+            
+            <div class="flex flex-col min-h-0 mt-4 flex-1">
+                {@render children()}            
+            </div>
+        </main>
+    </div>
+</div>
