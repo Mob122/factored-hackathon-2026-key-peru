@@ -20,6 +20,7 @@ does not need.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from collections import Counter, defaultdict
@@ -41,7 +42,7 @@ from banking_cs.nlu.rules import (
     normalize,
 )
 
-DATASET_VERSION = "nlu-utt-0.1"
+DATASET_VERSION = "nlu-utt-0.2"
 VARIANTS = ("es-MX", "es-CO", "es-AR", "pt-BR")
 LANGUAGE = {"es-MX": "es", "es-CO": "es", "es-AR": "es", "pt-BR": "pt"}
 SPLITS = ("train", "calibration", "test")
@@ -127,6 +128,7 @@ def load_corpus(corpus_dir: Path = CORPUS_DIR) -> list[dict]:
                             "intent": intent,
                             "slots": {k: str(v) for k, v in slots.items()},
                             "is_seed": first,
+                            "topic": group.get("topic"),
                             "source_file": path.name,
                         }
                     )
@@ -237,8 +239,30 @@ def _components(row_groups: list[str], pairs) -> dict[str, str]:
     return {g: find(g) for g in parent}
 
 
-def assign_splits(rows: list[dict], component: dict[str, str]) -> dict[str, str]:
-    """Split per component (merged groups), stratified by intent."""
+def load_split_locks(corpus_dir: Path = CORPUS_DIR) -> dict[str, str]:
+    """Group -> split of earlier dataset versions (locks/*.json); those groups never move."""
+    locked = {}
+    for path in sorted((corpus_dir / "locks").glob("*.json")):
+        locked.update(json.loads(path.read_text(encoding="utf-8"))["splits"])
+    return locked
+
+
+def _stratum_seed(intent: str, topic: str | None) -> int:
+    digest = hashlib.sha256(f"{SPLIT_SEED}|{intent}|{topic}".encode()).hexdigest()
+    return int(digest[:8], 16)
+
+
+def assign_splits(
+    rows: list[dict], component: dict[str, str], locked: dict[str, str] | None = None
+) -> dict[str, str]:
+    """Split per component (merged groups).
+
+    A component holding a locked group takes that group's split (new near-duplicates of a
+    locked group inherit it). Other components with a train-only or test-only kind are
+    forced. The rest are split 60/20/20 within each (intent, topic) stratum, with a seed
+    per stratum, so adding groups to one stratum never reshuffles another.
+    """
+    locked = locked or {}
     members = defaultdict(list)
     for r in rows:
         members[component[r["seed_group_id"]]].append(r)
@@ -247,19 +271,27 @@ def assign_splits(rows: list[dict], component: dict[str, str]) -> dict[str, str]
     for comp, rs in sorted(members.items()):
         kinds = {r["group_kind"] for r in rs}
         forced = {FORCED_SPLIT[k] for k in kinds if k in FORCED_SPLIT}
-        if forced:
+        lock = {locked[r["seed_group_id"]] for r in rs if r["seed_group_id"] in locked}
+        if len(lock) > 1:
+            raise ValueError(f"component {comp} joins locked groups in splits {lock}")
+        if lock:
+            split_of[comp] = lock.pop()
+        elif forced:
             # A component touching a train-only group goes to train.
             split_of[comp] = "train" if "train" in forced else forced.pop()
         else:
-            free[Counter(r["intent"] for r in rs).most_common(1)[0][0]].append(comp)
-    rng = np.random.default_rng(SPLIT_SEED)
-    for intent in INTENTS:
-        comps = sorted(free[intent])
-        rng.shuffle(comps)
-        n = len(comps)
+            intent = Counter(r["intent"] for r in rs).most_common(1)[0][0]
+            topic = next((r["topic"] for r in rs if r.get("topic")), None)
+            free[(intent, topic)].append(comp)
+    for (intent, topic), comps in sorted(
+        free.items(), key=lambda kv: (kv[0][0], str(kv[0][1]))
+    ):
+        order = sorted(comps)
+        np.random.default_rng(_stratum_seed(intent, topic)).shuffle(order)
+        n = len(order)
         n_cal = round(n * SPLIT_SHARES[1])
         n_test = round(n * SPLIT_SHARES[2])
-        for k, comp in enumerate(comps):
+        for k, comp in enumerate(order):
             split_of[comp] = (
                 "test"
                 if k < n_test
@@ -314,6 +346,7 @@ def to_frame(
             split=split_of[r["seed_group_id"]],
             leak_group=component[r["seed_group_id"]],
             is_seed=r["is_seed"],
+            topic=r.get("topic"),
             origin=ORIGIN,
             authoring=AUTHORING,
             author_model=AUTHOR_MODEL,
@@ -408,8 +441,11 @@ def build(
     groups = [r["seed_group_id"] for r in rows]
     pairs = near_duplicate_pairs(texts, groups)
     component = _components(groups, pairs)
-    split_of = assign_splits(rows, component)
+    locked = load_split_locks(corpus_dir)
+    split_of = assign_splits(rows, component, locked)
     df = to_frame(rows, split_of, component)
+    new_groups = sorted(set(groups) - set(locked))
+    locked_components = {component[g] for g in locked if g in component}
     leaks = cross_split_leaks(df)
     merged = Counter(component.values())
     report = {
@@ -422,6 +458,12 @@ def build(
             for i, j, d in pairs[:50]
         ],
         "groups_merged": sum(n for n in merged.values() if n > 1),
+        "locked_groups": len(set(groups) & set(locked)),
+        "new_groups": len(new_groups),
+        "new_groups_by_split": dict(Counter(split_of[g] for g in new_groups)),
+        "new_groups_inheriting_a_locked_split": [
+            g for g in new_groups if component[g] in locked_components
+        ],
         "components_with_merges": sum(1 for n in merged.values() if n > 1),
         **leaks,
         "counts": {
@@ -445,7 +487,10 @@ def build(
     (out_dir / "build_report.json").write_text(
         json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    blind, key = label_quality_sample(df)
+    # The blind sample is drawn from the groups of the first locked version only, so adding
+    # groups never changes a sample the annotators may already be labeling.
+    lq_pool = df.filter(pl.col("seed_group_id").is_in(list(locked))) if locked else df
+    blind, key = label_quality_sample(lq_pool)
     blind.write_csv(out_dir / "label_quality_sample.csv")
     key.write_csv(out_dir / "label_quality_key.csv")
     fixture.parent.mkdir(parents=True, exist_ok=True)

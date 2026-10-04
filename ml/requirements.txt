@@ -11,3 +11,4 @@ pyyaml
 sentence-transformers
 rapidfuzz
 openai
+python-dotenv

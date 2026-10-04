@@ -1115,6 +1115,48 @@ def _score(norm: str, intent: str) -> tuple[float, int | None]:
     return score, first
 
 
+# Safety signal ---------------------------------------------------------------
+#
+# Used by the runtime override in predict.py (decisions log 2026-10-03): when it fires,
+# card_block is added to the conformal set, so a singleton of another intent becomes a
+# clarifying question instead of a missed block request. It is deliberately broad, since a
+# false signal only costs one question, and it covers wordings the baseline patterns above
+# do not ("travar", "congelada", "apagar la tarjeta", "sumiu"). It is not used by `classify`,
+# so the rules baseline stays as committed at fb05246.
+BLOCK_SIGNAL_EXTRA = [
+    _rx(r"\btrav(?:a|ar|ara|aram|arem|e|em|ei|ou|o|amos|ando|ado|ada|ados|adas)\b"),
+    _rx(r"\bcongel\w*"),
+    _rx(r"\b(?:clonaron|clonaram|clonad\w*|clonar\w*)\b"),
+    _rx(r"\b(?:perda|extravio|extraviad\w*|robo|roubo|furto|hurto)\b"),
+    _rx(
+        r"\b(?:report\w*|denunci\w*|registr\w*|comunic\w*)(?: \S+){0,4} "
+        r"(?:robad\w*|roubad\w*|furtad\w*|perdid\w*|robo|roubo|furto|perda)\b"
+    ),
+]
+# Only with a card mentioned in the same message.
+BLOCK_SIGNAL_WITH_CARD = [
+    _rx(r"\b(?:paus(?:ar|a|e|en|ala|ame|ela|enla|em)|en pausa|em pausa)\b"),
+    _rx(
+        r"\b(?:apag(?:ar|a|as|ue|uen|uela|uenla|uenme|ame|ala|ala)|apaguen\w*|"
+        r"desligar|desliga|desliguem)\b"
+    ),
+    _rx(r"\b(?:inhabilit(?:ar|en|e|a)|desactiv(?:ar|en|e|a)|desativ(?:ar|em|e|a))\b"),
+    _rx(r"\b(?:sumiu|sumiram|desapareci\w*|no aparece|nao aparece|nao acho)\b"),
+]
+
+
+def block_signal(text: str) -> bool:
+    """True when the message may ask for a block now or report a lost or stolen card."""
+    norm = normalize(text)
+    if any(p.search(norm) for p, _ in PATTERNS["card_block"]):
+        return True
+    if any(p.search(norm) for p in BLOCK_SIGNAL_EXTRA):
+        return True
+    return bool(_GENERIC_CARD.search(norm)) and any(
+        p.search(norm) for p in BLOCK_SIGNAL_WITH_CARD
+    )
+
+
 def intent_scores(text: str) -> dict[str, float]:
     """Raw rule score per intent (before precedence), 0 when no pattern fires."""
     norm = normalize(text)

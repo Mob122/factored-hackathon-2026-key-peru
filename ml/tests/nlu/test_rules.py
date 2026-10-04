@@ -14,6 +14,7 @@ from banking_cs.nlu.rules import (
     INTENT_SLOTS,
     INTENTS,
     PRODUCT_KINDS,
+    block_signal,
     extract_slots,
     parse,
 )
@@ -270,3 +271,43 @@ def test_package_imports_without_kedro():
         [sys.executable, "-c", code], capture_output=True, text=True, check=False
     )
     assert out.returncode == 0, out.stderr
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "me robaron la tarjeta, congélenla",
+        "travaram meu cartão",
+        "Quero travar o cartão",
+        "Perdí la tarjeta",
+        "Sumiu meu cartão",
+        "Quiero reportar mi tarjeta como robada.",
+        "Quiero apagar mi tarjeta un rato.",
+        "Bloquee todas mis tarjetas, por favor.",
+    ],
+)
+def test_block_signal_fires(text):
+    assert block_signal(text)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "¿Por qué me bloquearon la tarjeta?",
+        "Quiero desbloquear mi tarjeta.",
+        "Quero destravar o cartão",
+        "Me bloquearon el usuario de la app por intentos fallidos.",
+        "¿Cuál es mi saldo?",
+        "No reconozco un cargo",
+        "Apaga la luz",
+        "Hola",
+    ],
+)
+def test_block_signal_quiet(text):
+    assert not block_signal(text)
+
+
+def test_block_signal_does_not_change_the_rules_baseline():
+    # "travar" is only in the safety signal; the frozen baseline does not know it.
+    assert parse("Quero travar o cartão")["intent"] != "card_block"
+    assert block_signal("Quero travar o cartão")

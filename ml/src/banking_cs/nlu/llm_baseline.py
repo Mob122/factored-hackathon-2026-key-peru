@@ -5,8 +5,10 @@ Run from ml/ after banking_cs.nlu.train_eval:
 
 Model gpt-4o-mini (team decision; the eval plan's "same model ID as the agents" is not used
 here), temperature 0, the intent list with one-line definitions from docs/intents.md
-section 1, JSON output. The API key is read from OPENAI_API_KEY by the OpenAI client; it is
-never logged or written. If the key is not set, the baseline is recorded as "not run".
+section 1, JSON output. The API key comes from OPENAI_API_KEY in the environment or, if it is
+not set there, from that one variable in backend/.env (git-ignored), read at runtime with
+python-dotenv. Only that variable is loaded, and it is never printed, logged or written. If
+no key is found, the baseline is recorded as "not run".
 
 Responses are cached in data/nlu/llm_cache.jsonl (git-ignored), so a rerun does not bill the
 test split twice. Token usage and cost at the list prices below are logged; the run stops
@@ -20,16 +22,19 @@ import json
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 import numpy as np
 import polars as pl
 
 from banking_cs.nlu import metrics
-from banking_cs.nlu.dataset import OUT_DIR
+from banking_cs.nlu.dataset import ML_ROOT, OUT_DIR
 from banking_cs.nlu.rules import INTENTS
 from banking_cs.nlu.train_eval import ARTIFACT_DIR, DEPLOYED, N_BOOT, SEED, evaluate
 
 MODEL = "gpt-4o-mini"
+KEY_VAR = "OPENAI_API_KEY"
+ENV_FILE = ML_ROOT.parent / "backend" / ".env"
 # USD per million tokens, OpenAI list price for gpt-4o-mini assumed at the time of writing.
 PRICE_INPUT_PER_M = 0.15
 PRICE_OUTPUT_PER_M = 0.60
@@ -142,17 +147,40 @@ def cost_usd(input_tokens: int, output_tokens: int) -> float:
     )
 
 
+def load_api_key(env_file: Path = ENV_FILE) -> str | None:
+    """Make OPENAI_API_KEY available to the OpenAI client; returns where it came from.
+
+    Reads only that variable from `env_file`; the key itself is never returned or printed.
+    """
+    if os.environ.get(KEY_VAR):
+        return "environment"
+    if env_file.exists():
+        from dotenv import dotenv_values  # noqa: PLC0415
+
+        value = dotenv_values(env_file).get(KEY_VAR)
+        if value:
+            os.environ[KEY_VAR] = value
+            return "backend/.env"
+    return None
+
+
 def main(client=None):
     out_path = ARTIFACT_DIR / "llm_baseline.json"
     base = {"model": MODEL, "split": "test", "prompt_sha256": PROMPT_SHA}
-    if client is None and not os.environ.get("OPENAI_API_KEY"):
+    key_source = "injected client" if client is not None else load_api_key()
+    base["key_source"] = key_source
+    if client is None and not key_source:
         out_path.write_text(
             json.dumps(
-                {**base, "status": "not run", "reason": "OPENAI_API_KEY not set"},
+                {
+                    **base,
+                    "status": "not run",
+                    "reason": "no OPENAI_API_KEY in the environment or backend/.env",
+                },
                 indent=1,
             )
         )
-        print("LLM baseline not run: OPENAI_API_KEY not set")  # noqa: T201
+        print("LLM baseline not run: no OPENAI_API_KEY found")  # noqa: T201
         return
     df = pl.read_parquet(OUT_DIR / "utterances.parquet").filter(
         pl.col("split") == "test"

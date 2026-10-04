@@ -1,7 +1,7 @@
 {
- "method": "split_conformal_aps_nonrandomized",
+ "method": "split_conformal_lac",
  "alpha": 0.1,
- "threshold": 0.9901633306565674,
+ "threshold": 0.6683924683762994,
  "max_set": 2,
  "classes": [
   "balance_inquiry",
@@ -17,13 +17,14 @@
   "conversation_end",
   "out_of_scope"
  ],
- "n_calibration": 776,
+ "n_calibration": 832,
  "mondrian_by_language": null,
- "pre_registered": true,
+ "status": "adopted for the deployed model by amendment eval-plan-0.3 (decided after the APS result, before held-out A)",
+ "safety_override": "card_block is added to the set when rules.block_signal fires (predict.apply_block_override)",
  "alternatives": {
-  "lac": {
-   "threshold": 0.743581825660147,
-   "status": "exploratory, not pre-registered; adopting it needs an eval-plan amendment before held-out A"
+  "aps": {
+   "threshold": 0.988877817839221,
+   "status": "original pre-registration (eval-plan-0.2); replaced for the deployed model by eval-plan-0.3"
   }
  }
 }

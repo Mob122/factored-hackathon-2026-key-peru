@@ -423,7 +423,9 @@ python-dateutil==2.9.0.post0
     #   jupyter-client
     #   pandas
 python-dotenv==1.2.3
-    # via uvicorn
+    # via
+    #   -r requirements.txt
+    #   uvicorn
 python-json-logger==4.2.0
     # via jupyter-events
 python-slugify==9.1.2

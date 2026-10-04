@@ -25,8 +25,10 @@ def test_seed_groups_per_intent(corpus):
     groups = {
         (r["intent"], r["seed_group_id"]) for r in corpus if r["group_kind"] == "seed"
     }
+    added = {"card_block": 20, "out_of_scope": 15}  # nlu-utt-0.2 topics
     for intent in INTENTS:
-        assert sum(1 for i, _ in groups if i == intent) == 40, intent
+        expected = 40 + added.get(intent, 0)
+        assert sum(1 for i, _ in groups if i == intent) == expected, intent
 
 
 def test_guide_matches_labeling_guide(corpus):
@@ -129,3 +131,32 @@ def test_split_invariants():
     assert split_of["pn"] == "test"
     free = [split_of[f"g{i}"] for i in range(1, 10)]
     assert set(free) == {"train", "calibration", "test"}
+
+
+def test_locked_groups_keep_their_split(corpus):
+    locked = dataset.load_split_locks()
+    groups = [r["seed_group_id"] for r in corpus]
+    pairs = dataset.near_duplicate_pairs([r["text"] for r in corpus], groups)
+    split_of = dataset.assign_splits(corpus, dataset._components(groups, pairs), locked)
+    assert all(split_of[g] == s for g, s in locked.items())
+
+
+def test_added_topics_split_three_one_one(corpus):
+    locked = dataset.load_split_locks()
+    groups = [r["seed_group_id"] for r in corpus]
+    pairs = dataset.near_duplicate_pairs([r["text"] for r in corpus], groups)
+    split_of = dataset.assign_splits(corpus, dataset._components(groups, pairs), locked)
+    topics = {}
+    for r in corpus:
+        if r.get("topic"):
+            topics.setdefault(r["topic"], set()).add(r["seed_group_id"])
+    assert len(topics) == 7
+    for gids in topics.values():
+        assert sorted(split_of[g] for g in gids) == [
+            "calibration",
+            "test",
+            "train",
+            "train",
+            "train",
+        ]
+        assert not gids & set(locked)

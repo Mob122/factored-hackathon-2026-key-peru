@@ -560,3 +560,230 @@ groups:
     pt-BR:
       - "Oi, bom dia."
       - "E aí, tudo certo?"
+  # nlu-utt-0.2: seed groups added for the meanings missed in model card 0.1 section 6.
+  # `topic` stratifies their split (3 train / 1 calibration / 1 test per topic).
+  - id: dlv-001
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "Pedí una reposición hace dos semanas y no me ha llegado."
+      - "¿Me pueden decir dónde viene mi tarjeta? Ya pasó una semana."
+    es-CO:
+      - "Solicité la reposición hace dos semanas y no me ha llegado."
+      - "¿Me dicen por dónde viene la tarjeta? Ya pasó una semana."
+    es-AR:
+      - "Pedí la reposición hace dos semanas y todavía no me llegó."
+      - "¿Me decís dónde está la tarjeta que me mandaron? Ya pasó una semana."
+    pt-BR:
+      - "Pedi a segunda via há duas semanas e não chegou."
+      - "Podem me dizer onde está o meu cartão? Já faz uma semana."
+  - id: dlv-002
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "¿Cómo rastreo el envío de mi tarjeta?"
+      - "Quiero el número de guía del envío de la tarjeta."
+    es-CO:
+      - "¿Cómo rastreo el envío de la tarjeta?"
+      - "Quisiera el número de guía del envío de la tarjeta."
+    es-AR:
+      - "¿Cómo sigo el envío de la tarjeta?"
+      - "Quiero el número de seguimiento del envío de la tarjeta."
+    pt-BR:
+      - "Como rastreio a entrega do meu cartão?"
+      - "Quero o código de rastreio do envio do cartão."
+  - id: dlv-003
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "El mensajero no me entregó la tarjeta, ¿qué pasó con el envío?"
+      - "Me dijeron que hoy llegaba la tarjeta y nada."
+    es-CO:
+      - "El domiciliario nunca me entregó la tarjeta, ¿qué pasó?"
+      - "Me dijeron que hoy llegaba la tarjeta y nada que llega."
+    es-AR:
+      - "El cadete no me trajo la tarjeta, ¿qué pasó con el envío?"
+      - "Me avisaron que hoy llegaba la tarjeta y no vino nadie."
+    pt-BR:
+      - "O entregador não trouxe o meu cartão, o que houve com a entrega?"
+      - "Disseram que o cartão chegava hoje e nada."
+  - id: dlv-004
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "¿A qué dirección van a mandar mi tarjeta nueva?"
+      - "¿En cuántos días hábiles llega la tarjeta?"
+    es-CO:
+      - "¿A qué dirección me van a enviar la tarjeta nueva?"
+      - "¿Cuántos días hábiles se demora en llegar la tarjeta?"
+    es-AR:
+      - "¿A qué dirección me mandan la tarjeta nueva?"
+      - "¿En cuántos días hábiles llega la tarjeta, che?"
+    pt-BR:
+      - "Para qual endereço vão mandar o meu cartão novo?"
+      - "Em quantos dias úteis o cartão chega?"
+  - id: dlv-005
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "¿Puedo recoger mi tarjeta en sucursal en lugar de esperar el envío?"
+      - "Prefiero ir por la tarjeta a la sucursal, ¿se puede?"
+    es-CO:
+      - "¿Puedo recoger la tarjeta en la oficina en vez de esperar el envío?"
+      - "Prefiero ir por la tarjeta a la oficina, ¿se puede?"
+    es-AR:
+      - "¿Puedo retirar la tarjeta en la sucursal en vez de esperar el envío?"
+      - "Prefiero ir a buscar la tarjeta a la sucursal, ¿se puede?"
+    pt-BR:
+      - "Posso retirar o cartão na agência em vez de esperar a entrega?"
+      - "Prefiro buscar o cartão na agência, pode ser?"
+  - id: app-001
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "Olvidé mi contraseña de la banca en línea."
+      - "No me acuerdo de la contraseña de la app, ¿cómo la recupero?"
+    es-CO:
+      - "Se me olvidó la contraseña de la banca virtual."
+      - "No me acuerdo de la clave de la app, ¿cómo la recupero?"
+    es-AR:
+      - "Me olvidé la contraseña del home banking."
+      - "No me acuerdo la clave de la app, ¿cómo la recupero?"
+    pt-BR:
+      - "Esqueci a senha do internet banking."
+      - "Não lembro a senha do app, como recupero?"
+  - id: app-002
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "Me bloquearon el usuario de la app por intentos fallidos."
+      - "Mi usuario de la banca móvil aparece bloqueado."
+    es-CO:
+      - "Me bloquearon el usuario de la app por meter mal la clave."
+      - "Mi usuario de la app aparece bloqueado, ¿cómo entro?"
+    es-AR:
+      - "Me bloquearon el usuario del home banking por intentos fallidos."
+      - "El usuario de la app me figura bloqueado."
+    pt-BR:
+      - "Meu usuário do app foi bloqueado por tentativas erradas."
+      - "O meu acesso ao internet banking está bloqueado."
+  - id: app-003
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "La app se cierra sola cuando intento entrar."
+      - "No me llega el código para iniciar sesión en la app."
+    es-CO:
+      - "La app se cierra sola cuando intento ingresar."
+      - "No me llega el código para ingresar a la app."
+    es-AR:
+      - "La app se me cierra sola cuando quiero entrar."
+      - "No me llega el código para entrar a la app, che."
+    pt-BR:
+      - "O app fecha sozinho quando tento entrar."
+      - "Não chega o código para entrar no app."
+  - id: app-004
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "¿Cómo me registro en la banca en línea?"
+      - "Quiero dar de alta mi usuario en la app."
+    es-CO:
+      - "¿Cómo me inscribo en la banca virtual?"
+      - "Quisiera crear mi usuario en la app."
+    es-AR:
+      - "¿Cómo me registro en el home banking?"
+      - "Quiero darme de alta en la app."
+    pt-BR:
+      - "Como me cadastro no internet banking?"
+      - "Quero criar meu usuário no app."
+  - id: app-005
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "Cambié de celular y ya no puedo entrar a la app."
+      - "Desde que cambié de teléfono la app no me reconoce."
+    es-CO:
+      - "Cambié de celular y ya no puedo ingresar a la app."
+      - "Desde que cambié de celular la app no me reconoce."
+    es-AR:
+      - "Cambié el celu y ya no puedo entrar a la app."
+      - "Desde que cambié el teléfono la app no me reconoce."
+    pt-BR:
+      - "Troquei de celular e não consigo mais entrar no app."
+      - "Desde que troquei de celular o app não me reconhece."
+  - id: rec-001
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "Quiero ponerle saldo a mi celular de 100 pesos."
+      - "Hágame una recarga de 100 pesos a mi número."
+    es-CO:
+      - "Quiero recargarle 10 mil pesos al celular."
+      - "Me hace una recarga de 10 mil al celular, por favor."
+    es-AR:
+      - "Quiero cargarle 2 mil pesos al celu."
+      - "Haceme una carga de 2 lucas al celu."
+    pt-BR:
+      - "Quero colocar 20 reais de crédito no celular."
+      - "Faz uma recarga de 20 reais no meu número."
+  - id: rec-002
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "¿Puedo recargar tiempo aire con mi tarjeta?"
+      - "¿Cómo compro una recarga para mi celular desde aquí?"
+    es-CO:
+      - "¿Puedo recargar minutos con la tarjeta?"
+      - "¿Cómo compro una recarga para el celular desde aquí?"
+    es-AR:
+      - "¿Puedo cargar crédito al celu con la tarjeta?"
+      - "¿Cómo compro una carga para el celular desde acá?"
+    pt-BR:
+      - "Posso fazer recarga de celular com o cartão?"
+      - "Como compro uma recarga para o celular por aqui?"
+  - id: rec-003
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "Recárguele saldo al celular de mi mamá, por favor."
+      - "Quiero mandarle una recarga al número de mi mamá."
+    es-CO:
+      - "Me recarga el celular de mi mamá, por favor."
+      - "Quisiera mandarle una recarga al número de mi mamá."
+    es-AR:
+      - "Cargale crédito al celular de mi vieja, porfa."
+      - "Quiero mandarle una carga al número de mi vieja."
+    pt-BR:
+      - "Coloca crédito no celular da minha mãe, por favor."
+      - "Quero mandar uma recarga para o número da minha mãe."
+  - id: rec-004
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "Se me acabó el saldo del celular, ¿me ayudas a recargar?"
+      - "Ya no tengo saldo en el teléfono, quiero recargar."
+    es-CO:
+      - "Se me acabaron los minutos del celular, ¿me ayuda a recargar?"
+      - "Ya no tengo saldo en el celular, quiero recargar."
+    es-AR:
+      - "Me quedé sin crédito en el celu, ¿me ayudás a cargar?"
+      - "No tengo más saldo en el teléfono, quiero cargar."
+    pt-BR:
+      - "Acabou o crédito do meu celular, me ajuda a recarregar?"
+      - "Estou sem saldo no celular, quero recarregar."
+  - id: rec-005
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "¿Tienen paquetes de datos para el celular?"
+      - "Quiero comprar un paquete de internet para el celular."
+    es-CO:
+      - "¿Venden paquetes de datos para el celular?"
+      - "Quisiera comprar un paquete de datos para el celular."
+    es-AR:
+      - "¿Tienen packs de datos para el celu?"
+      - "Quiero comprar un pack de internet para el celu."
+    pt-BR:
+      - "Vocês vendem pacote de dados para celular?"
+      - "Quero comprar um pacote de internet para o celular."

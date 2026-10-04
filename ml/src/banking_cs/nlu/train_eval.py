@@ -50,9 +50,16 @@ from banking_cs.nlu.dataset import (  # noqa: E402
     ML_ROOT,
     NEAR_DUP_DISTANCE,
     OUT_DIR,
+    load_split_locks,
     near_duplicate_pairs,
 )
-from banking_cs.nlu.rules import INTENTS, SLOTS, extract_slots  # noqa: E402
+from banking_cs.nlu.predict import apply_block_override  # noqa: E402
+from banking_cs.nlu.rules import (  # noqa: E402
+    INTENTS,
+    SLOTS,
+    block_signal,
+    extract_slots,
+)
 
 SEED = 2026
 CV_FOLDS = 5
@@ -82,6 +89,24 @@ ENCODERS = {
 # Lower is cheaper to run; used for the tie rule.
 COST_RANK = {"majority": 0, "rules": 1, "tfidf_lr": 2, "mpnet_lr": 3, "e5_lr": 3}
 ARTIFACT_DIR = ML_ROOT / "artifacts" / "nlu"
+DEPLOYED_METHOD = "lac"  # eval-plan-0.3 amendment of 8.4 (decisions log 2026-10-03)
+METHOD_STATUS = {
+    "lac": "adopted for the deployed model by amendment eval-plan-0.3 (decided after "
+    "the APS result, before held-out A)",
+    "aps": "original pre-registration (eval-plan-0.2); replaced for the deployed model "
+    "by eval-plan-0.3",
+}
+# Test groups of nlu-utt-0.1 that the nlu-utt-0.2 seed groups target (model card 0.1
+# section 6), reported before and after the added training data.
+TARGETED_TEST_GROUPS = {
+    "freeze": ["blk-008"],
+    "travar": ["ptn-blk-3"],
+    "report_stolen": ["blk-018"],
+    "lost_card": ["ptn-blk-2"],
+    "card_delivery": ["oos-030"],
+    "app_login": ["oos-013"],
+    "phone_topup": ["oos-031"],
+}
 GOLDEN_YAML = CORPUS_DIR / "dev" / "golden_turns.yaml"
 K = len(INTENTS)
 
@@ -332,7 +357,7 @@ def conformal_report(
     main["mondrian"] = mondrian
     return {
         "method": method,
-        "pre_registered": method == "aps",
+        "status": METHOD_STATUS[method],
         "alpha": ALPHA,
         "max_set": MAX_SET,
         "n_calibration": len(y_cal),
@@ -340,6 +365,91 @@ def conformal_report(
         "alpha_sweep": sweep,
         "calibration_crossfit": calibration_crossfit(probs_cal, cal, method),
     }
+
+
+def override_report(
+    probs: np.ndarray, df: pl.DataFrame, threshold: float, method: str
+) -> dict:
+    """Conformal sets with and without the block-signal safety override (predict.py)."""
+    texts = df["text"].to_list()
+    y = df["y"].to_numpy()
+    block = INTENTS.index("card_block")
+    base = [[INTENTS[i] for i in s] for s in conformal.SETS[method](probs, threshold)]
+    tops = [INTENTS[i] for i in probs.argmax(axis=1)]
+    pairs = [apply_block_override(s, t, x) for s, t, x in zip(base, tops, texts)]
+    over = [s for s, _ in pairs]
+    fired = np.array([f for _, f in pairs])
+    signal = np.array([block_signal(x) for x in texts])
+    is_block = y == block
+
+    def summary(sets):
+        idx = [[INTENTS.index(i) for i in s] for s in sets]
+        out = set_stats(idx, df)
+        out["card_block_coverage"] = float(
+            np.mean([block in idx[i] for i in np.where(is_block)[0]])
+        )
+        out["false_card_block_singletons"] = int(
+            sum(1 for s, t in zip(idx, y) if s == [block] and t != block)
+        )
+        return out
+
+    return {
+        "method": method,
+        "without_override": summary(base),
+        "with_override": summary(over),
+        "override_fired": int(fired.sum()),
+        "fired_on_card_block_rows": int((fired & is_block).sum()),
+        "fired_on_other_rows": int((fired & ~is_block).sum()),
+        "card_block_rows_rescued": int(
+            sum(
+                1
+                for b, o, t in zip(base, over, y)
+                if t == block and "card_block" not in b and "card_block" in o
+            )
+        ),
+        "singletons_turned_into_clarification": int(
+            sum(1 for b, o in zip(base, over) if len(b) == 1 and len(o) == MAX_SET)
+        ),
+        "block_signal_recall_on_card_block": float(signal[is_block].mean()),
+        "block_signal_rate_on_other_intents": float(signal[~is_block].mean()),
+        "card_block_rows_signal_missed": [
+            t for t, sg, b in zip(texts, signal, is_block) if b and not sg
+        ],
+    }
+
+
+def subset_report(test: pl.DataFrame, preds: dict[str, np.ndarray]) -> dict:
+    """Macro-F1 on the nlu-utt-0.1 test groups, on the new ones, and per targeted group."""
+    locked = load_split_locks()
+    gids = test["seed_group_id"].to_numpy()
+    old = np.array([g in locked for g in gids])
+    y = test["y"].to_numpy()
+    block = INTENTS.index("card_block")
+    everything = np.ones(len(y), dtype=bool)
+    out = {"n_old": int(old.sum()), "n_new": int((~old).sum()), "models": {}}
+    for name, pred in preds.items():
+        entry = {}
+        for label, mask in (
+            ("all", everything),
+            ("old_test_groups", old),
+            ("new_test_groups", ~old),
+        ):
+            entry[label] = {
+                "n": int(mask.sum()),
+                "macro_f1": metrics.macro_f1(y[mask], pred[mask], K),
+                "accuracy": float((y[mask] == pred[mask]).mean()),
+                "card_block_recall": float((pred[mask & (y == block)] == block).mean()),
+            }
+        entry["targeted_groups"] = {
+            topic: {
+                g: float((pred[gids == g] == y[gids == g]).mean())
+                for g in group_ids
+                if (gids == g).any()
+            }
+            for topic, group_ids in TARGETED_TEST_GROUPS.items()
+        }
+        out["models"][name] = entry
+    return out
 
 
 def calibration_crossfit(probs_cal: np.ndarray, cal: pl.DataFrame, method: str) -> dict:
@@ -484,6 +594,11 @@ def _r(obj):
 def main(argv=None):  # noqa: PLR0915
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--cv-only", action="store_true")
+    parser.add_argument(
+        "--compare-to",
+        type=Path,
+        help="joblib of a previous deployed model, scored on the same test split",
+    )
     args = parser.parse_args(argv)
 
     df = pl.read_parquet(OUT_DIR / "utterances.parquet").with_columns(
@@ -577,6 +692,18 @@ def main(argv=None):  # noqa: PLR0915
         for name in sorted({DEPLOYED, winner} & set(probs))
         for method in ("aps", "lac")
     }
+    dep_conf = conformal_results[f"{DEPLOYED}|{DEPLOYED_METHOD}"]["main"]
+    override = {
+        split_name: override_report(
+            probs[DEPLOYED][k], part, dep_conf["threshold"], DEPLOYED_METHOD
+        )
+        for k, (split_name, part) in enumerate((("calibration", cal), ("test", test)))
+    }
+    subset_preds = {DEPLOYED: test_pred[DEPLOYED], winner: test_pred[winner]}
+    if args.compare_to:
+        previous = joblib.load(args.compare_to)
+        subset_preds[f"previous_{DEPLOYED}"] = previous.predict(test["text"].to_list())
+    subsets = subset_report(test, subset_preds)
 
     # Size and latency of the deployed model and the best encoder.
     ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
@@ -656,11 +783,11 @@ def main(argv=None):  # noqa: PLR0915
     }
 
     # Export.
-    conf = conformal_results[f"{DEPLOYED}|aps"]
-    lac = conformal_results[f"{DEPLOYED}|lac"]
+    conf = conformal_results[f"{DEPLOYED}|{DEPLOYED_METHOD}"]
+    aps = conformal_results[f"{DEPLOYED}|aps"]
     mondrian = conf["main"]["mondrian"]
     conformal_json = {
-        "method": "split_conformal_aps_nonrandomized",
+        "method": "split_conformal_lac",
         "alpha": ALPHA,
         "threshold": conf["main"]["threshold"],
         "max_set": MAX_SET,
@@ -669,12 +796,13 @@ def main(argv=None):  # noqa: PLR0915
         "mondrian_by_language": mondrian.get("thresholds")
         if mondrian.get("adopted")
         else None,
-        "pre_registered": True,
+        "status": METHOD_STATUS[DEPLOYED_METHOD],
+        "safety_override": "card_block is added to the set when rules.block_signal "
+        "fires (predict.apply_block_override)",
         "alternatives": {
-            "lac": {
-                "threshold": lac["main"]["threshold"],
-                "status": "exploratory, not pre-registered; adopting it needs an "
-                "eval-plan amendment before held-out A",
+            "aps": {
+                "threshold": aps["main"]["threshold"],
+                "status": METHOD_STATUS["aps"],
             }
         },
     }
@@ -706,6 +834,10 @@ def main(argv=None):  # noqa: PLR0915
         "test": results,
         "paired_bootstrap": paired,
         "conformal": conformal_results,
+        "deployed_conformal_method": DEPLOYED_METHOD,
+        "safety_override": override,
+        "test_subsets": subsets,
+        "dataset_version": df["dataset_version"][0],
         "slots_rules_gold_intent": slot_report(test),
         "golden_turns": golden_report(golden_pred, golden),
         "cost": cost,

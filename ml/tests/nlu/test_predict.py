@@ -8,7 +8,7 @@ import sys
 import pytest
 
 from banking_cs.nlu import predict as predict_module
-from banking_cs.nlu.predict import ArtifactError, IntentModel
+from banking_cs.nlu.predict import ArtifactError, IntentModel, apply_block_override
 from banking_cs.nlu.rules import INTENTS
 
 pytestmark = pytest.mark.skipif(
@@ -24,13 +24,14 @@ def model():
 
 def test_output_contract(model):
     out = model.predict("¿Cuánto debo en la tarjeta terminada en 4950?")
-    assert set(out) == {"intent_set", "slots", "scores"}
+    assert set(out) == {"intent_set", "slots", "scores", "safety_override"}
     assert list(out["scores"]) == sorted(
         out["scores"], key=out["scores"].get, reverse=True
     )
     assert set(out["scores"]) == set(INTENTS)
     assert abs(sum(out["scores"].values()) - 1) < 1e-3
-    assert out["intent_set"][0] == "balance_inquiry"
+    assert out["intent_set"] == ["balance_inquiry"]
+    assert out["safety_override"] is False
     assert out["slots"] == {
         "product_kind": "card",
         "last4": "4950",
@@ -38,17 +39,59 @@ def test_output_contract(model):
     }
 
 
-def test_aps_sets_are_never_empty_and_deterministic(model):
+def test_default_conformal_score_is_lac(model):
+    assert model.default_method == "lac"
+    assert model.conformal["method"] == "split_conformal_lac"
+    assert "aps" in model.conformal["alternatives"]
+
+
+def test_sets_are_deterministic_and_aps_never_empty(model):
     for text in ("Hola", "asdfgh", "Quiero bloquear mi tarjeta de débito."):
         first = model.predict(text)
-        assert first["intent_set"]
         assert model.predict(text) == first
+        assert model.predict(text, method="aps")["intent_set"]
 
 
-def test_lac_alternative_gives_smaller_sets(model):
-    text = "¿Cuánto debo en la tarjeta terminada en 4950?"
-    assert len(model.predict(text, method="lac")["intent_set"]) <= len(
-        model.predict(text)["intent_set"]
+@pytest.mark.parametrize(
+    "text", ["me robaron la tarjeta, congélenla", "travaram meu cartão"]
+)
+def test_block_override_adds_card_block(model, text):
+    out = model.predict(text)
+    assert "card_block" in out["intent_set"]
+    if out["safety_override"]:
+        # Added by the override, so the model's own set did not hold card_block.
+        assert "card_block" not in model.predict(text, override=False)["intent_set"]
+
+
+def test_override_rules():
+    # A singleton of another intent becomes a clarification.
+    assert apply_block_override(
+        ["card_status"], "card_status", "travaram meu cartão"
+    ) == (
+        ["card_status", "card_block"],
+        True,
+    )
+    # An empty set becomes {top, card_block}, or {card_block} when it is the top intent.
+    assert apply_block_override([], "out_of_scope", "Perdí la tarjeta") == (
+        ["out_of_scope", "card_block"],
+        True,
+    )
+    assert apply_block_override([], "card_block", "Perdí la tarjeta") == (
+        ["card_block"],
+        True,
+    )
+    # No signal, or card_block already in the set: unchanged.
+    assert apply_block_override(
+        ["balance_inquiry"], "balance_inquiry", "¿Mi saldo?"
+    ) == (
+        ["balance_inquiry"],
+        False,
+    )
+    assert apply_block_override(
+        ["card_block"], "card_block", "Me robaron la tarjeta"
+    ) == (
+        ["card_block"],
+        False,
     )
 
 
@@ -79,10 +122,10 @@ def test_loader_imports_without_kedro():
     code = (
         "import sys; sys.modules['kedro'] = None; "
         "from banking_cs.nlu.predict import predict; "
-        "print(predict('Hola')['intent_set'][0])"
+        "print(predict('Hola')['scores'] and 'ok')"
     )
     out = subprocess.run(
         [sys.executable, "-c", code], capture_output=True, text=True, check=False
     )
     assert out.returncode == 0, out.stderr
-    assert out.stdout.strip() == "out_of_scope"
+    assert out.stdout.strip() == "ok"

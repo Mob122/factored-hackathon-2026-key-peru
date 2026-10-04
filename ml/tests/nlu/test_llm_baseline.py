@@ -64,3 +64,15 @@ def test_prompt_lists_every_intent():
     for intent in llm_baseline.DEFINITIONS:
         assert f"- {intent}:" in llm_baseline.SYSTEM_PROMPT
     assert set(llm_baseline.DEFINITIONS) == set(llm_baseline.INTENTS)
+
+
+def test_api_key_loaded_from_env_file_only_for_that_variable(tmp_path, monkeypatch):
+    env_file = tmp_path / ".env"
+    env_file.write_text("OPENAI_API_KEY=sk-test-not-real\nSECRET_KEY=other\n")
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("SECRET_KEY", raising=False)
+    assert llm_baseline.load_api_key(env_file) == "backend/.env"
+    assert llm_baseline.os.environ["OPENAI_API_KEY"] == "sk-test-not-real"
+    assert "SECRET_KEY" not in llm_baseline.os.environ
+    monkeypatch.delenv("OPENAI_API_KEY")
+    assert llm_baseline.load_api_key(tmp_path / "missing.env") is None
