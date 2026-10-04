@@ -1,24 +1,17 @@
 <script lang="ts">
-	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
-	import BarraNavegacion from '$lib/components/marketing/BarraNavegacion.svelte';
+    import type { LayoutProps } from './$types';
+    	import './layout.css';
 
-	const RUTAS: { texto: string; enlace: string }[] = [
-		{ texto: 'Inicio', enlace: '/' },
-		{ texto: 'Nosotros', enlace: '#nosotros' },
-		{ texto: 'Testimonios', enlace: '#testimonios' },
-		{ texto: 'Q&A', enlace: '#preguntas-frecuentes' }
-	];
 
-	let { children } = $props();	
+    let { data, children }: LayoutProps = $props();
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+    <title>Key Perú</title>
+    <meta name="description" content="Key Perú es una aplicación de atención bancaria segura y confiable que permite consultar información de cuentas, movientos y revisar el estado de tarjetas o bloqueos de manera rápida y sencilla.">
+    <meta name="keywords" content="Key Perú, atención bancaria, consulta de cuentas, movimientos bancarios, estado de tarjetas, bloqueos de tarjetas, aplicación bancaria segura, información financiera, servicios bancarios en línea">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
+</svelte:head>
 
-<div id="app" class="font-roboto text-gris-secundario">
-	<BarraNavegacion rutas={RUTAS} />
-	
-	<div>
-		{@render children()}
-	</div>	
-</div>
+{@render children()}
