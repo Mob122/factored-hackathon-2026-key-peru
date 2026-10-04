@@ -301,6 +301,7 @@ def test_block_signal_fires(text):
         "No reconozco un cargo",
         "Apaga la luz",
         "Hola",
+        "Não quero falar com robô, me passa para alguém.",
     ],
 )
 def test_block_signal_quiet(text):

@@ -10,8 +10,8 @@
 - `intent_set`: the conformal prediction set (docs/policy_cards.md POL-ESC-06): one intent
   -> act; 2 to `max_set` -> clarify; empty or larger -> transfer. Most probable first. The
   default score is LAC (docs/eval_plan.md 8.4, amendment eval-plan-0.3).
-- Safety override: when `rules.block_signal` fires and the set lacks card_block, card_block
-  is appended, so a singleton of another intent becomes a clarifying question. An empty set
+- Safety override: when `rules.block_signal` fires and the set lacks card_block (and does
+  not hold human_request), card_block is appended, so a singleton of another intent becomes a clarifying question. An empty set
   becomes {top intent, card_block}, or {card_block} when card_block is the top intent (the
   block flow still asks for confirmation, POL-ACT-02). `safety_override` says whether it
   fired, for the audit log.
@@ -48,13 +48,18 @@ METHOD_ALIASES = {
     "lac": "lac",
 }
 BLOCK = "card_block"
+HUMAN = "human_request"
 
 
 def apply_block_override(
     intent_set: list[str], top: str, text: str
 ) -> tuple[list[str], bool]:
-    """Add card_block to the set when the rules see a block or theft request."""
-    if BLOCK in intent_set or not block_signal(text):
+    """Add card_block to the set when the rules see a block or theft request.
+
+    Not applied when the set holds human_request: a request for a person is transferred
+    right away with no extra question (POL-ESC-09, docs/intents.md rule 2).
+    """
+    if BLOCK in intent_set or HUMAN in intent_set or not block_signal(text):
         return intent_set, False
     if not intent_set:
         return ([BLOCK] if top == BLOCK else [top, BLOCK]), True

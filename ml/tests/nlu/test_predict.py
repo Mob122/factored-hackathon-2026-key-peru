@@ -80,6 +80,12 @@ def test_override_rules():
         ["card_block"],
         True,
     )
+    # A request for a person is transferred right away (POL-ESC-09): no override.
+    assert apply_block_override(
+        ["human_request"],
+        "human_request",
+        "Me robaron la tarjeta, páseme con un asesor",
+    ) == (["human_request"], False)
     # No signal, or card_block already in the set: unchanged.
     assert apply_block_override(
         ["balance_inquiry"], "balance_inquiry", "¿Mi saldo?"

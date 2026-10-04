@@ -1128,6 +1128,8 @@ BLOCK_SIGNAL_EXTRA = [
     _rx(r"\bcongel\w*"),
     _rx(r"\b(?:clonaron|clonaram|clonad\w*|clonar\w*)\b"),
     _rx(r"\b(?:perda|extravio|extraviad\w*|robo|roubo|furto|hurto)\b"),
+    # v2: verb forms and nouns v1 missed (decisions log 2026-10-04).
+    _rx(r"\bbloque(?:eme|enmela|an|amos|o tempora\w*|io tempora\w*)\b"),
     _rx(
         r"\b(?:report\w*|denunci\w*|registr\w*|comunic\w*)(?: \S+){0,4} "
         r"(?:robad\w*|roubad\w*|furtad\w*|perdid\w*|robo|roubo|furto|perda)\b"
@@ -1135,19 +1137,27 @@ BLOCK_SIGNAL_EXTRA = [
 ]
 # Only with a card mentioned in the same message.
 BLOCK_SIGNAL_WITH_CARD = [
-    _rx(r"\b(?:paus(?:ar|a|e|en|ala|ame|ela|enla|em)|en pausa|em pausa)\b"),
+    _rx(r"\b(?:paus(?:ar|a|as|an|o|e|en|ala|ame|ela|enla|em)|en pausa|em pausa)\b"),
     _rx(
-        r"\b(?:apag(?:ar|a|as|ue|uen|uela|uenla|uenme|ame|ala|ala)|apaguen\w*|"
+        r"\b(?:apag(?:ar|a|as|an|o|ue|uen|uela|uenla|uenme|ame|ala|alo)|apaguen\w*|"
         r"desligar|desliga|desliguem)\b"
+    ),
+    _rx(
+        r"\b(?:se me (?:quedo|olvido|cayo)|me olvide|olvide|deje|esqueci)"
+        r"(?: \S+){0,2} (?:tarjeta|cartao|plastico|billetera|cartera|carteira)\b"
     ),
     _rx(r"\b(?:inhabilit(?:ar|en|e|a)|desactiv(?:ar|en|e|a)|desativ(?:ar|em|e|a))\b"),
     _rx(r"\b(?:sumiu|sumiram|desapareci\w*|no aparece|nao aparece|nao acho)\b"),
 ]
 
 
+_ROBOT_PT = re.compile(r"\brob[ôÔ]s?\b", re.IGNORECASE)
+
+
 def block_signal(text: str) -> bool:
     """True when the message may ask for a block now or report a lost or stolen card."""
-    norm = normalize(text)
+    # Portuguese "robô" (robot) folds to Spanish "robo" (theft) once accents are removed.
+    norm = normalize(_ROBOT_PT.sub("robot", text))
     if any(p.search(norm) for p, _ in PATTERNS["card_block"]):
         return True
     if any(p.search(norm) for p in BLOCK_SIGNAL_EXTRA):
