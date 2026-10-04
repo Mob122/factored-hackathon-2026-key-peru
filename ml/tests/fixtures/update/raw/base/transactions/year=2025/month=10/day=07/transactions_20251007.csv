@@ -1,0 +1,2 @@
+﻿transaction_id,transaction_date,process_date,product_id,customer_id,transaction_type,transaction_category,amount,currency,amount_usd,channel,branch_id,merchant_name,merchant_category,transaction_country,transaction_city,transaction_status,response_code,is_fraud,fraud_score,latitude,longitude
+TRX-YL1I7FAH1DJCCH428P15,2025-10-07 15:48:08,2025-10-07,PRD-I97V8EFELBUP,CLI-X7VXKV9P7ZC6,Purchase,Entertainment,722018.98,COP,180.5,POS,,Conciertos Live,Entertainment,Colombia,Cartagena,Approved,00,False,23.49,,

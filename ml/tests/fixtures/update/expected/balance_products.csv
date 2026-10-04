@@ -1,0 +1,3 @@
+product_id,customer_id,kind,last4,status,currency,current_balance,credit_limit,source_file,gold_batch_id,gold_loaded_at
+PRD-I97V8EFELBUP,CLI-X7VXKV9P7ZC6,credit_card,7921,Blocked,COP,14667875.79,83267555.49,products/updates/year=2026/month=06/day=18/products_20260618.csv,gold-20260619T063000-00000002,2026-06-19 06:30:00
+PRD-S9E8FA7G5YXX,CLI-X7VXKV9P7ZC6,credit_card,9205,Active,COP,3433398.95,151856782.35,products.csv,gold-20260618T063000-00000001,2026-06-18 06:30:00
