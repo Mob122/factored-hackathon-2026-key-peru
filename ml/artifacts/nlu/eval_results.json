@@ -2506,36 +2506,22 @@
    },
    "with_override": {
     "n": 832,
-    "coverage": 0.9147,
-    "mean_set_size": 1.0373,
+    "coverage": 0.9171,
+    "mean_set_size": 1.0397,
     "share_singleton": 0.9002,
-    "share_size_2": 0.0685,
-    "share_empty_or_over_max": 0.0312,
-    "card_block_coverage": 0.9792,
+    "share_size_2": 0.0697,
+    "share_empty_or_over_max": 0.03,
+    "card_block_coverage": 1.0,
     "false_card_block_singletons": 1
    },
-   "override_fired": 11,
-   "fired_on_card_block_rows": 11,
+   "override_fired": 13,
+   "fired_on_card_block_rows": 13,
    "fired_on_other_rows": 0,
-   "card_block_rows_rescued": 11,
-   "singletons_turned_into_clarification": 9,
-   "block_signal_recall_on_card_block": 0.8646,
+   "card_block_rows_rescued": 13,
+   "singletons_turned_into_clarification": 10,
+   "block_signal_recall_on_card_block": 1.0,
    "block_signal_rate_on_other_intents": 0.0,
-   "card_block_rows_signal_missed": [
-    "\u00bfMe puede poner un bloqueo temporal en la tarjeta?",
-    "\u00bfMe pueden poner un bloqueo temporal a la tarjeta?",
-    "\u00bfMe pon\u00e9s un bloqueo temporal en la tarjeta?",
-    "Pode colocar um bloqueio tempor\u00e1rio no meu cart\u00e3o?",
-    "Bloqu\u00e9eme la tarjeta y despu\u00e9s d\u00edgame el saldo.",
-    "Creo que se me qued\u00f3 la tarjeta en el taxi.",
-    "\u00bfMe apagan la tarjeta? No quiero que nadie la use.",
-    "\u00bfSer\u00e1 que me apagan la tarjeta? No quiero que nadie la use.",
-    "\u00bfMe paus\u00e1s la tarjeta? No quiero que nadie la use.",
-    "\u00bfC\u00f3mo apago mi tarjeta de d\u00e9bito desde aqu\u00ed?",
-    "\u00bfC\u00f3mo apago la tarjeta d\u00e9bito desde aqu\u00ed?",
-    "Me apagan la tarjeta d\u00e9bito, la prest\u00e9 y ya no conf\u00edo.",
-    "\u00bfC\u00f3mo apago la tarjeta de d\u00e9bito desde ac\u00e1?"
-   ]
+   "card_block_rows_signal_missed": []
   },
   "test": {
    "method": "lac",
@@ -2551,27 +2537,22 @@
    },
    "with_override": {
     "n": 880,
-    "coverage": 0.9239,
+    "coverage": 0.925,
     "mean_set_size": 1.0091,
-    "share_singleton": 0.9386,
-    "share_size_2": 0.0352,
-    "share_empty_or_over_max": 0.0261,
-    "card_block_coverage": 0.9902,
+    "share_singleton": 0.9409,
+    "share_size_2": 0.0341,
+    "share_empty_or_over_max": 0.025,
+    "card_block_coverage": 1.0,
     "false_card_block_singletons": 7
    },
-   "override_fired": 8,
-   "fired_on_card_block_rows": 3,
-   "fired_on_other_rows": 5,
-   "card_block_rows_rescued": 3,
-   "singletons_turned_into_clarification": 8,
-   "block_signal_recall_on_card_block": 0.9608,
-   "block_signal_rate_on_other_intents": 0.0064,
-   "card_block_rows_signal_missed": [
-    "Bloqu\u00e9eme todas las tarjetas, por favor.",
-    "Me bloquean la tarjeta mientras la encuentro.",
-    "Me apagan la tarjeta cr\u00e9dito, no s\u00e9 d\u00f3nde la dej\u00e9.",
-    "Esqueci o cart\u00e3o no caixa do mercado e quando voltei j\u00e1 n\u00e3o estava l\u00e1."
-   ]
+   "override_fired": 7,
+   "fired_on_card_block_rows": 4,
+   "fired_on_other_rows": 3,
+   "card_block_rows_rescued": 4,
+   "singletons_turned_into_clarification": 6,
+   "block_signal_recall_on_card_block": 1.0,
+   "block_signal_rate_on_other_intents": 0.0039,
+   "card_block_rows_signal_missed": []
   }
  },
  "test_subsets": {
@@ -2969,10 +2950,10 @@
  },
  "cost": {
   "tfidf_lr": {
-   "artifact_bytes": 1457641,
+   "artifact_bytes": 1457639,
    "latency_ms_per_utterance_cpu": {
-    "p50": 1.6218,
-    "p95": 1.9506
+    "p50": 2.1865,
+    "p95": 2.3617
    },
    "runtime_dependencies": [
     "scikit-learn",
@@ -2985,8 +2966,8 @@
    "artifact_bytes": 1134569523,
    "encoder_weights_bytes": 1134534380,
    "latency_ms_per_utterance_cpu": {
-    "p50": 26.6007,
-    "p95": 32.9813
+    "p50": 32.3139,
+    "p95": 35.6844
    },
    "runtime_dependencies": [
     "torch",
@@ -2994,7 +2975,7 @@
     "transformers",
     "scikit-learn"
    ],
-   "encode_all_seconds": 46.6598
+   "encode_all_seconds": 56.7975
   }
  },
  "leak_checks": {

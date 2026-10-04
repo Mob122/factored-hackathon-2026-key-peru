@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Plan version | `eval-plan-0.2` |
-| Date | 2026-09-29 |
-| Status | **Pre-registered.** Written before any system exists and before any result. No held-out case has been run. |
+| Plan version | `eval-plan-0.3` |
+| Date | 2026-10-04 (0.2: 2026-09-29) |
+| Status | **Pre-registered, amended once (0.3).** 0.2 was written before any system existed and before any result. 0.3 amends the classifier's conformal score (8.4) after the classifier results were seen; see the change log. No held-out case has been run. |
 | Owner | Aldair (plan, all scenario templates including the adversarial ones, grader, classifier) · Martín (the system's handling of the adversarial cases, tracing, latency and cost capture, run records) |
-| System under test | `docs/proposal.md` v3.1 · `docs/policy_cards.md` `cards-synthetic-0.4` (SYNTHETIC) · `docs/contracts/state_machine.md` `sm-0.3` · `docs/intents.md` `intents-1.0` |
+| System under test | `docs/proposal.md` v3.1 · `docs/policy_cards.md` `cards-synthetic-0.5` (SYNTHETIC) · `docs/contracts/state_machine.md` `sm-0.3` · `docs/intents.md` `intents-1.0` |
 | Report format | `docs/contracts/eval_report.schema.json` (`eval-report-0.2`) → `eval/report.json` |
 | Requirements covered | `docs/requirements_matrix.md` E-1 to E-22, D4-6 to D4-12, D5-1 to D5-13; closes gaps G-2, G-6 to G-11 at the plan level |
 
@@ -35,6 +35,7 @@ described as a measured improvement for a real bank (problem statement, "Evaluat
 |---|---|---|
 | 0.1 | 2026-09-29 | First version, before any results. |
 | 0.2 | 2026-09-29 | Still before any results. Final intent names and 12 classes (`docs/intents.md`); slots `tx_status` and `balance_item`. Handoff mix: one "why was my card blocked?" template replaced by a `Suspended`/`Closed` customer template (POL-AUTH-09); all other templates exclude those customers. New section 13 (cost, runtime, human time, budget cap and fallback). Adversarial templates are written by Aldair; Martín implements the handling. Sampling-parameter note for current models (13.1). |
+| 0.3 | 2026-10-04 | **Amendment after classifier results, before held-out A** (no held-out case has been run). 8.4: the conformal score for the deployed TF-IDF model changes from APS to LAC. The change was **decided after seeing the APS result** on the classifier test split (model card 0.1: coverage 1.000 but mean set size 7.7, 6.7% singletons). The justification uses the calibration split only (8.4, "Amendment"). APS stays reported next to LAC. 8.2: the classifier test split was rescored after training data was added (`nlu-utt-0.2`); both scorings are reported. `docs/policy_cards.md` moves to `cards-synthetic-0.5` (POL-ESC-13). |
 
 ## 1. What is compared
 
@@ -547,6 +548,11 @@ taken from the dev set.
   No paraphrase or translation crosses splits.
 - Model and hyperparameter selection use 5-fold group cross-validation inside train. The
   calibration split is used only to fit the conformal threshold. The test split is scored once.
+  *(0.3)* Deviation: after the first scoring, 35 seed groups were added for meanings the model
+  missed on the test split (`nlu-utt-0.2`), and the test split was **rescored**. Earlier groups
+  keep their split (split lock); the new groups are split 3/1/1 per meaning, so the rescored
+  test split holds 56 new utterances. Both scorings are reported, and the gain on the earlier
+  test groups is reported as optimistic (the additions were chosen from test errors).
 - End-to-end opening messages (3.6) come only from test groups.
 - A **pt-native** subset: at least 60 Portuguese utterances written directly in Portuguese (not
   translated from a Spanish seed), all in the test split, reported separately from translated pt.
@@ -573,10 +579,22 @@ within 0.01 go to the cheaper model. The choice is made before the test split is
   compared with each baseline by paired bootstrap of the macro-F1 difference.
 - **Action-intent errors:** precision and recall of `card_block`, and the count of non-block
   utterances whose conformal set is `{card_block}` alone (a false singleton on an action intent).
-- **Conformal sets** (split conformal, APS score, `CONFORMAL_ALPHA = 0.10` pre-registered), on the
-  test split, **overall and per variant**: empirical coverage (share of sets containing the true
-  label, target ≥ 0.90), mean set size, and the share of singleton (act), size 2 (clarify),
-  empty or > `CONFORMAL_MAX_SET` (transfer). Also coverage per intent (class-conditional).
+- **Conformal sets** (split conformal, `CONFORMAL_ALPHA = 0.10` pre-registered; score APS in
+  0.2, **LAC for the deployed model since 0.3**, see "Amendment" below), on the test split,
+  **overall and per variant**: empirical coverage (share of sets containing the true label,
+  target ≥ 0.90), mean set size, and the share of singleton (act), size 2 (clarify), empty or
+  > `CONFORMAL_MAX_SET` (transfer). Also coverage per intent (class-conditional).
+- **Amendment (0.3, 2026-10-04): APS → LAC for the deployed TF-IDF model.** Decided **after**
+  the APS result on the classifier test split was seen (coverage 1.000, mean set size 7.7,
+  6.7% singletons: 89% of messages would be transferred), and **before** any held-out case was
+  run. The choice is justified from the **calibration split only**, by a 2-fold cross-fit inside
+  calibration (threshold fitted on half of the calibration groups, applied to the other half):
+  APS gave coverage 1.000, mean set size 7.4 and 10.5% singletons; LAC (score 1 − p(true
+  intent), set = intents with p ≥ 1 − threshold) gave coverage 0.902, mean set size 1.11 and
+  87.5% singletons (`nlu-utt-0.1`, model card 0.1 section 8). LAC meets the coverage target with
+  sets POL-ESC-06 can use. Unchanged: `CONFORMAL_ALPHA`, `CONFORMAL_MAX_SET`, the targets in
+  9.2, the Mondrian fallback (now fitted on the LAC score) and the alpha sweep. APS results are
+  still reported next to LAC. LAC can return an empty set, which POL-ESC-06 transfers.
 - **Pre-registered fallback:** if any variant's coverage is below 0.85 (with n ≥ 40 in that
   variant), Mondrian conformal by language is fitted on the calibration split and reported next
   to the marginal version. Both are reported; the Mondrian one is used in `proposed` only if it

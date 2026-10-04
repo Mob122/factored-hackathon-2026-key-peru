@@ -21,6 +21,7 @@ import hashlib
 import json
 import os
 import time
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -43,6 +44,7 @@ EST_INPUT_TOKENS = 450
 EST_OUTPUT_TOKENS = 12
 WORKERS = 8
 RETRIES = 4
+REQUEST_TIMEOUT_S = 30
 CACHE_PATH = OUT_DIR / "llm_cache.jsonl"
 FALLBACK = "out_of_scope"
 
@@ -199,7 +201,8 @@ def main(client=None):
     if client is None:
         from openai import OpenAI  # noqa: PLC0415
 
-        client = OpenAI()
+        # Short per-request timeout and no client-side retries: classify_one retries.
+        client = OpenAI(timeout=REQUEST_TIMEOUT_S, max_retries=0)
     start = time.perf_counter()
     results = classify_all(client, texts, cache)
     seconds = time.perf_counter() - start
@@ -232,6 +235,12 @@ def main(client=None):
         "status": "run",
         "n": len(texts),
         "invalid_or_failed": int(sum(1 for r in results if not r["intent"])),
+        "failed_calls_by_error": dict(
+            Counter(r["error"] for r in results if r.get("error"))
+        ),
+        "invalid_answers": int(
+            sum(1 for r in results if not r["intent"] and not r.get("error"))
+        ),
         "invalid_mapped_to": FALLBACK,
         "usage_this_split": {
             "input_tokens": input_tokens,

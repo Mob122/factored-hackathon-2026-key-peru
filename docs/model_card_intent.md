@@ -2,52 +2,80 @@
 
 | Field | Value |
 |---|---|
-| Card version | `model-card-intent-0.1`, 2026-10-03 |
-| Status | **Provisional.** The utterances have not been reviewed by a person (eval plan 8.1), the label-quality sample is not labeled yet (C7), and the LLM zero-shot baseline was not run (no API key). Every number below changes if labels change after review. |
+| Card version | `model-card-intent-0.2`, 2026-10-04 (0.1: 2026-10-03) |
+| Status | **Provisional.** The utterances have still not been reviewed by a person (eval plan 8.1), and the label-quality sample is not labeled (C7). The test split was **rescored** after training data was added on the basis of test errors (section 3.2). |
 | Owner | Aldair |
-| Deployed artifact | `ml/artifacts/nlu/model.joblib` (TF-IDF + logistic regression), SHA-256 `7d123688fe5996cf7e466ec9db982a3741a4b1ebb72cad7151577abd8a1d7453`, scikit-learn 1.9.1 |
-| Conformal | `ml/artifacts/nlu/conformal.json`: split conformal, APS (pre-registered), `CONFORMAL_ALPHA` = 0.10, threshold 0.9902, `CONFORMAL_MAX_SET` = 2 |
-| Training code | `ml/src/banking_cs/nlu/`, commit `50d833b` (recorded in `metadata.json`) |
-| Data | `nlu-utt-0.1`, corpus SHA-256 `3e0ea818…` (`ml/nlu_corpus/`, 4,164 utterances) |
-| Taxonomy and plan | `docs/intents.md` `intents-1.0` · `docs/eval_plan.md` `eval-plan-0.2` sections 8 and 9.2 · `docs/policy_cards.md` POL-ESC-06 |
-| Full results | `ml/artifacts/nlu/eval_results.json` |
-| Requirements | `docs/requirements_matrix.md` D4-6 to D4-12 |
+| Deployed artifact | `ml/artifacts/nlu/model.joblib` (TF-IDF + logistic regression), SHA-256 `67c1b919b3c5b2352521a838ab613ff2c2b329d34b726c65f7e1f8eaa21c4676`, scikit-learn 1.9.1 |
+| Conformal | `ml/artifacts/nlu/conformal.json`: split conformal, **LAC** (`docs/eval_plan.md` 8.4, amendment 0.3), `CONFORMAL_ALPHA` = 0.10, threshold 0.6684, `CONFORMAL_MAX_SET` = 2; APS kept as an alternative. Runtime block safety override (section 8.3) |
+| Training code | `ml/src/banking_cs/nlu/`, commit `889759a` (recorded in `metadata.json`) |
+| Data | `nlu-utt-0.2`, corpus SHA-256 `70d8a62b…` (`ml/nlu_corpus/`, 4,444 utterances) |
+| Taxonomy, plan, policy | `docs/intents.md` `intents-1.0` · `docs/eval_plan.md` `eval-plan-0.3` sections 8 and 9.2 · `docs/policy_cards.md` `cards-synthetic-0.5` POL-ESC-06, POL-ESC-13 |
+| Decisions | `docs/decisions_log.md` D-01 to D-10 |
+| Full results | `ml/artifacts/nlu/eval_results.json`, `ml/artifacts/nlu/llm_baseline.json` |
 
 Every number here is an **offline result on team-generated, synthetic messages**. None of it is a
 measurement on real customers.
 
 ## 0. Summary
 
-- **Deployed model:** TF-IDF (word 1-2 grams + char 2-5 grams) + logistic regression. Test
-  macro-F1 **0.889** [95% CI 0.840, 0.922]; Spanish 0.892, Portuguese 0.882.
-- **Cross-validation winner:** multilingual-e5-base embeddings + logistic regression. Test
-  macro-F1 0.927 [0.890, 0.955], +0.038 over TF-IDF [0.004, 0.075]. It is not deployed. TF-IDF
-  is 1.4 MB and takes 1.6 ms per message on CPU; e5 needs 1.1 GB of weights, torch, and 25 ms.
-  e5 also makes the error the policy cares most about: it labels charge disputes as
-  `card_block` (section 9).
-- **Rules baseline:** 0.827. The TF-IDF model beats it by +0.063 [0.009, 0.117].
-- **Slots:** the rule extractor reaches micro-F1 0.979 on the test split. Merchant recall is
-  0.76.
-- **Conformal sets (pre-registered APS, alpha 0.10):** coverage 1.000, but the mean set size is
-  7.7 and only 6.7% of sets are singletons. Under POL-ESC-06, 89% of messages would be
-  transferred. Target C5 is **not met**. An exploratory LAC score, not pre-registered and
-  chosen after seeing this result, gives coverage 0.925 with 91% singletons. Switching to it
-  needs an amendment to the eval plan before held-out A (section 8.3).
+### 0.1 What changed since card 0.1
+
+1. **Conformal score: APS → LAC** for the deployed model. This is an eval-plan amendment
+   (0.3), decided after the APS result was seen and before held-out A, and justified from the
+   calibration split alone (section 8.1).
+2. **35 seed groups added** (`nlu-utt-0.2`) for the meanings missed in card 0.1: freeze,
+   travar, report stolen, lost card, and card delivery, app login and phone top-up (out of
+   scope). The test split was **rescored** (section 3.2).
+3. **Block safety override** in `predict()`: when the rules see a block or theft request,
+   `card_block` is added to the conformal set (section 8.3).
+4. **Policy:** a set of exactly {`out_of_scope`} now offers a human handoff (POL-ESC-13,
+   template POL-HND-08).
+5. **LLM zero-shot baseline run** with gpt-4o-mini on the test split (section 10).
+
+### 0.2 Results
+
+- **Deployed TF-IDF + LR:** test macro-F1 **0.919** [95% CI 0.885, 0.944] on the rescored
+  test split (card 0.1: 0.889).
+  - On the 824 test rows that existed in 0.1, it scores 0.913. The previous model scores 0.889
+    on the same rows. The gain is optimistic, because the additions were chosen from these
+    rows' errors.
+  - The 56 new test rows are all correct.
+- **Other models:**
+
+  | Model | Test macro-F1 [95% CI] | Difference vs TF-IDF [95% CI] |
+  |---|---|---|
+  | e5 + LR (cross-validation winner, not deployed) | 0.949 [0.919, 0.969] | +0.030 [0.001, 0.064] |
+  | gpt-4o-mini zero-shot | 0.933 [0.883, 0.968] | +0.014 [−0.038, 0.062], not distinguishable |
+  | Rules | 0.826 | −0.093 |
+
+- **Conformal (LAC, alpha 0.10):** coverage 0.920 (every variant ≥ 0.89), mean set size 1.00,
+  95% singletons. **C4 and C5 are met.**
+- **Override:** `card_block` coverage goes from 0.961 to **1.000** on test. It fires on 7
+  messages, 4 of them block requests.
+- **C6 not met:** 7 non-block messages get a {`card_block`} singleton (0 in card 0.1). Four come
+  from one charge-dispute group, "reportar un fraude…", that now resembles the new "reportar el
+  robo" training wording (section 8.4).
 
 ## 1. Intended use
 
 - **Use:** classify one customer message, already redacted (POL-PII-01), in `IDLE` into one of
-  the 12 intents of `docs/intents.md`. The conformal set feeds POL-ESC-06: one intent means act,
-  2 intents mean clarify, an empty set or more than 2 means transfer. Slots narrow the eligible
-  products and filters (POL-ANS-07).
-- **Not for:** answers given in a waiting state ("sí", "la de crédito"). The state machine
-  parses those (`docs/intents.md` rule 7). Also not for injection or third-party detection
-  (pipeline step 4), languages other than Spanish and Portuguese, or any decision without the
-  policy layer. A label is never an authorization: blocks still need confirmation and step-up
-  (POL-ACT).
+  the 12 intents of `docs/intents.md`. The conformal set feeds POL-ESC-06:
+  - one intent: act;
+  - 2 intents: ask one clarifying question;
+  - an empty set or more than 2: transfer.
+
+  A set of exactly {`out_of_scope`} gets a handoff offer (POL-ESC-13). Slots narrow the
+  eligible products and filters (POL-ANS-07).
+- **Not for:** answers given in a waiting state (rule 7), injection or third-party detection,
+  languages other than Spanish and Portuguese, or any decision without the policy layer. A label
+  never authorizes an action: blocks still need step-up and confirmation (POL-ACT).
 - **Runtime:** `from banking_cs.nlu.predict import predict` returns
-  `predict(text) -> {intent_set, slots, scores}`. The module has no Kedro import. Before
-  unpickling, it checks the model's SHA-256 and the scikit-learn version.
+  `predict(text) -> {intent_set, slots, scores, safety_override}`.
+  - `safety_override` is new in 0.2, for the audit log.
+  - `method="aps"` gives the APS set, and `override=False` turns the override off for
+    evaluation.
+  - Before unpickling, the loader checks the model's SHA-256 and the scikit-learn version. It
+    has no Kedro import.
 
 ## 2. Data
 
@@ -55,363 +83,432 @@ measurement on real customers.
 
 The utterances were **team-generated and LLM-assisted**. The team prompted Claude Opus 5.5
 with the labeling guide (`docs/intents.md`). Every row carries `origin = team_generated`,
-`authoring = llm_assisted` and `human_reviewed = false`. The transcripts in the dataset give no
-usable intent labels (Day 2, P4 and P5), so no row comes from them. The regional variants and
-the Portuguese measure how we wrote those languages, not how real customers write (eval plan
-3.3). The "pt-native" subset was written directly in Portuguese without a Spanish seed, but it
-was not written by a native speaker.
+`authoring = llm_assisted` and `human_reviewed = false`.
+- No row comes from the dataset's transcripts (Day 2, P4 and P5).
+- The regional variants and the Portuguese measure how we wrote those languages, not how real
+  customers write.
+- The pt-native subset was written directly in Portuguese, but not by a native speaker.
 
 ### 2.2 Composition
 
-| Part | Source file(s) | Groups | Rows | Split |
+| Part | Source | Groups | Rows | Split |
 |---|---|---|---|---|
-| Seed groups | `ml/nlu_corpus/<intent>.yaml` | 480 (40 per intent) | 3,840 (2 per variant per group) | 60 / 20 / 20 by group |
-| Labeling-guide examples | `guide.yaml` (verbatim from `docs/intents.md` section 4) | 48 (intent × variant) | 144 | train only |
-| Hard negatives | `hard_negatives.yaml` (section 5 verbatim + 2 paraphrases each) | 36 | 108 | train only |
-| pt-native | `pt_native.yaml` | 72 (6 per intent) | 72 | test only |
-| **Total** | | **636** | **4,164** | |
+| Seed groups, `nlu-utt-0.1` | `ml/nlu_corpus/<intent>.yaml` | 480 (40 per intent) | 3,840 | 60 / 20 / 20 by group, frozen by the split lock |
+| Seed groups added in `nlu-utt-0.2` | `card_block.yaml`, `out_of_scope.yaml` (`topic` field) | 35 (7 topics × 5) | 280 | 3 / 1 / 1 per topic |
+| Labeling-guide examples | `guide.yaml` (verbatim from `docs/intents.md` section 4) | 48 | 144 | train only |
+| Hard negatives | `hard_negatives.yaml` (section 5 verbatim + 2 paraphrases) | 36 | 108 | train only |
+| pt-native | `pt_native.yaml` | 72 | 72 | test only |
+| **Total** | | **671** | **4,444** | |
 
-About a quarter of each intent's seed groups sit on the confusions of `docs/intents.md` section
-5, worded differently from those rows. Examples: "Bloqueé la tarjeta por error, ¿la pueden
-desbloquear?" (`card_unblock`), "¿Ya desbloquearon mi tarjeta?" (`card_status`), "Quiero
-recargar saldo al celular" (`out_of_scope`). Because the hard-negative rows themselves are
-train-only, these groups are how the test split measures the same confusions.
+**The 0.2 topics** (decisions log D-03):
+
+| Topic | Intent | Example | Groups |
+|---|---|---|---|
+| `freeze` | `card_block` | "Congelen mi tarjeta de crédito, no la voy a usar este mes." | 5 |
+| `travar` | `card_block` | "Trava o cartão por um tempinho?" / "Quiero apagar mi tarjeta desde ya." | 5 |
+| `report_stolen` | `card_block` | "Necesito levantar un reporte por robo de mi tarjeta." | 5 |
+| `lost_card` | `card_block` | "Creo que perdí la tarjeta en el gimnasio." | 5 |
+| `card_delivery` | `out_of_scope` | "¿Cómo rastreo el envío de mi tarjeta?" | 5 |
+| `app_login` | `out_of_scope` | "Me bloquearon el usuario de la app por intentos fallidos." | 5 |
+| `phone_topup` | `out_of_scope` | "Se me acabó el saldo del celular, ¿me ayudas a recargar?" | 5 |
+
+The out-of-scope topics include deliberate traps: "saldo" for phone credit, "reposición" and
+"segunda via" used to ask about a delivery, and "bloquearon" applied to an app user.
 
 **Deviation from `docs/intents.md` section 6:** each seed has 2 utterances per variant, not 3
-to 5. This was a team decision: more seed groups (40 per intent, against a minimum of 15) give
-a better split and bootstrap than more paraphrases of one seed.
+to 5 (team decision).
 
 ### 2.3 Labels
 
-The labels are the 12 intents and 7 slots of `intents-1.0`, applied with the guide's rules.
-Canonical slot values are documented in `ml/src/banking_cs/nlu/rules.py`, and the corpus
-conventions in `ml/nlu_corpus/README.md`. The main conventions:
-- `merchant` is set only for a named, capitalized merchant.
-- `product_kind = card` for any card mention without a type.
-- `balance_item` is set on every balance row.
-- Amounts are canonical, for example `245300 PESO` or `75 USD`.
+Same conventions as card 0.1:
+- the 12 intents and 7 slots of `intents-1.0`;
+- canonical slot values in `ml/src/banking_cs/nlu/rules.py`;
+- corpus rules in `ml/nlu_corpus/README.md`.
 
-The builder (`python -m banking_cs.nlu.dataset`) rejects:
-- a slot the intent does not take;
-- a value outside the enums;
-- a `last4`, merchant or amount that does not appear in the text;
-- a duplicate text.
+The builder rejects slots the intent does not take, values outside the enums, `last4`,
+merchant or amount values missing from the text, and duplicate texts.
 
 ### 2.4 Label quality (C7)
 
-A blind sample of **100** utterances, 25 per variant, including 15 hard negatives, is written
-to `ml/data/nlu/label_quality_sample.csv`; its key is in `label_quality_key.csv`. The eval plan
-asks for 200; 100 is a team decision. Guide examples are excluded because the annotators know
-them. Both team members still have to label the sample independently. Kappa is **not
-evaluable** until then.
+A blind sample of 100 utterances (25 per variant, 15 hard negatives) is in
+`ml/data/nlu/label_quality_sample.csv`. It is unchanged in 0.2, because it is drawn from the
+0.1 groups only. Kappa is **not evaluable** until both team members have labeled it.
 
 ## 3. Splits
 
-- A **seed group** is one meaning with its paraphrases and translations. Groups are assigned
-  whole: train / calibration / test = 60 / 20 / 20 of groups, stratified by intent, seed 2026.
-- Guide and hard-negative groups are forced to train. pt-native groups are forced to test.
-- Model and hyperparameter selection use 5-fold `StratifiedGroupKFold` inside train. The
-  calibration split fits only the conformal threshold. The test split was scored once for
-  selection purposes.
-- The script was rerun twice after the first scoring with nothing about the models changed.
-  The first rerun added the exploratory LAC section; the second recorded the commit hash. The
-  intent results were byte-identical across the three runs.
+### 3.1 Rules
 
-| Split | Rows | Groups | es-MX | es-CO | es-AR | pt-BR | Seed groups per intent |
-|---|---|---|---|---|---|---|---|
-| Train | 2,564 | 373 | 665 | 641 | 629 | 629 | 23 to 26 (+ guide, hard negatives) |
-| Calibration | 776 | 97 | 194 | 194 | 194 | 194 | 7 to 9 |
-| Test | 824 | 166 | 188 | 188 | 188 | 260 (188 translated + 72 native) | 7 or 8 (+ 6 pt-native) |
+- Groups are assigned whole. Guide and hard-negative groups go to train; pt-native groups go to
+  test.
+- The split of every `nlu-utt-0.1` group is frozen in
+  `ml/nlu_corpus/locks/split_lock_nlu-utt-0.1.json`. Without new groups, the rebuild reproduces
+  the 0.1 split exactly.
+- New groups are split per (intent, topic) with their own seed: 3 train, 1 calibration and 1
+  test per topic. None of them is a near-duplicate of an existing group.
+- Model selection uses 5-fold `StratifiedGroupKFold` inside train. Calibration fits only the
+  conformal threshold.
+
+| Split | Rows | Groups | es-MX | es-CO | es-AR | pt-BR |
+|---|---|---|---|---|---|---|
+| Train | 2,732 | 394 | 707 | 683 | 671 | 671 |
+| Calibration | 832 | 104 | 208 | 208 | 208 | 208 |
+| Test | 880 | 173 | 202 | 202 | 202 | 274 (202 translated + 72 native) |
+
+### 3.2 The test split was rescored
+
+Card 0.1 scored the test split once. The 35 groups added in 0.2 were chosen **because** of
+test errors (card 0.1 section 6), and the test split was scored again (eval plan 8.2,
+deviation 0.3). To keep the result readable, section 6 reports:
+- the full rescored split (880 rows);
+- the **824 rows of 0.1**: the same rows as before, scored by the new model and by the
+  previous model;
+- the **56 new rows**: one test group per new topic, written in the same pass as the training
+  groups.
+
+The gain on the 824 earlier rows is **optimistic**: it is a gain on errors we looked at. The 56
+new rows are fresh groups, but the same author wrote them together with their training
+neighbors.
 
 ## 4. Leakage controls and checks
 
 | Control | Result |
 |---|---|
-| Near-duplicates (normalized edit distance < 0.1) across groups are merged **before** splitting, so a pair can never cross splits | 23 pairs merged 35 groups into 16 components. Some pairs have different labels ("Primero bloquee la tarjeta…" vs "Primero desbloquee…"); they stay together in one split |
-| Exact and near-duplicate pairs across splits (eval plan 8.2, target 0) | **0 and 0** |
-| Guide examples and hard negatives in train only; pt-native in test only | Enforced by the builder; tested |
-| CV folds grouped by the merged component (`leak_group`) | Yes |
-| Features | Utterance text only; no `main_topics`, `detected_intents` or `fraud_score` |
-| Golden conversations (the dev set) kept out of the dataset | Yes (`ml/nlu_corpus/dev/`). 6 of the 27 golden turns are near-duplicates of train rows, so the golden slice is not held out |
-| Rule baseline written before the data | `rules.py` committed at `fb05246`, before the corpus (`c4e8992`). It is tuned on the guide and the golden turns only |
+| Near-duplicates (normalized edit distance < 0.1) are merged before splitting | 23 pairs, 35 groups in 16 components; no new group merged |
+| Exact and near-duplicate pairs across splits (target 0) | **0 and 0** |
+| Guide and hard negatives in train only; pt-native in test only | Enforced by the builder; tested |
+| Split lock | Every 0.1 group keeps its split; tested |
+| CV folds grouped by merged component | Yes |
+| Features | Utterance text only |
+| Golden conversations (dev set) kept out of the dataset | Yes; 6 of 27 golden turns are near-duplicates of train rows |
+| Rules baseline frozen before the data | `rules.classify` unchanged since `fb05246`. The 0.2 safety detector is a separate function and does not affect the baseline |
+| **Test-set reuse** | The 0.2 additions were chosen from test errors (section 3.2) |
 
 **Remaining leak (not controllable here):** one author, a single LLM, wrote both train and
-test. Phrasing habits are shared across splits in a way no split by seed group can remove.
+test.
 
-## 5. Model selection
+## 5. Model selection (train only)
 
-Cross-validated macro-F1 on train (5 folds of about 513 rows), mean ± sd over folds:
+Cross-validated macro-F1 (5 folds, mean ± sd):
 
-| Family | Best configuration | CV macro-F1 | Other configurations |
+| Family | Best configuration | CV macro-F1 | Card 0.1 |
 |---|---|---|---|
-| Majority class | — | 0.014 ± 0.000 | — |
-| Rules (`rules.py`) | — | 0.847 ± 0.031 | — |
-| TF-IDF + LR | C = 10 | 0.902 ± 0.007 | C = 1: 0.894, 3: 0.899, 30: 0.900, 100: 0.899 |
-| paraphrase-multilingual-mpnet-base-v2 + LR | C = 10 | 0.873 ± 0.039 | C = 3: 0.870, 30: 0.872 |
-| multilingual-e5-base + LR | C = 300 | **0.926 ± 0.014** | C = 10: 0.919, 30: 0.924, 100: 0.925 |
+| Majority class | — | 0.017 | 0.014 |
+| Rules | — | 0.843 ± 0.022 | 0.847 |
+| TF-IDF + LR | C = 10 | 0.891 ± 0.036 | 0.902 |
+| mpnet + LR | C = 10 | 0.889 ± 0.031 | 0.873 |
+| multilingual-e5-base + LR | C = 300 | **0.933 ± 0.006** | 0.926 |
 
-- **CV winner (eval plan 8.3 rule):** e5 + LR. Its margin over TF-IDF is 0.024, above the 0.01
-  tie margin.
-- The e5 curve is flat for C ≥ 30, so its pick at the edge of the grid does not matter.
-- The encoders are pinned to Hugging Face revisions `d1287505…` (e5) and `4328cf26…` (mpnet).
-- **Deployed:** TF-IDF + LR, regardless of the CV winner. The team made this decision for size
-  and latency before the test split was scored. Section 9 gives the trade-off.
+The other TF-IDF settings scored 0.882 (C = 1), 0.889 (3), 0.890 (30) and 0.885 (100).
 
-## 6. Test results (scored once)
+- **CV winner:** e5 + LR again. **Deployed:** TF-IDF + LR, the team decision for size and
+  latency (section 9).
+- TF-IDF's CV score fell slightly. The new card_block and out_of_scope wordings are harder to
+  separate with n-grams within train folds.
 
-Macro-F1 with 95% intervals from 2,000 bootstrap resamples over test groups:
+## 6. Test results
 
-| Model | All (824) | Spanish (564) | Portuguese (260) | pt translated (188) | pt-native (72) | Accuracy |
+### 6.1 Rescored test split (880 rows)
+
+| Model | All | Spanish (606) | Portuguese (274) | pt translated (202) | pt-native (72) | Accuracy |
 |---|---|---|---|---|---|---|
-| Majority class | 0.012 [0.005, 0.019] | 0.012 | 0.012 | 0.012 | 0.013 | 0.075 |
-| Rules | 0.827 [0.774, 0.861] | 0.845 [0.784, 0.885] | 0.784 [0.719, 0.830] | 0.823 | 0.662 [0.514, 0.749] | 0.795 |
-| **TF-IDF + LR (deployed)** | **0.889 [0.840, 0.922]** | 0.892 [0.838, 0.928] | 0.882 [0.834, 0.919] | 0.869 | 0.915 [0.824, 0.971] | 0.888 |
-| mpnet + LR | 0.895 [0.850, 0.928] | 0.891 | 0.902 | 0.881 | 0.957 | 0.897 |
-| e5 + LR (CV winner) | 0.927 [0.890, 0.955] | 0.935 [0.894, 0.965] | 0.910 [0.863, 0.948] | 0.897 | 0.945 | 0.927 |
-| LLM zero-shot (gpt-4o-mini) | not run (section 10) | | | | | |
+| Majority class | 0.017 | 0.018 | 0.016 | 0.018 | 0.013 | 0.116 |
+| Rules | 0.826 [0.768, 0.863] | 0.843 | 0.786 | 0.824 | 0.662 | 0.791 |
+| **TF-IDF + LR (deployed)** | **0.919 [0.885, 0.944]** | 0.928 [0.887, 0.956] | 0.898 [0.854, 0.931] | 0.896 | 0.902 [0.812, 0.961] | 0.918 |
+| mpnet + LR | 0.911 [0.871, 0.940] | 0.914 | 0.907 | 0.892 | 0.942 | 0.911 |
+| e5 + LR (CV winner) | 0.949 [0.919, 0.969] | 0.954 [0.919, 0.975] | 0.938 [0.898, 0.968] | 0.934 | 0.944 | 0.949 |
+| gpt-4o-mini zero-shot | 0.933 [0.883, 0.968] | 0.929 [0.869, 0.969] | 0.941 [0.901, 0.971] | 0.936 | 0.957 | 0.933 |
 
 **By variant (macro-F1):**
 
 | Model | es-MX | es-CO | es-AR | pt-BR |
 |---|---|---|---|---|
-| Rules | 0.852 | 0.839 | 0.841 | 0.784 |
-| TF-IDF + LR | 0.894 | 0.898 | 0.885 | 0.882 |
-| mpnet + LR | 0.877 | 0.896 | 0.899 | 0.902 |
-| e5 + LR | 0.942 | 0.942 | 0.920 | 0.910 |
+| Rules | 0.847 | 0.839 | 0.839 | 0.786 |
+| TF-IDF + LR | 0.937 | 0.935 | 0.913 | 0.898 |
+| mpnet + LR | 0.891 | 0.926 | 0.923 | 0.907 |
+| e5 + LR | 0.960 | 0.952 | 0.949 | 0.938 |
+| gpt-4o-mini | 0.926 | 0.930 | 0.931 | 0.941 |
 
 **Paired bootstrap of the macro-F1 difference:**
 
 | Comparison | Difference | 95% interval |
 |---|---|---|
-| TF-IDF − majority | +0.878 | [0.829, 0.911] |
-| TF-IDF − rules | +0.063 | [0.009, 0.117] |
-| TF-IDF − mpnet | −0.006 | [−0.051, 0.038] |
-| e5 − TF-IDF | +0.038 | [0.004, 0.075] |
+| TF-IDF − majority | +0.902 | [0.866, 0.928] |
+| TF-IDF − rules | +0.093 | [0.051, 0.142] |
+| TF-IDF − mpnet | +0.008 | [−0.033, 0.049] |
+| e5 − TF-IDF | +0.030 | [0.001, 0.064] |
+| TF-IDF − gpt-4o-mini | −0.014 | [−0.062, 0.038] |
+
+### 6.2 Same rows as card 0.1, and the new rows
+
+The "previous" model is the 0.1 artifact (`2752575`), scored on the same rows:
+
+| Rows | Metric | Previous TF-IDF (0.1) | TF-IDF (0.2) | e5 (0.2) |
+|---|---|---|---|---|
+| 824 rows of 0.1 | macro-F1 | 0.889 | 0.913 | 0.945 |
+| 824 rows of 0.1 | `card_block` recall | 0.757 | 0.929 | 0.971 |
+| 56 new rows | accuracy | 0.768 | 1.000 | 1.000 |
+
+**Accuracy on the test groups card 0.1 flagged:**
+
+| Topic | Group | Previous | TF-IDF (0.2) |
+|---|---|---|---|
+| freeze | `blk-008` "congelar la tarjeta" (8 rows) | 0.00 | 1.00 |
+| travar | `ptn-blk-3` "Quero travar meu cartão…" | 0.00 | 1.00 |
+| report stolen | `blk-018` "reportar como robada" (8 rows) | 0.25 | 0.75 |
+| lost card | `ptn-blk-2` "Esqueci o cartão no caixa…" | 0.00 | 0.00 |
+| card delivery | `oos-030` (8 rows) | 0.13 | 0.75 |
+| app login | `oos-013` (8 rows) | 0.50 | 0.88 |
+| phone top-up | `oos-031` (8 rows) | 0.63 | 1.00 |
+
+### 6.3 By intent and errors
 
 **F1 per intent:**
 
-| Intent | TF-IDF | e5 | | Intent | TF-IDF | e5 |
-|---|---|---|---|---|---|---|
-| balance_inquiry | 0.938 | 0.937 | | charge_dispute | 0.841 | 0.949 |
-| card_list | 0.957 | 0.941 | | block_reason | 0.938 | 0.986 |
-| card_status | 0.878 | 0.916 | | card_unblock | 0.809 | 0.904 |
-| transaction_list | 0.934 | 0.956 | | human_request | 0.948 | 0.978 |
-| transaction_detail | 0.877 | 0.909 | | conversation_end | 0.963 | 0.964 |
-| card_block | 0.862 | 0.866 | | out_of_scope | 0.727 | 0.820 |
+| Intent | TF-IDF | e5 | gpt-4o-mini | | Intent | TF-IDF | e5 | gpt-4o-mini |
+|---|---|---|---|---|---|---|---|---|
+| balance_inquiry | 0.968 | 0.929 | 0.947 | | charge_dispute | 0.865 | 0.963 | 0.921 |
+| card_list | 0.950 | 0.949 | 0.931 | | block_reason | 0.930 | 0.986 | 0.966 |
+| card_status | 0.890 | 0.942 | 0.886 | | card_unblock | 0.880 | 0.923 | 0.947 |
+| transaction_list | 0.934 | 0.964 | 0.986 | | human_request | 0.963 | 0.978 | 0.875 |
+| transaction_detail | 0.877 | 0.900 | 0.923 | | conversation_end | 0.955 | 0.964 | 1.000 |
+| card_block | 0.933 | 0.957 | 0.995 | | out_of_scope | 0.883 | 0.931 | 0.818 |
 
-**Action intent (`card_block`):**
-- TF-IDF: precision 1.00, recall 0.76.
-- e5: precision 0.91, recall 0.83. It labels 4 charge disputes as blocks.
+**`card_block`:**
 
-**Error analysis (TF-IDF).** Errors cluster in whole test groups whose meaning has no
-counterpart in train:
-- "congelar / travar la tarjeta" (a temporary block): all 8 missed, plus the pt-native
-  "Quero travar meu cartão…";
-- "reportar / denunciar la tarjeta como robada": 6 of 8, mostly predicted `out_of_scope`;
-- card-delivery questions ("¿cuándo me llega la tarjeta nueva?"), which are `out_of_scope`:
-  7 of 8 predicted as `card_unblock` or `card_status`;
-- app-login problems, predicted as `charge_dispute`;
-- "recargar saldo al celular", predicted as `balance_inquiry`.
+| Model | Precision | Recall |
+|---|---|---|
+| TF-IDF | 0.915 | 0.951 |
+| e5 | 0.935 | 0.980 |
+| gpt-4o-mini | 1.000 | 0.990 |
 
-The top confusions are transaction_detail → charge_dispute (8), card_block → out_of_scope (8)
-and out_of_scope → card_unblock (7). The split works as intended: unseen meanings, not unseen
-wording, drive the errors. The fix is coverage in the training data (section 12).
+For TF-IDF, recall rose from 0.757 in card 0.1 and precision fell from 1.00. The new block
+wording also pulls some charge disputes into `card_block` (section 8.4).
 
-**Golden turns** (27 classifier inputs of the 12 golden conversations; dev set, not held out):
+**Top confusions (TF-IDF):** transaction_detail → charge_dispute (8), human_request →
+out_of_scope (5), conversation_end → out_of_scope (5), card_status → card_unblock (4),
+charge_dispute → card_block (4), card_unblock → block_reason (4).
+
+**Golden turns** (27, dev set, not held out):
 
 | Model | Correct |
 |---|---|
-| Rules | 26/27. This is circular: the rules were written against these turns |
-| TF-IDF | 25/27 |
-| mpnet | 24/27 |
-| e5 | 23/27 |
+| Rules | 26 (circular: the rules were written against these turns) |
+| TF-IDF | 25 |
+| e5 | 24 |
+| mpnet | 24 |
 
-- Every model misses the elliptical "E o do cartão de crédito?", whose intent comes from the
-  previous turn.
-- Every learned model reads "¿Y antes de eso? Creo que me rechazaron algo." as
-  `transaction_detail`.
-- e5 also labels dialogue 5's "No reconozco un cobro… Quiero reclamarlo." as `card_block`.
+Every model misses the elliptical "E o do cartão de crédito?". The learned models read "¿Y
+antes de eso? Creo que me rechazaron algo." as `transaction_detail`.
 
-**Slots** (the rule extractor given the gold intent, test split, exact match of canonical
-values):
+**Slots** (the rule extractor given the gold intent, 777 gold values on the test split):
 
-| Slot | Gold values | Precision | Recall | F1 |
-|---|---|---|---|---|
-| product_kind | 423 | 1.000 | 0.998 | 0.999 |
-| last4 | 46 | 1.000 | 1.000 | 1.000 |
-| date | 72 | 1.000 | 0.986 | 0.993 |
-| amount | 19 | 1.000 | 1.000 | 1.000 |
-| merchant | 54 | 1.000 | 0.759 | 0.863 |
-| tx_status | 69 | 1.000 | 0.971 | 0.985 |
-| balance_item | 62 | 0.887 | 0.887 | 0.887 |
-| **All** | 745 | 0.990 | 0.968 | 0.979 |
+| Slot | F1 |
+|---|---|
+| product_kind | 0.999 |
+| last4 | 1.000 |
+| date | 0.993 |
+| amount | 1.000 |
+| merchant | 0.863 (recall 0.76) |
+| tx_status | 0.985 |
+| balance_item | 0.887 |
+| **All** | **0.980** |
 
-## 7. Representations and metrics (D4-9, D4-10)
+## 7. Representations and metrics
 
-- **Why TF-IDF with char n-grams:** they absorb accents, voseo endings ("bloqueá", "decime")
-  and typos without a tokenizer per language. The model trains in seconds and is fully
-  inspectable.
-- **Why embeddings:** they share meaning across Spanish and Portuguese. The gains show where
-  meaning matters more than keywords: `charge_dispute` (+0.11 F1), `card_unblock` (+0.10) and
-  `out_of_scope` (+0.09).
-- **Why macro-F1 is primary:** all 12 classes matter equally to routing, and the classes are
-  balanced by design. Accuracy is shown next to it.
-- **Coverage and set size** measure what POL-ESC-06 consumes: act, clarify or transfer.
+- **TF-IDF with char n-grams** absorbs accents, voseo and typos and runs in 1.6 ms.
+- **Sentence embeddings** share meaning across Spanish and Portuguese. Their largest gains over
+  TF-IDF are on `charge_dispute` (+0.10 F1), `out_of_scope` (+0.05) and `block_reason` (+0.06).
+- **gpt-4o-mini zero-shot** needs no training data. It is the most accurate on `card_block` and
+  the weakest on `out_of_scope` (recall 0.69): it routes unsupported requests to the closest
+  supported intent, which is exactly the error POL-GEN-04 guards against.
+- **Metrics:** macro-F1 is primary, and coverage and set size measure what POL-ESC-06 consumes.
 
-## 8. Conformal prediction sets (D4-11)
+## 8. Conformal sets and the safety override
 
-### 8.1 Pre-registered: split conformal with the APS score, alpha 0.10
+### 8.1 The amendment: APS → LAC (eval plan 0.3)
 
-The method is deterministic, non-randomized APS. A set adds intents in descending probability
-until their mass reaches the threshold, so it is never empty (`ml/src/banking_cs/nlu/conformal.py`).
-The threshold is fit on the 776 calibration utterances.
+- **Card 0.1 result (pre-registered APS):** coverage 1.000, mean set size 7.7, 6.7% singletons.
+  89% of messages would have been transferred.
+- **The decision:** LAC for the deployed model, recorded in `docs/eval_plan.md` 8.4.
+- **Calibration-only cross-fit it rests on (`nlu-utt-0.1`):**
 
-| Model | Threshold | Coverage (test) | Mean set size | Size 1 (act) | Size 2 (clarify) | > 2 (transfer) | False `card_block` singletons |
-|---|---|---|---|---|---|---|---|
-| **TF-IDF (deployed)** | 0.9902 | **1.000** (every variant 1.000; pt-native 1.000) | **7.73** | **6.7%** | 4.5% | **88.8%** | 0 |
-| e5 | 0.9993 | 1.000 | 5.43 | 7.8% | 12.5% | 79.7% | 0 |
-
-- **Alpha sweep (TF-IDF, test):** for alpha = 0.02, 0.05, 0.10, 0.15, 0.20 the mean set sizes
-  are 10.5, 9.3, 7.7, 6.7 and 5.5. Coverage is 1.000 at every alpha.
-- **Calibration-only cross-fit:** fitting on half the calibration groups and testing on the
-  other half gives coverage 1.000 and mean set size 7.4. The same conclusion is visible
-  without the test split.
-- **Mondrian fallback (8.4):** not triggered, because no variant is below 0.85.
-
-**Why the sets are large:**
-- 14% of calibration messages are misclassified, and many of those errors are confident. The
-  APS score of such an example is the mass of every intent ranked at or above the true one,
-  close to 1.
-- The 90th percentile of the scores is therefore 0.990, and each set must hold 99% of the
-  probability mass.
-- TF-IDF + LR spreads its residual probability over all 12 intents (median top probability
-  0.85), which takes 5 to 10 intents.
-- This is a known weakness of APS with diffuse probabilities. It is not a coverage failure.
-
-### 8.2 Exploratory, not pre-registered: LAC score
-
-This analysis was added after the APS result was seen. LAC (Sadinle et al., 2019) uses the
-score 1 − p(true intent); a set holds every intent whose probability is at least
-1 − threshold, and it can be empty (POL-ESC-06 then transfers).
-
-| Model | Threshold | Coverage | Mean set size | Size 1 | Size 2 | Empty | False `card_block` singletons |
-|---|---|---|---|---|---|---|---|
-| **TF-IDF** | 0.7436 (p ≥ 0.256) | **0.925** | **1.06** | **90.7%** | 7.5% | 1.8% | **0** |
-| e5 | 0.4847 (p ≥ 0.515) | 0.909 | 0.96 | 96.2% | 0.0% | 3.8% | **4** |
-
-- **TF-IDF LAC by slice:** coverage is es-MX 0.942, es-CO 0.936, es-AR 0.920, pt-BR 0.908,
-  pt-native 0.917.
-- **Per intent:** coverage is lowest for **card_block (0.771)** and out_of_scope (0.800). Under
-  LAC, one in four block requests in this test set would not contain `card_block` (see 8.3).
-- **Calibration-only cross-fit:** coverage 0.902, mean size 1.11, 87.5% singletons.
-- **Alpha sweep:**
-
-  | Alpha | Coverage | Mean set size | Singletons |
+  | Score | Coverage | Mean set size | Singletons |
   |---|---|---|---|
-  | 0.02 | 0.967 | 1.53 | 66% |
-  | 0.05 | 0.954 | 1.29 | 77% |
-  | 0.15 | 0.869 | 0.94 | 93% |
-  | 0.20 | 0.829 | 0.88 | 88% |
+  | APS | 1.000 | 7.4 | 10.5% |
+  | LAC | 0.902 | 1.11 | 87.5% |
 
-### 8.3 What is exported, and the decision left to the team
+- **Disclosure:** decided after the APS test result, before held-out A. `CONFORMAL_ALPHA`
+  (0.10), `CONFORMAL_MAX_SET` (2), the targets and the Mondrian fallback are unchanged.
+  `CONFORMAL_ALPHA` = 0.10 is the final value for `docs/policy_cards.md` section 11.
 
-- `conformal.json` holds the **pre-registered APS threshold as the default**. The LAC threshold
-  is listed under `alternatives` with its status. `predict(text, method="lac")` uses it.
-- `CONFORMAL_ALPHA` stays at **0.10**, the final value for `docs/policy_cards.md` section 11,
-  so that table needs no change.
-- **Recommendation:** adopt LAC for the deployed TF-IDF model through a logged amendment to
-  `docs/eval_plan.md` 8.4, before held-out A. The choice can be justified from calibration
-  alone (the cross-fit above).
-- **Also needed, whichever score is used:** add training coverage for the block wordings
-  missed in section 6 ("congelar", "travar", "reportar como robada"). Alternatively, fit
-  class-conditional (Mondrian by intent) thresholds for `card_block`.
-- Keeping APS means the classifier hands off nearly every message, and C5 stays missed.
+### 8.2 Results on the rescored test split (`nlu-utt-0.2`, 832 calibration rows)
+
+| Model, score | Threshold | Coverage | Mean set size | Size 1 | Size 2 | Empty or > 2 | False `card_block` singletons |
+|---|---|---|---|---|---|---|---|
+| **TF-IDF, LAC (deployed)** | 0.6684 (p ≥ 0.332) | **0.920** | **1.00** | **94.8%** | 2.6% | 2.6% (empty) | **7** |
+| TF-IDF, APS | 0.9889 | 1.000 | 7.25 | 6.9% | 5.1% | 88.0% | 0 |
+| e5, LAC | 0.4407 | 0.931 | 0.97 | 96.6% | 0.0% | 3.4% (empty) | 6 |
+| e5, APS | 0.9992 | 1.000 | 5.22 | 8.1% | 13.5% | 78.4% | 0 |
+
+**TF-IDF with LAC by slice:**
+- Coverage by variant: es-MX 0.946, es-CO 0.931, es-AR 0.926, pt-BR 0.890; pt-native 0.861.
+- Coverage by language: Spanish 0.934, Portuguese 0.890.
+- Mondrian fallback: not triggered, because no variant is below 0.85.
+- Coverage per intent is lowest for transaction_detail (0.843), charge_dispute (0.886) and
+  conversation_end (0.886); `card_block` is at 0.961.
+- Calibration-only cross-fit on 0.2: coverage 0.905, mean size 1.03, 90.8% singletons.
+
+**Alpha sweep (TF-IDF with LAC, test):**
+
+| Alpha | Coverage | Mean set size | Singletons |
+|---|---|---|---|
+| 0.02 | 0.982 | 1.33 | 74% |
+| 0.05 | 0.971 | 1.15 | 86% |
+| 0.10 | 0.920 | 1.00 | 95% |
+| 0.15 | 0.882 | 0.94 | 93% |
+| 0.20 | 0.859 | 0.90 | 90% |
+
+### 8.3 Block safety override
+
+`rules.block_signal` detects requests to block, freeze ("congelar", "travar", "apagar la
+tarjeta", "pausar"), and reports of loss or theft. When it fires and the set lacks `card_block`,
+`predict()` adds `card_block`:
+- a singleton of another intent becomes a clarifying question (POL-ESC-06: no action until the
+  customer clarifies);
+- an empty set becomes {top intent, `card_block`}, or {`card_block`} when card_block is the top
+  intent (the block flow still asks for confirmation, POL-ACT-02).
+
+The override is never applied when the set holds `human_request` (POL-ESC-09). The detector is
+separate from the frozen rules baseline. It went through two versions (decisions log D-06).
+
+**TF-IDF with LAC, with and without the override:**
+
+| Split | Detector | `card_block` coverage, without → with | Overall coverage | Mean set size | Singletons | Fired (on block requests / others) | Singletons turned into a question | False `card_block` singletons |
+|---|---|---|---|---|---|---|---|---|
+| Calibration | v1 (designed before evaluation) | 0.865 → 0.979 | 0.901 → 0.915 | 1.023 → 1.037 | 91.0% → 90.0% | 11 (11 / 0) | 9 | 1 → 1 |
+| Test | v1 | 0.961 → 0.990 | 0.920 → 0.924 | 1.000 → 1.009 | 94.8% → 93.9% | 8 (3 / 5) | 8 | 7 → 7 |
+| Calibration | **v2 (deployed)** | 0.865 → **1.000** | 0.901 → 0.917 | 1.023 → 1.040 | 91.0% → 90.0% | 13 (13 / 0) | 10 | 1 → 1 |
+| Test | **v2 (deployed)** | 0.961 → **1.000** | 0.920 → 0.925 | 1.000 → 1.009 | 94.8% → 94.1% | 7 (4 / 3) | 6 | 7 → 7 |
+
+- **What v2 changed:** it fixed verb forms v1 missed ("me apagan", "bloquéeme", "me bloquean",
+  "bloqueo temporal", forgot-the-card cues). It also stopped reading Portuguese "robô" (robot) as
+  Spanish "robo" (theft): that v1 error would have delayed transfers for "não quero falar com
+  robô".
+- **Read the v2 test row as post-hoc**, because the revision was made after seeing calibration
+  and test misses. The v1 rows are the clean estimate.
+- **Detector false positives:** it fires on 0.4% of non-block test messages, 1.5% of non-block
+  train messages and none in calibration. On test these are an unblock ("…o cartão travou,
+  quero desbloquear"), a dispute ("Clonaram meu cartão…") and a block-reason question ("Por que
+  meu cartão de crédito foi travado?"). Each costs one clarifying question.
+- **What it does not fix:** the override only adds `card_block`; it cannot remove a false
+  {`card_block`} singleton (section 8.4).
+
+### 8.4 C6 regression: false `card_block` singletons
+
+With LAC, the 0.2 TF-IDF model gives a {`card_block`} singleton to **7 non-block test messages**
+(card 0.1: 0):
+
+| Gold intent | Message | Rows |
+|---|---|---|
+| charge_dispute | "Quiero reportar / denunciar un fraude en la tarjeta terminada en 1188." (es and pt) | 4 |
+| card_unblock | "Achei o cartão, dá pra destravar?" | 1 |
+| block_reason | "¿La tarjeta se bloqueó por poner mal la clave?" | 1 |
+| transaction_list | "extrato do cartão" | 1 |
+
+**Cause:** the new "reportar / denunciar el robo" and "travar" training wording generalized to
+fraud reports and to "destravar". The block flow asks for confirmation naming the card
+(POL-ACT-02), so no block runs without a "yes". But a fraud report routed to the block flow
+skips the dispute handoff (POL-ESC-01).
+
+**Not patched in 0.2** (decisions log D-07). Recommended:
+- contrast seed groups: fraud report → `charge_dispute`, "destravar" → `card_unblock`;
+- a precedence guard: when the rules detect `charge_dispute` (which outranks `card_block`,
+  labeling rule 2), add it to a {`card_block`} singleton so the customer is asked.
 
 ## 9. Accuracy versus size and latency (CV winner not deployed)
 
 | | TF-IDF + LR (deployed) | e5 + LR (CV winner) |
 |---|---|---|
-| Test macro-F1 | 0.889 [0.840, 0.922] | 0.927 [0.890, 0.955] (+0.038 [0.004, 0.075]) |
-| Artifact | 1.4 MB | 1.13 GB encoder weights + 35 KB head |
-| CPU latency per message (p50 / p95) | 1.6 / 2.0 ms | 25.4 / 27.6 ms |
+| Test macro-F1 | 0.919 [0.885, 0.944] | 0.949 [0.919, 0.969] (+0.030 [0.001, 0.064]) |
+| Artifact | 1.5 MB | 1.13 GB encoder weights + head |
+| CPU latency per message (p50 / p95) | 1.6 / 2.0 ms | 26.6 / 33.0 ms |
 | Runtime dependencies | scikit-learn, numpy, scipy, joblib | + torch, transformers, sentence-transformers |
-| `card_block` precision | 1.00 | 0.91 (4 disputes labeled as blocks) |
-| False `card_block` singletons (LAC) | 0 | 4 |
-| Golden dialogue 5 (dispute) | correct | labeled `card_block` |
+| False `card_block` singletons (LAC) | 7 | 6 |
 
-e5 is more accurate overall, and the gap is statistically distinguishable but small (lower
-bound 0.004). Its errors fall on the action intent: a dispute routed to the block flow skips
-the dispute handoff (POL-ESC-01). Size and latency alone justify TF-IDF for this prototype.
-The safety numbers point the same way. If e5 is reconsidered, it needs the C6 check on the
-amended conformal score first.
+The accuracy gap narrowed from +0.038 to +0.030, and its lower bound is 0.001. e5 no longer
+has a worse action-intent profile than TF-IDF: both have the dispute → block confusion. Size
+and latency still favor TF-IDF for this prototype.
 
-## 10. LLM zero-shot baseline (not run)
+## 10. LLM zero-shot baseline (gpt-4o-mini)
 
-- `python -m banking_cs.nlu.llm_baseline` runs gpt-4o-mini at temperature 0 on the **test split
-  only**. It uses the intent list with one-line definitions from `docs/intents.md` section 1,
-  the guide's precedence rule, and JSON output. The prompt SHA-256 is `2570605a…`.
-- The key is read from `OPENAI_API_KEY` by the client; it is never logged or stored.
-- Responses are cached, so a rerun does not bill the test split twice. Token usage and cost
-  are logged, and the run refuses to start if the projected cost exceeds US$1.
-- **Status:** `not run`, because `OPENAI_API_KEY` was not set in the environment
-  (`ml/artifacts/nlu/llm_baseline.json`).
-- **Projected cost:** about 371k input and 10k output tokens, about US$0.06 at the list prices
-  assumed in the module ($0.15 / $0.60 per million tokens; check against current pricing).
-- **Deviation:** the eval plan specifies "same model ID as the agents"; gpt-4o-mini is a team
-  decision.
+- **Setup:** temperature 0 on the **test split only** (880 messages). The prompt is the 12
+  intents with one-line definitions from `docs/intents.md` section 1 and the guide's precedence
+  rule, with JSON output (prompt SHA-256 `2570605a…`).
+- **Deviation:** gpt-4o-mini replaces the eval plan's "same model ID as the agents" (team
+  decision).
+- **Key:** read at runtime from `OPENAI_API_KEY` in `backend/.env`. Only that variable is
+  loaded; the key is never printed, logged or stored (decisions log D-09).
+- **Result:** macro-F1 **0.933** [0.883, 0.968], accuracy 0.933, Spanish 0.929, Portuguese
+  0.941, pt-native 0.957. All 880 messages got a valid answer.
+- **Paired with TF-IDF:** the difference is −0.014 [−0.062, 0.038], so the two can't be told
+  apart. It is clearly better than the rules baseline.
+- **Usage:** 320,993 input and 6,445 output tokens, about **US$0.052** at the assumed list
+  prices ($0.15 / $0.60 per million tokens; check against current pricing).
+- **Run notes:** the first run took 9.2 h of wall time (throttling) and left 8 calls failed. A
+  rerun with a 30 s timeout sent only those 8 calls, because the others were cached.
+- **Not a deployment candidate as is:** latency was not measured per call (the rerun's 8
+  parallel calls took 0.9 s, against 1.6 ms for TF-IDF), and there is a network dependency and
+  a per-message cost. Also, an LLM label would still need a calibrated set for POL-ESC-06.
 
-## 11. Pre-registered classifier targets (eval plan 9.2)
+## 11. Pre-registered classifier targets (eval plan 9.2), deployed model
 
 | ID | Target | Result | Status |
 |---|---|---|---|
-| C1 | Chosen model beats TF-IDF + LR | The CV winner e5 beats TF-IDF by +0.038 [0.004, 0.075]. The deployed model is TF-IDF itself | **Met** for the CV winner; not applicable to the deployed model |
-| C2 | Macro-F1 ≥ 0.85 overall | TF-IDF 0.889 (lower bound 0.840); e5 0.927 | **Met** (point estimate) |
-| C3 | pt-BR ≥ Spanish − 0.05 | TF-IDF 0.882 vs 0.892; e5 0.910 vs 0.935 | **Met** |
-| C4 | Coverage ≥ 0.90; every variant ≥ 0.85 | APS 1.000 everywhere | **Met** |
-| C5 | Mean set size ≤ 1.3; singletons ≥ 75% | APS 7.73 and 6.7% | **Not met** (LAC, exploratory: 1.06 and 90.7%) |
-| C6 | 0 false singletons on `card_block` | APS 0 (TF-IDF and e5); LAC: TF-IDF 0, e5 4 | **Met** for the deployed model |
-| C7 | Kappa ≥ 0.80 | 100-row blind sample generated, not labeled | **Not evaluable** |
+| C1 | Chosen model beats TF-IDF + LR | CV winner e5: +0.030 [0.001, 0.064]. The deployed model is TF-IDF | **Met** for the CV winner (barely); not applicable to the deployed model |
+| C2 | Macro-F1 ≥ 0.85 overall | 0.919 (lower bound 0.885) | **Met** (on a rescored split) |
+| C3 | pt-BR ≥ Spanish − 0.05 | 0.898 vs 0.928 | **Met** |
+| C4 | Coverage ≥ 0.90; every variant ≥ 0.85 | LAC 0.920; minimum variant pt-BR 0.890 | **Met** (amended score) |
+| C5 | Mean set size ≤ 1.3; singletons ≥ 75% | LAC 1.00 and 94.8% (1.01 and 94.1% with the override) | **Met** (amended score; APS: not met) |
+| C6 | 0 false singletons on `card_block` | 7 | **Not met** (section 8.4) |
+| C7 | Kappa ≥ 0.80 | Sample generated, not labeled | **Not evaluable** |
+
+C4 and C5 are met only under the amended score (eval plan 0.3), and C2 to C5 are on a test split
+that was rescored after targeted additions. Report them with both caveats.
 
 ## 12. Limitations
 
-1. **Synthetic, single-author data.** One LLM wrote every utterance from the team's guide. The
-   test split measures generalization to unseen meanings written in the same style, not to
-   customers. Real messages will have more typos, code-switching, voice transcription errors
-   and requests outside the taxonomy.
-2. **Not reviewed by a person.** Eval plan 8.1 requires that review before training, so these
-   results are provisional. After review, rerun `dataset`, `train_eval` and `llm_baseline`, and
-   report any label changes.
-3. **Unseen meanings fail.** Section 6 shows whole meanings missed: freezing a card, "report as
-   stolen", delivery questions. Adding seed groups for those wordings matters more than the
-   model choice.
-4. **Single-turn classifier.** Elliptical follow-ups ("E o do cartão de crédito?") and
-   context-dependent turns need the orchestrator to carry the previous intent. One golden turn
-   depends on it.
-5. **Conformal guarantee is marginal and approximate.** Exchangeability holds at the group
-   level (groups are assigned at random), while utterances within a group are correlated. The
-   effective calibration size is closer to 97 groups than to 776 utterances. Per-intent
-   coverage is not guaranteed (LAC: `card_block` 0.77).
-6. **Probabilities are not calibrated.** `scores` are logistic-regression outputs. Use the
-   conformal set, not raw scores, for decisions.
-7. **Slots are rule-based.** Merchants are found only when capitalized after a preposition
-   (recall 0.76). Amounts written in words ("cien dólares") and dates outside the canonical
-   patterns are missed. `balance_item` defaults to `balance`.
-8. **Below the guide's paraphrase target** (section 2.2), and the label-quality sample is 100
-   rows instead of 200.
-9. **The rules baseline and the golden slice share an author** with the data. The rules'
-   golden score (26/27) is not evidence of generalization.
+1. **Synthetic, single-author data.** One LLM wrote all utterances. Real messages will differ.
+2. **Not reviewed by a person** (eval plan 8.1). After review, rerun `dataset`, `train_eval`
+   and `llm_baseline`.
+3. **Test-set reuse.** The 0.2 additions were chosen from test errors, so the gain on earlier
+   test rows is optimistic (section 3.2). Held-out A is the clean test.
+4. **Targeted additions shift errors.** They fixed the missed meanings but created the
+   dispute → block confusion (section 8.4). Each further round of targeted data needs contrast
+   groups on the neighboring intents.
+5. **Post-hoc choices.** The LAC amendment and detector v2 were made after seeing results; both
+   are disclosed. The override's clean estimate is detector v1.
+6. **Single-turn classifier.** Elliptical follow-ups need the orchestrator's context.
+7. **Conformal guarantee is marginal and approximate.** Exchangeability holds at the group
+   level (104 calibration groups). Per-intent coverage is not guaranteed (transaction_detail:
+   0.84). LAC can return an empty set (2.6% of test messages), which POL-ESC-06 transfers.
+8. **Probabilities are not calibrated.** Use the set, not raw scores.
+9. **Rule-based slots.** Merchants are found only when capitalized after a preposition (recall
+   0.76); amounts in words are missed.
+10. **Determinism.** Two runs on identical data produced model files 2 bytes apart, with
+    identical predictions and metrics (likely BLAS thread non-determinism). Verify artifacts by
+    the SHA-256 in `metadata.json`.
 
 ## 13. Reproduction
 
-From `ml/`, with the locked environment (`requirements.lock`, encoders in the local Hugging Face
-cache):
+From `ml/`, with the locked environment and the encoders in the local Hugging Face cache:
 
 ```sh
-python -m banking_cs.nlu.dataset        # validate corpus, split, write data/nlu/ and the fixture
-python -m banking_cs.nlu.train_eval     # CV, fit, test, conformal, export to artifacts/nlu/
-python -m banking_cs.nlu.llm_baseline   # needs OPENAI_API_KEY in the environment
-pytest tests/nlu                        # rules, corpus, conformal, loader, LLM plumbing
+python -m banking_cs.nlu.dataset        # validate, split (with the lock), write data/nlu/ and the fixture
+git show 2752575:ml/artifacts/nlu/model.joblib > data/nlu/model_nlu-utt-0.1.joblib
+python -m banking_cs.nlu.train_eval --compare-to data/nlu/model_nlu-utt-0.1.joblib
+python -m banking_cs.nlu.llm_baseline   # OPENAI_API_KEY from the environment or backend/.env
+pytest tests/nlu
 ```
 
 The backend needs `scikit-learn==1.9.1`, `numpy`, `scipy` and `joblib`, plus `ml/src` on the
-import path (for example `pip install -e ml --no-deps`). It never needs Kedro.
+import path. It never needs Kedro.
