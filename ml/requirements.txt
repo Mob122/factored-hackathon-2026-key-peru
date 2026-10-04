@@ -7,3 +7,7 @@ polars
 pyarrow
 kedro-viz
 scikit-learn
+pyyaml
+sentence-transformers
+rapidfuzz
+openai
