@@ -1,0 +1,219 @@
+# The 144 examples of docs/intents.md section 4, copied verbatim; slots hand-labeled.
+# One seed group per intent and variant, train split only (docs/intents.md 4, eval plan 8.2).
+groups:
+  - id: guide-balance_inquiry
+    intent: balance_inquiry
+    es-MX:
+      - {text: "¿Cuál es el saldo de mi tarjeta de crédito?", slots: {product_kind: "credit_card", balance_item: "balance"}}
+      - {text: "Quiero saber cuánto tengo en mi cuenta de ahorro.", slots: {product_kind: "savings_account", balance_item: "balance"}}
+      - {text: "¿Cuánto debo en la tarjeta que termina en 4950?", slots: {product_kind: "card", last4: "4950", balance_item: "balance"}}
+    es-CO:
+      - {text: "Buenas, ¿me regala el saldo de mi cuenta de ahorros?", slots: {product_kind: "savings_account", balance_item: "balance"}}
+      - {text: "¿Cuánta plata debo en la tarjeta de crédito?", slots: {product_kind: "credit_card", balance_item: "balance"}}
+      - {text: "Necesito consultar el cupo de mi tarjeta.", slots: {product_kind: "card", balance_item: "credit_limit"}}
+    es-AR:
+      - {text: "¿Me decís cuánto tengo en la caja de ahorro?", slots: {product_kind: "savings_account", balance_item: "balance"}}
+      - {text: "¿Cuánto me queda de límite en la tarjeta?", slots: {product_kind: "card", balance_item: "available_credit"}}
+      - {text: "Quiero ver el saldo de la tarjeta terminada en 2771.", slots: {product_kind: "card", last4: "2771", balance_item: "balance"}}
+    pt-BR:
+      - {text: "Qual é o saldo da minha conta poupança?", slots: {product_kind: "savings_account", balance_item: "balance"}}
+      - {text: "Quanto eu devo no cartão de crédito?", slots: {product_kind: "credit_card", balance_item: "balance"}}
+      - {text: "Qual o limite do meu cartão final 7858?", slots: {product_kind: "card", last4: "7858", balance_item: "credit_limit"}}
+  - id: guide-card_list
+    intent: card_list
+    es-MX:
+      - {text: "¿Qué tarjetas tengo con ustedes?", slots: {product_kind: "card"}}
+      - {text: "Muéstreme mis tarjetas, por favor.", slots: {product_kind: "card"}}
+      - {text: "¿Cuántas tarjetas tengo a mi nombre?", slots: {product_kind: "card"}}
+    es-CO:
+      - {text: "¿Me regala el listado de mis tarjetas?", slots: {product_kind: "card"}}
+      - {text: "¿Cuáles tarjetas tengo activas?", slots: {product_kind: "card"}}
+      - {text: "Quiero saber qué tarjetas tengo con el banco.", slots: {product_kind: "card"}}
+    es-AR:
+      - {text: "¿Qué tarjetas tengo?", slots: {product_kind: "card"}}
+      - {text: "Pasame la lista de mis tarjetas.", slots: {product_kind: "card"}}
+      - {text: "¿Cuántas tarjetas tengo con el banco?", slots: {product_kind: "card"}}
+    pt-BR:
+      - {text: "Quais cartões eu tenho?", slots: {product_kind: "card"}}
+      - {text: "Me mostra os meus cartões.", slots: {product_kind: "card"}}
+      - {text: "Quantos cartões estão no meu nome?", slots: {product_kind: "card"}}
+  - id: guide-card_status
+    intent: card_status
+    es-MX:
+      - {text: "¿Mi tarjeta está activa?", slots: {product_kind: "card"}}
+      - {text: "¿Está bloqueada mi tarjeta de débito?", slots: {product_kind: "debit_card"}}
+      - {text: "Quiero saber el estado de mi tarjeta terminación 6873.", slots: {product_kind: "card", last4: "6873"}}
+    es-CO:
+      - {text: "¿En qué estado está mi tarjeta débito?", slots: {product_kind: "debit_card"}}
+      - {text: "¿La tarjeta que termina en 0245 está activa o bloqueada?", slots: {product_kind: "card", last4: "0245"}}
+      - {text: "¿Mi tarjeta crédito sí está habilitada?", slots: {product_kind: "credit_card"}}
+    es-AR:
+      - {text: "¿Me decís si mi tarjeta está habilitada?", slots: {product_kind: "card"}}
+      - {text: "¿Mi tarjeta de débito sigue activa?", slots: {product_kind: "debit_card"}}
+      - {text: "Fijate si la tarjeta terminada en 7042 está bloqueada.", slots: {product_kind: "card", last4: "7042"}}
+    pt-BR:
+      - {text: "O meu cartão está ativo?", slots: {product_kind: "card"}}
+      - {text: "Qual é a situação do meu cartão de débito?", slots: {product_kind: "debit_card"}}
+      - {text: "O cartão final 8407 está bloqueado?", slots: {product_kind: "card", last4: "8407"}}
+  - id: guide-transaction_list
+    intent: transaction_list
+    es-MX:
+      - {text: "¿Cuáles fueron mis últimos movimientos de la tarjeta?", slots: {product_kind: "card"}}
+      - {text: "Quiero ver mis compras de este mes.", slots: {date: "this_month"}}
+      - {text: "¿Qué cargos tengo en la tarjeta de crédito desde el 1 de junio?", slots: {product_kind: "credit_card", date: "since:06-01"}}
+    es-CO:
+      - {text: "¿Me muestra los movimientos de mi tarjeta débito?", slots: {product_kind: "debit_card"}}
+      - {text: "¿Qué compras he hecho con la tarjeta esta semana?", slots: {product_kind: "card", date: "this_week"}}
+      - {text: "Necesito ver las transacciones de los últimos 15 días.", slots: {date: "last_n_days:15"}}
+    es-AR:
+      - {text: "¿Me pasás los últimos consumos de la tarjeta?", slots: {product_kind: "card"}}
+      - {text: "Quiero ver qué gasté con la tarjeta en mayo.", slots: {product_kind: "card", date: "month:05"}}
+      - {text: "Mostrame los movimientos de la tarjeta terminada en 0044.", slots: {product_kind: "card", last4: "0044"}}
+    pt-BR:
+      - {text: "Quais foram as últimas compras no meu cartão?", slots: {product_kind: "card"}}
+      - {text: "Quero ver as transações do cartão deste mês.", slots: {product_kind: "card", date: "this_month"}}
+      - {text: "Me mostra os lançamentos do cartão final 2771.", slots: {product_kind: "card", last4: "2771"}}
+  - id: guide-transaction_detail
+    intent: transaction_detail
+    es-MX:
+      - {text: "¿Por qué me rechazaron la compra en Uber de ayer?", slots: {merchant: "Uber", date: "yesterday", tx_status: "declined"}}
+      - "¿Qué significa el código 51 en mi compra?"
+      - {text: "Tengo un cargo pendiente de 75 dólares, ¿qué es?", slots: {amount: "75 USD", tx_status: "pending"}}
+    es-CO:
+      - {text: "Una compra me salió rechazada en el supermercado, ¿qué pasó?", slots: {tx_status: "declined"}}
+      - {text: "¿Por qué aparece como revertido un pago de mi tarjeta?", slots: {tx_status: "reversed"}}
+      - {text: "¿Me explica el cargo de 245.300 pesos en Farmacia Salud?", slots: {amount: "245300 PESO", merchant: "Farmacia Salud"}}
+    es-AR:
+      - {text: "No me pasó la tarjeta en el súper, ¿qué onda?", slots: {tx_status: "declined"}}
+      - {text: "¿Qué es ese consumo de 222 dólares que figura como revertido?", slots: {amount: "222 USD", tx_status: "reversed"}}
+      - {text: "¿Me explicás por qué la compra en Cine Premium quedó pendiente?", slots: {merchant: "Cine Premium", tx_status: "pending"}}
+    pt-BR:
+      - {text: "Por que a minha compra no Uber foi recusada?", slots: {merchant: "Uber", tx_status: "declined"}}
+      - "O que significa o código 05 na minha transação?"
+      - {text: "Tem um pagamento estornado no meu cartão, o que aconteceu?", slots: {tx_status: "reversed"}}
+  - id: guide-card_block
+    intent: card_block
+    es-MX:
+      - {text: "Perdí mi tarjeta, bloquéela por favor.", slots: {product_kind: "card"}}
+      - {text: "Quiero bloquear mi tarjeta de débito.", slots: {product_kind: "debit_card"}}
+      - {text: "Me robaron la cartera, bloqueen la tarjeta terminación 6898.", slots: {product_kind: "card", last4: "6898"}}
+    es-CO:
+      - {text: "Se me perdió la tarjeta, ¿me la pueden bloquear?", slots: {product_kind: "card"}}
+      - {text: "Necesito bloquear la tarjeta crédito ya.", slots: {product_kind: "credit_card"}}
+      - {text: "Me robaron el celular con la tarjeta, bloquéenla.", slots: {product_kind: "card"}}
+    es-AR:
+      - {text: "Perdí la tarjeta, bloqueala por favor.", slots: {product_kind: "card"}}
+      - {text: "Me afanaron la billetera, quiero bloquear la tarjeta.", slots: {product_kind: "card"}}
+      - {text: "¿Podés bloquear la tarjeta terminada en 2960?", slots: {product_kind: "card", last4: "2960"}}
+    pt-BR:
+      - {text: "Perdi o meu cartão, quero bloquear.", slots: {product_kind: "card"}}
+      - {text: "Bloqueia o meu cartão de débito, por favor.", slots: {product_kind: "debit_card"}}
+      - {text: "Roubaram a minha carteira, bloqueiem o cartão final 8407.", slots: {product_kind: "card", last4: "8407"}}
+  - id: guide-charge_dispute
+    intent: charge_dispute
+    es-MX:
+      - {text: "No reconozco un cargo de 392 dólares en mi tarjeta.", slots: {amount: "392 USD"}}
+      - "Me cobraron dos veces la misma compra."
+      - {text: "Hay una compra en Empresa Telefónica que yo no hice.", slots: {merchant: "Empresa Telefónica"}}
+    es-CO:
+      - "Me aparece un cobro que yo no hice."
+      - {text: "Quiero reclamar un cargo de Cable TV que no reconozco.", slots: {merchant: "Cable TV"}}
+      - "Me descontaron una compra que nunca recibí, quiero que me devuelvan la plata."
+    es-AR:
+      - "Tengo un consumo que no reconozco en la tarjeta."
+      - "Me cobraron algo que no compré, quiero desconocerlo."
+      - {text: "Me hicieron un cargo duplicado en Mercado Central.", slots: {merchant: "Mercado Central"}}
+    pt-BR:
+      - "Não reconheço uma compra no meu cartão."
+      - "Fui cobrado duas vezes pela mesma compra."
+      - {text: "Quero contestar uma cobrança de 398 dólares.", slots: {amount: "398 USD"}}
+  - id: guide-block_reason
+    intent: block_reason
+    es-MX:
+      - {text: "¿Por qué bloquearon mi tarjeta?", slots: {product_kind: "card"}}
+      - {text: "Mi tarjeta aparece suspendida, ¿qué pasó?", slots: {product_kind: "card"}}
+      - {text: "¿Cuándo y por qué me bloquearon la tarjeta de crédito?", slots: {product_kind: "credit_card"}}
+    es-CO:
+      - {text: "¿Por qué me bloquearon la tarjeta si yo no hice nada?", slots: {product_kind: "card"}}
+      - {text: "¿Qué motivo tiene el bloqueo de mi tarjeta débito?", slots: {product_kind: "debit_card"}}
+      - {text: "Me dicen que mi tarjeta está bloqueada, ¿por qué?", slots: {product_kind: "card"}}
+    es-AR:
+      - {text: "¿Por qué me bloquearon la tarjeta?", slots: {product_kind: "card"}}
+      - {text: "¿Me explicás por qué está suspendida mi tarjeta?", slots: {product_kind: "card"}}
+      - {text: "¿Qué pasó que me inhabilitaron la tarjeta?", slots: {product_kind: "card"}}
+    pt-BR:
+      - {text: "Por que o meu cartão foi bloqueado?", slots: {product_kind: "card"}}
+      - {text: "Qual o motivo do bloqueio do meu cartão?", slots: {product_kind: "card"}}
+      - {text: "O meu cartão está suspenso, o que aconteceu?", slots: {product_kind: "card"}}
+  - id: guide-card_unblock
+    intent: card_unblock
+    es-MX:
+      - {text: "Quiero desbloquear mi tarjeta.", slots: {product_kind: "card"}}
+      - {text: "Necesito una reposición de mi tarjeta.", slots: {product_kind: "card"}}
+      - {text: "Reactiven mi tarjeta de débito, por favor.", slots: {product_kind: "debit_card"}}
+    es-CO:
+      - {text: "¿Me pueden desbloquear la tarjeta crédito?", slots: {product_kind: "credit_card"}}
+      - {text: "Necesito que me repongan la tarjeta.", slots: {product_kind: "card"}}
+      - {text: "Quiero activar otra vez mi tarjeta.", slots: {product_kind: "card"}}
+    es-AR:
+      - {text: "Desbloqueame la tarjeta, porfa.", slots: {product_kind: "card"}}
+      - {text: "Necesito que me manden una tarjeta nueva, la mía se rompió.", slots: {product_kind: "card"}}
+      - {text: "¿Cómo hago para rehabilitar la tarjeta?", slots: {product_kind: "card"}}
+    pt-BR:
+      - {text: "Quero desbloquear o meu cartão.", slots: {product_kind: "card"}}
+      - {text: "Preciso de uma segunda via do cartão.", slots: {product_kind: "card"}}
+      - {text: "Reativem o meu cartão, por favor.", slots: {product_kind: "card"}}
+  - id: guide-human_request
+    intent: human_request
+    es-MX:
+      - "Quiero hablar con un asesor."
+      - "Comuníqueme con una persona, por favor."
+      - "Páseme con un ejecutivo."
+    es-CO:
+      - "¿Me pasa con un asesor, por favor?"
+      - "Necesito hablar con alguien de verdad."
+      - "Quiero que me atienda una persona."
+    es-AR:
+      - "Pasame con alguien de atención al cliente."
+      - "Quiero hablar con un operador."
+      - "¿Me comunicás con una persona?"
+    pt-BR:
+      - "Quero falar com um atendente."
+      - "Me passa para uma pessoa, por favor."
+      - "Preciso falar com um ser humano."
+  - id: guide-conversation_end
+    intent: conversation_end
+    es-MX:
+      - "Gracias, eso es todo."
+      - "Listo, era todo, hasta luego."
+      - "No, nada más, gracias."
+    es-CO:
+      - "Muchas gracias, muy amable, eso era."
+      - "Listo, ya quedé, gracias."
+      - "Nada más por hoy, chao."
+    es-AR:
+      - "Buenísimo, gracias, eso era todo."
+      - "Listo, chau."
+      - "No, nada más, gracias igual."
+    pt-BR:
+      - "Obrigado, era isso."
+      - "Só isso, tchau."
+      - "Não, mais nada, obrigada."
+  - id: guide-out_of_scope
+    intent: out_of_scope
+    es-MX:
+      - "Quiero pedir un préstamo personal."
+      - "¿Me pueden transferir 500 pesos a otra cuenta?"
+      - "Quiero cambiar mi dirección."
+    es-CO:
+      - "¿Cómo pago la factura de la luz con la app?"
+      - "Quiero subir el cupo de mi tarjeta."
+      - "¿Me ayuda a abrir un CDT?"
+    es-AR:
+      - "Quiero sacar un préstamo."
+      - "¿Me hacés una transferencia a la cuenta de mi viejo?"
+      - "¿A cuánto está el dólar hoy?"
+    pt-BR:
+      - "Quero fazer um empréstimo."
+      - "Quero fazer um Pix para a minha mãe."
+      - "Quero pagar a fatura do cartão."

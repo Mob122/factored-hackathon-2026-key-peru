@@ -7,8 +7,8 @@
 
 | Field | Value |
 |---|---|
-| Policy version | `cards-synthetic-0.4` |
-| Date | 2026-09-29 |
+| Policy version | `cards-synthetic-0.5` |
+| Date | 2026-10-04 |
 | Scope | Card and account inquiries assistant, in Spanish and Portuguese: balance inquiries for credit cards and savings accounts (the core intent), card status, card transactions, card block and handoff (`docs/proposal.md` v3.1) |
 | Owner | Aldair (policy text) · Martín (enforcement in services, gateway and orchestrator) |
 | State machine | `docs/contracts/state_machine.md` (`sm-0.3`) |
@@ -23,6 +23,7 @@
 | 0.2 | 2026-09-29 | Fixes for the flag register of `docs/golden_conversations.md` (F-02, F-06, F-08 to F-11, F-13, F-15 to F-19, F-21 to F-26). Balance inquiry for credit cards and savings accounts (POL-ANS-14 narrowed; POL-ANS-15 to 17 and POL-BAL-* added). Language is the customer's preference (POL-GEN-03). Stale-data rule (POL-GEN-07). Two new tools, `list_balance_products` and `get_balance`, which change the tool contracts frozen in `docs/proposal.md` section 8 and need Martín's sign-off. |
 | 0.3 | 2026-09-29 | Consistency fixes against `docs/contracts/`, no new scope. POL-ANS-02: `get_card_status` also returns card type and last 4 (POL-ACT-11 renders `{tipo}` from the verification read). POL-PII-05 and POL-PII-07: raw third-party identifiers are not stored anywhere; the audit log keeps a keyed hash (`docs/contracts/audit_log.md` AL-P5), matching POL-PII-04. References in section 3b and POL-PII-06 updated. |
 | 0.4 | 2026-09-29 | Balance inquiry approved by the team (proposal v3.1); the balance tools are part of the frozen contracts. New POL-AUTH-09 and template POL-HND-07: customers with `customer_status` `Suspended` or `Closed` get only an immediate handoff (requirements matrix gap 4). POL-ANS-15 and new template POL-BAL-06: a credit card with no recorded limit (5.05%) or a balance above it gets the balance alone with POL-BAL-04. Final intent names from `docs/intents.md` in the eligibility table. POL-ANS-14 is also reached when the customer names a product kind the intent does not serve. POL-PII-06 points to `docs/operations.md`. |
+| 0.5 | 2026-10-04 | New POL-ESC-13 and template POL-HND-08: a conformal set that is exactly {`out_of_scope`} gets the capability list and an explicit offer of a human handoff, never a plain refusal, so a misrouted request still reaches a person (`docs/model_card_intent.md` 0.1 section 6: block requests labeled out of scope). POL-ESC-06: the set comes from the classifier with the LAC score (`docs/eval_plan.md` 0.3, 8.4) and its block safety override. `CONFORMAL_ALPHA` 0.10 confirmed in the model card. |
 
 ## 0. How to read and cite this policy
 
@@ -176,13 +177,14 @@ what is verified, say plainly what the assistant cannot confirm, and offer a tra
 | POL-ESC-03 | Unblock, reactivate or replace a card | Transfer. | Orchestrator |
 | POL-ESC-04 | Unverifiable fact: the customer asks for a cause, intent or fact that no tool returns (the cause of a decline, whether a merchant is legitimate, what was bought, expiration dates) | Abstain. If the customer insists or the fact is needed to resolve the request, transfer. | Orchestrator, grounding check |
 | POL-ESC-05 | Missing or inconsistent data: a required field is null, the response code is not in section 6, product identity stays ambiguous after POL-ANS-08, a transaction date falls outside the card's validity dates, or a balance is above the limit | State only the verified fields and say the rest is not available. If the missing part is needed to resolve the request, transfer. | Tool gateway (field checks), orchestrator |
-| POL-ESC-06 | Classifier uncertainty. The conformal prediction set at level `CONFORMAL_ALPHA`: **1 label** → act on it; **2 to `CONFORMAL_MAX_SET` labels** → ask one clarifying question naming the candidates in plain words; **empty or larger than `CONFORMAL_MAX_SET`** → transfer. If a set contains an action intent, no action runs until the customer clarifies. After `MAX_CLARIFY_TURNS` clarifications in a row for the same request, transfer. | Orchestrator (not a prompt) |
+| POL-ESC-06 | *(changed in 0.5)* Classifier uncertainty. The conformal prediction set at level `CONFORMAL_ALPHA`: **1 label** → act on it; **2 to `CONFORMAL_MAX_SET` labels** → ask one clarifying question naming the candidates in plain words; **empty or larger than `CONFORMAL_MAX_SET`** → transfer. If a set contains an action intent, no action runs until the customer clarifies. After `MAX_CLARIFY_TURNS` clarifications in a row for the same request, transfer. The set is the one the classifier returns: LAC score (`docs/eval_plan.md` 8.4, amendment 0.3), with `card_block` added when a block or theft request is detected (safety override, `docs/model_card_intent.md`), so a block request is never answered as a single other intent. A set of exactly {`out_of_scope`} follows POL-ESC-13. | Orchestrator (not a prompt) |
 | POL-ESC-07 | Repeated tool failure: a tool call still fails after the retries in POL-REL-01, or `SESSION_TOOL_FAIL_MAX` failed tool rounds happen in one session, or a block could not be verified (POL-ACT-05) | Safe fallback: say the service cannot complete the request now, make no claim about the outcome, transfer. For an unverified block, use POL-ACT-10. If `open_handoff` also fails, POL-HND-05 and the local fallback queue (POL-REL-03). | Orchestrator |
 | POL-ESC-08 | *(changed in 0.2, F-21)* Suspected prompt injection: text that tells the assistant to ignore rules, claims a role or authority ("I am the bank's admin"), contains tool-call or system-prompt syntax, or asks for data about another person | First time: do not follow it, do not quote it back, keep serving the request within policy. Second time in the session: end automated handling and transfer. Any transfer in a session with a suspected injection gets priority `security` (POL-HND-15). Injection cannot grant permissions in any case (POL-GEN-01). | Orchestrator (detector), tool gateway |
 | POL-ESC-09 | The customer asks for a human, in any wording | Transfer right away. No retention attempt and no extra questions. | Orchestrator |
 | POL-ESC-10 | *(changed in 0.2, F-18)* Unauthorized access attempt. Exactly these count: (a) a full card number typed by the customer that the gateway's ownership check finds on **another customer's** card; (b) a request for another person's data (another customer's ID, name, card or account, "my spouse's card"); (c) a second consecutive card miss (POL-ANS-18); (d) step-up lockout (POL-AUTH-06). A single non-matching last 4 is a typo, not an attempt. A last 4 alone never triggers the ownership check, because it matches thousands of cards. | The reply to (a) is identical to a card miss (POL-ANS-18) and never reveals whether the card exists. On (c), (d), or a second attempt of any kind: transfer with priority `security`. | Tool gateway (ownership check), orchestrator |
 | POL-ESC-11 | Language: the message is in neither Spanish nor Portuguese, or mixes them so that intent is unclear, and no preference was stated (POL-GEN-03) | Ask once, in both Spanish and Portuguese, which language to continue in. If it is still unclear, or the language is unsupported, transfer. | Orchestrator |
 | POL-ESC-12 | An action requested on a `Suspended` or `Closed` card | Tell the customer the current status and transfer. | Action gateway |
+| POL-ESC-13 | *(new in 0.5)* Out-of-scope singleton: the conformal set is exactly {`out_of_scope`} (T-10), including a greeting with no request (`docs/intents.md` rule 6) | Never a plain refusal. Say in one sentence that this is not something the assistant can do here, list what it can do (POL-ANS-05), and offer a human handoff with POL-HND-08. If the customer accepts, in any wording, transfer as in POL-ESC-09 with reason rule POL-ESC-13 and the customer's original message in the case file. If the customer declines or sends a new request, stay in `IDLE`. The offer is made once per request; it is not repeated in the same conversation for the same message. Why: a misclassified request (for example a theft report labeled out of scope) must still reach a person. | Orchestrator, templates |
 
 ## 6. Transaction and decline-code templates (TXS, DEC)
 
@@ -250,6 +252,7 @@ Templates never promise that money was or will be returned, or give a time frame
 | POL-HND-04 | *(new in 0.2, F-16)* Message after transfer | "Agregué su mensaje a su caso, referencia {case_id}. Un asesor lo revisará." | "Adicionei sua mensagem ao seu caso, referência {case_id}. Um atendente vai analisá-la." |
 | POL-HND-07 | *(new in 0.4)* Customer status requires review (POL-AUTH-09) | "Para atender su solicitud, un asesor necesita revisar su caso." | "Para atender a sua solicitação, um atendente precisa analisar o seu caso." |
 | POL-HND-05 | *(new in 0.2)* `open_handoff` failed | "No pude registrar su caso en este momento. Por favor, comuníquese con el centro de contacto del banco." | "Não consegui registrar o seu caso agora. Por favor, entre em contato com a central de atendimento do banco." |
+| POL-HND-08 | *(new in 0.5)* Handoff offer for an out-of-scope request (POL-ESC-13) | "Eso no lo puedo resolver por este medio. Puedo ayudarle con saldos, tarjetas, movimientos y bloqueos. ¿Quiere hablar con un asesor?" | "Isso eu não consigo resolver por aqui. Posso ajudar com saldos, cartões, movimentações e bloqueios. Quer falar com um atendente?" |
 
 ## 8. Handoff case file (HND)
 
@@ -307,7 +310,7 @@ is updated to match.
 | `STEPUP_MAX_FAILS` | 3 | POL-AUTH-06 |
 | `CONFIRM_TTL_SEC` | 120 s | POL-ACT-02 |
 | `TX_DEFAULT_DAYS` / `TX_MAX_DAYS` / `TX_MAX_ROWS` | 30 / 90 / 20 | POL-ANS-03 |
-| `CONFORMAL_ALPHA` | 0.10 (final value in model card) | POL-ESC-06 |
+| `CONFORMAL_ALPHA` | 0.10 (final; confirmed in `docs/model_card_intent.md` 0.2, LAC score since `docs/eval_plan.md` 0.3) | POL-ESC-06 |
 | `CONFORMAL_MAX_SET` | 2 | POL-ESC-06 |
 | `MAX_CLARIFY_TURNS` | 2 | POL-ESC-06 |
 | `CARD_MISS_MAX` | 2 consecutive misses | POL-ANS-18, POL-ESC-10 |

@@ -1,0 +1,562 @@
+intent: card_status
+groups:
+  - id: sts-001
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Mi tarjeta de crédito está activa?"
+      - "Quisiera saber si mi tarjeta de crédito está activa."
+    es-CO:
+      - "¿Será que mi tarjeta crédito está activa?"
+      - "¿Me confirma si la tarjeta de crédito quedó activa?"
+    es-AR:
+      - "¿Me fijás si la tarjeta de crédito está activa?"
+      - "¿La tarjeta de crédito la tengo activa?"
+    pt-BR:
+      - "Meu cartão de crédito está ativo?"
+      - "Queria saber se o cartão de crédito está ativo."
+  - id: sts-002
+    slots: {product_kind: card, last4: "2208"}
+    es-MX:
+      - "¿La tarjeta con terminación 2208 sigue funcionando?"
+      - "¿Todavía sirve mi tarjeta terminación 2208?"
+    es-CO:
+      - "¿La tarjeta terminada en 2208 sí está funcionando?"
+      - "¿Me confirma si la tarjeta que termina en 2208 sigue activa?"
+    es-AR:
+      - "¿La tarjeta terminada en 2208 sigue andando?"
+      - "¿Me decís si todavía funciona la tarjeta que termina en 2208?"
+    pt-BR:
+      - "O cartão final 2208 continua funcionando?"
+      - "Meu cartão final 2208 ainda está valendo?"
+  - id: sts-003
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Está habilitada mi tarjeta de débito para usarla?"
+      - "¿Ya puedo usar mi tarjeta de débito o está deshabilitada?"
+    es-CO:
+      - "¿La tarjeta débito sí está habilitada para usarla?"
+      - "¿Me regala el estado de mi tarjeta débito?"
+    es-AR:
+      - "¿Está habilitada la tarjeta de débito para usarla?"
+      - "¿La tarjeta de débito ya la puedo usar o sigue inhabilitada?"
+    pt-BR:
+      - "O meu cartão de débito está habilitado para uso?"
+      - "Já posso usar o cartão de débito ou ele está desabilitado?"
+  - id: sts-004
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Mi tarjeta ya está activada? Me llegó ayer."
+      - "Me entregaron la tarjeta ayer, ¿ya aparece activa?"
+    es-CO:
+      - "¿La tarjeta que me llegó ayer ya está activada?"
+      - "Ayer me entregaron la tarjeta, ¿ya quedó activa?"
+    es-AR:
+      - "¿La tarjeta que me mandaron ayer ya está activada, che?"
+      - "Me la trajeron ayer a la tarjeta, ¿ya figura activa?"
+    pt-BR:
+      - "O cartão que chegou ontem já está ativado?"
+      - "Recebi o cartão ontem, ele já aparece ativo?"
+  - id: sts-005
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero confirmar si mi tarjeta está bloqueada o no."
+      - "¿Me confirma si mi tarjeta está bloqueada?"
+    es-CO:
+      - "Necesito confirmar si la tarjeta está bloqueada o no."
+      - "¿Me hace el favor y revisa si mi tarjeta está bloqueada?"
+    es-AR:
+      - "Quiero chequear si la tarjeta está bloqueada o no."
+      - "¿Me chequeás si tengo la tarjeta bloqueada?"
+    pt-BR:
+      - "Quero confirmar se o meu cartão está bloqueado ou não."
+      - "Pode verificar se o cartão está bloqueado?"
+  - id: sts-006
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Puedo usar mi tarjeta o está suspendida?"
+      - "¿Mi tarjeta está suspendida o la puedo usar?"
+    es-CO:
+      - "¿Sí puedo usar la tarjeta o está suspendida?"
+      - "¿La tarjeta está suspendida o puedo seguir usándola?"
+    es-AR:
+      - "¿Puedo usar la tarjeta o está suspendida?"
+      - "¿La tarjeta está suspendida o la puedo seguir usando?"
+    pt-BR:
+      - "Posso usar meu cartão ou ele está suspenso?"
+      - "O cartão está suspenso ou dá para usar?"
+  - id: sts-007
+    slots: {product_kind: card, last4: "9134"}
+    es-MX:
+      - "¿La tarjeta que termina en 9134 está cancelada?"
+      - "¿Me confirma si la tarjeta terminación 9134 sigue vigente o ya la cancelaron?"
+    es-CO:
+      - "¿La tarjeta terminada en 9134 quedó cancelada?"
+      - "¿Será que la tarjeta que termina en 9134 sigue vigente?"
+    es-AR:
+      - "¿La tarjeta terminada en 9134 está dada de baja?"
+      - "¿Me fijás si la tarjeta que termina en 9134 sigue vigente?"
+    pt-BR:
+      - "O cartão final 9134 está cancelado?"
+      - "O cartão com final 9134 ainda está válido?"
+  - id: sts-008
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Mi tarjeta de crédito sigue vigente?"
+      - "¿La tarjeta de crédito todavía está vigente?"
+    es-CO:
+      - "¿Mi tarjeta crédito sigue vigente?"
+      - "¿La tarjeta de crédito sí sigue vigente?"
+    es-AR:
+      - "¿La tarjeta de crédito sigue vigente?"
+      - "¿Todavía tengo vigente la tarjeta de crédito?"
+    pt-BR:
+      - "O meu cartão de crédito continua válido?"
+      - "O cartão de crédito ainda está em vigor?"
+  - id: sts-009
+    slots: {product_kind: card, last4: "1450"}
+    es-MX:
+      - "¿En qué estado está la tarjeta terminación 1450?"
+      - "¿Cuál es el estado de mi tarjeta que termina en 1450?"
+    es-CO:
+      - "¿En qué estado está la tarjeta terminada en 1450?"
+      - "¿Me regala el estado de la tarjeta que termina en 1450?"
+    es-AR:
+      - "¿En qué estado quedó la tarjeta terminada en 1450?"
+      - "¿Me decís cómo está la tarjeta que termina en 1450?"
+    pt-BR:
+      - "Qual a situação do cartão final 1450?"
+      - "Em que situação está o cartão com final 1450?"
+  - id: sts-010
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Mi tarjeta ya está vencida?"
+      - "¿Ya se me venció la tarjeta?"
+    es-CO:
+      - "¿La tarjeta ya está vencida?"
+      - "¿Será que ya se me venció la tarjeta?"
+    es-AR:
+      - "¿Me fijás si la tarjeta ya está vencida?"
+      - "¿Se me venció la tarjeta o todavía no?"
+    pt-BR:
+      - "O meu cartão já está vencido?"
+      - "Meu cartão já venceu?"
+  - id: sts-011
+    slots: {product_kind: card}
+    es-MX:
+      - "Antes de salir de viaje, ¿mi tarjeta está activa?"
+      - "Me voy de viaje mañana, ¿la tarjeta está activa?"
+    es-CO:
+      - "Antes de viajar, ¿la tarjeta sí está activa?"
+      - "Viajo mañana, ¿me confirma si la tarjeta está activa?"
+    es-AR:
+      - "Antes de irme de viaje, ¿la tarjeta está habilitada?"
+      - "Mañana me voy de viaje, ¿la tarjeta anda?"
+    pt-BR:
+      - "Antes de viajar, o meu cartão está ativo?"
+      - "Vou viajar amanhã, o cartão está ativo?"
+  - id: sts-012
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Mi tarjeta de débito está funcionando bien?"
+      - "¿La tarjeta de débito está funcionando normal?"
+    es-CO:
+      - "¿La tarjeta débito sí está funcionando bien?"
+      - "¿Mi tarjeta débito está funcionando normal?"
+    es-AR:
+      - "¿La tarjeta de débito está funcionando bien?"
+      - "¿Anda bien la tarjeta de débito?"
+    pt-BR:
+      - "O meu cartão de débito está funcionando direito?"
+      - "O cartão de débito está funcionando normal?"
+  - id: sts-013
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me aparece la tarjeta como activa en el sistema?"
+      - "¿En el sistema mi tarjeta figura activa?"
+    es-CO:
+      - "¿En el sistema me aparece la tarjeta como activa?"
+      - "¿Cómo me aparece la tarjeta en el sistema, activa?"
+    es-AR:
+      - "¿En el sistema la tarjeta figura como activa?"
+      - "¿Cómo figura mi tarjeta en el sistema?"
+    pt-BR:
+      - "No sistema o meu cartão aparece como ativo?"
+      - "Como o cartão aparece no sistema, ativo?"
+  - id: sts-014
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Ya desbloquearon mi tarjeta?"
+      - "¿Ya quedó desbloqueada mi tarjeta?"
+    es-CO:
+      - "¿Ya me desbloquearon la tarjeta?"
+      - "¿La tarjeta ya quedó desbloqueada?"
+    es-AR:
+      - "¿Me fijás si ya me desbloquearon la tarjeta?"
+      - "¿Ya está desbloqueada la tarjeta?"
+    pt-BR:
+      - "Já desbloquearam o meu cartão?"
+      - "O cartão já está desbloqueado?"
+  - id: sts-015
+    slots: {product_kind: card}
+    es-MX:
+      - "Hoy en la mañana bloqueé mi tarjeta en la app, ¿sí quedó bloqueada?"
+      - "Bloqueé la tarjeta desde la app, ¿me confirma que está bloqueada?"
+    es-CO:
+      - "Esta mañana bloqueé la tarjeta en la app, ¿sí quedó bloqueada?"
+      - "Bloqueé la tarjeta por la app, ¿me confirma que quedó bloqueada?"
+    es-AR:
+      - "Hoy a la mañana bloqueé la tarjeta en la app, ¿quedó bloqueada?"
+      - "Bloqueé la tarjeta desde la app, ¿me confirmás que figura bloqueada?"
+    pt-BR:
+      - "Hoje de manhã bloqueei o cartão no app, ficou bloqueado mesmo?"
+      - "Bloqueei o cartão pelo aplicativo, pode confirmar que está bloqueado?"
+  - id: sts-016
+    slots: {product_kind: credit_card, last4: "6000"}
+    es-MX:
+      - "¿Está activa la tarjeta de crédito que termina en 6000?"
+      - "¿La tarjeta de crédito con terminación 6000 está activa?"
+    es-CO:
+      - "¿Está activa la tarjeta crédito terminada en 6000?"
+      - "¿Me confirma si la tarjeta de crédito que termina en 6000 está activa?"
+    es-AR:
+      - "¿Está activa la tarjeta de crédito terminada en 6000?"
+      - "¿Me fijás si la tarjeta de crédito que termina en 6000 está habilitada?"
+    pt-BR:
+      - "O cartão de crédito final 6000 está ativo?"
+      - "Pode ver se o cartão de crédito final 6000 está ativo?"
+  - id: sts-017
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Cuál es el estatus de mi tarjeta?"
+      - "¿Me da el estatus de la tarjeta, por favor?"
+    es-CO:
+      - "¿Cuál es el estado actual de mi tarjeta?"
+      - "¿Me regala el estado de la tarjeta, por favor?"
+    es-AR:
+      - "¿Cuál es el estado de mi tarjeta?"
+      - "¿Me pasás el estado de la tarjeta?"
+    pt-BR:
+      - "Qual é o status do meu cartão?"
+      - "Me passa o status do cartão, por favor?"
+  - id: sts-018
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Mi tarjeta está activa para compras en el extranjero?"
+      - "¿La tarjeta está habilitada para usarla fuera del país?"
+    es-CO:
+      - "¿La tarjeta está activa para compras en el exterior?"
+      - "¿Mi tarjeta sí está habilitada para usarla afuera?"
+    es-AR:
+      - "¿La tarjeta está habilitada para compras en el exterior?"
+      - "¿Puedo usar la tarjeta afuera o no está habilitada?"
+    pt-BR:
+      - "O meu cartão está ativo para compras no exterior?"
+      - "O cartão está habilitado para usar fora do país?"
+  - id: sts-019
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "Gracias. ¿Y la de débito está activa?"
+      - "Ok, gracias. ¿Y mi tarjeta de débito está activa?"
+    es-CO:
+      - "Listo, gracias. ¿Y la de débito sí está activa?"
+      - "Gracias. ¿Y la tarjeta débito cómo está?"
+    es-AR:
+      - "Gracias. ¿Y la de débito está habilitada?"
+      - "Bárbaro. ¿Y la tarjeta de débito sigue activa?"
+    pt-BR:
+      - "Obrigado. E o de débito está ativo?"
+      - "Valeu. E o cartão de débito, está ativo?"
+  - id: sts-020
+    slots: {product_kind: card, last4: "3301"}
+    es-MX:
+      - "¿Está bloqueada o activa mi tarjeta terminación 3301?"
+      - "¿Mi tarjeta que termina en 3301 está bloqueada o activa?"
+    es-CO:
+      - "¿La tarjeta terminada en 3301 está bloqueada o activa?"
+      - "¿Me dice si la tarjeta que termina en 3301 está bloqueada?"
+    es-AR:
+      - "¿La tarjeta terminada en 3301 está bloqueada o habilitada?"
+      - "¿Me decís si la tarjeta que termina en 3301 está bloqueada?"
+    pt-BR:
+      - "O cartão final 3301 está bloqueado ou ativo?"
+      - "Meu cartão com final 3301 está bloqueado?"
+  - id: sts-021
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Mi tarjeta tiene algún bloqueo?"
+      - "¿Tiene algún bloqueo mi tarjeta?"
+    es-CO:
+      - "¿La tarjeta tiene algún bloqueo?"
+      - "¿Será que mi tarjeta tiene algún bloqueo?"
+    es-AR:
+      - "¿La tarjeta tiene algún bloqueo puesto?"
+      - "¿Me fijás si la tarjeta tiene algún bloqueo?"
+    pt-BR:
+      - "O meu cartão tem algum bloqueio?"
+      - "Tem algum bloqueio no meu cartão?"
+  - id: sts-022
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Mi tarjeta de crédito está suspendida?"
+      - "¿Tengo suspendida la tarjeta de crédito?"
+    es-CO:
+      - "¿La tarjeta crédito está suspendida?"
+      - "¿Me suspendieron la tarjeta de crédito? Solo quiero saber si está suspendida."
+    es-AR:
+      - "¿La tarjeta de crédito está suspendida?"
+      - "¿Tengo la tarjeta de crédito suspendida?"
+    pt-BR:
+      - "O meu cartão de crédito está suspenso?"
+      - "O cartão de crédito está suspenso agora?"
+  - id: sts-023
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "Quiero saber si la tarjeta de débito está habilitada."
+      - "¿Me confirma si mi tarjeta de débito está habilitada?"
+    es-CO:
+      - "Quiero saber si la tarjeta débito está habilitada."
+      - "¿Me confirma si la tarjeta débito quedó habilitada?"
+    es-AR:
+      - "Quería saber si la tarjeta de débito está habilitada."
+      - "¿Me confirmás si la tarjeta de débito quedó habilitada?"
+    pt-BR:
+      - "Quero saber se o cartão de débito está habilitado."
+      - "Pode confirmar se o meu cartão de débito está liberado?"
+  - id: sts-024
+    slots: {product_kind: card}
+    es-MX:
+      - "Hola, ¿mi tarjeta está bien? ¿No tiene ningún problema?"
+      - "¿Todo bien con mi tarjeta? ¿Está activa?"
+    es-CO:
+      - "Hola, ¿mi tarjeta sí está bien? ¿No tiene ningún problema?"
+      - "¿Todo en orden con la tarjeta? ¿Está activa?"
+    es-AR:
+      - "Hola, ¿la tarjeta está bien? ¿No tiene ningún problema?"
+      - "¿Está todo bien con la tarjeta? ¿Está activa?"
+    pt-BR:
+      - "Oi, o meu cartão está ok? Não tem nenhum problema?"
+      - "Está tudo certo com o cartão? Ele está ativo?"
+  - id: sts-025
+    slots: {product_kind: card, last4: "8820"}
+    es-MX:
+      - "¿Se puede usar la tarjeta terminación 8820?"
+      - "¿Ya se puede usar mi tarjeta que termina en 8820?"
+    es-CO:
+      - "¿Sí se puede usar la tarjeta terminada en 8820?"
+      - "¿La tarjeta que termina en 8820 ya está habilitada?"
+    es-AR:
+      - "¿Se puede usar la tarjeta terminada en 8820?"
+      - "¿Ya me habilitaron la tarjeta que termina en 8820?"
+    pt-BR:
+      - "Dá para usar o cartão final 8820?"
+      - "O cartão final 8820 já está liberado para uso?"
+  - id: sts-026
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Ya activaron mi tarjeta nueva?"
+      - "¿Mi tarjeta nueva ya está activa?"
+    es-CO:
+      - "¿Ya me activaron la tarjeta nueva?"
+      - "¿La tarjeta nueva ya quedó activa?"
+    es-AR:
+      - "¿Ya está activa la tarjeta nueva que me mandaron?"
+      - "¿La tarjeta nueva ya está habilitada?"
+    pt-BR:
+      - "Já ativaram o meu cartão novo?"
+      - "O cartão novo já está ativo?"
+  - id: sts-027
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Mi tarjeta quedó cancelada?"
+      - "¿Está cancelada mi tarjeta o sigue activa?"
+    es-CO:
+      - "¿La tarjeta me quedó cancelada?"
+      - "¿Mi tarjeta está cancelada o sigue activa?"
+    es-AR:
+      - "¿La tarjeta quedó dada de baja?"
+      - "¿Está cancelada la tarjeta o sigue activa?"
+    pt-BR:
+      - "O meu cartão ficou cancelado?"
+      - "O cartão está cancelado ou continua ativo?"
+  - id: sts-028
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Cómo está mi tarjeta, activa o no?"
+      - "¿Mi tarjeta cómo aparece, activa o inactiva?"
+    es-CO:
+      - "¿Cómo está la tarjeta, activa o no?"
+      - "¿La tarjeta cómo me aparece, activa o inactiva?"
+    es-AR:
+      - "¿Cómo anda la tarjeta, activa o no?"
+      - "¿La tarjeta cómo figura, activa o inactiva?"
+    pt-BR:
+      - "Como está o meu cartão, ativo ou não?"
+      - "O cartão aparece como ativo ou inativo?"
+  - id: sts-029
+    slots: {product_kind: card}
+    es-MX:
+      - "¿La tarjeta adicional de mi hijo está activa?"
+      - "¿Está activa la tarjeta adicional que le di a mi hijo?"
+    es-CO:
+      - "¿La tarjeta amparada de mi hijo está activa?"
+      - "¿Está activa la tarjeta amparada que tiene mi hijo?"
+    es-AR:
+      - "¿La extensión de tarjeta de mi hijo está activa?"
+      - "¿Está habilitada la tarjeta adicional de mi hijo?"
+    pt-BR:
+      - "O cartão adicional do meu filho está ativo?"
+      - "O cartão adicional que dei para o meu filho está ativo?"
+  - id: sts-030
+    slots: {product_kind: card}
+    es-MX:
+      - "estado tarjeta"
+      - "estatus de mi tarjeta"
+    es-CO:
+      - "estado de la tarjeta"
+      - "estado tarjeta porfa"
+    es-AR:
+      - "estado de mi tarjeta"
+      - "tarjeta habilitada?"
+    pt-BR:
+      - "status do cartão"
+      - "situação do meu cartão"
+  - id: sts-031
+    slots: {product_kind: card}
+    es-MX:
+      - "mi tarjeta esta activa o bloqueada"
+      - "la tarjeta sigue activa?"
+    es-CO:
+      - "la tarjeta esta activa o bloqueada"
+      - "mi tarjeta si esta activa"
+    es-AR:
+      - "la tarjeta esta habilitada o bloqueada"
+      - "sigue activa la tarjeta?"
+    pt-BR:
+      - "meu cartao ta ativo ou bloqueado"
+      - "o cartao ainda ta ativo?"
+  - id: sts-032
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Sigue bloqueada mi tarjeta de crédito?"
+      - "¿Todavía está bloqueada la tarjeta de crédito?"
+    es-CO:
+      - "¿La tarjeta crédito sigue bloqueada?"
+      - "¿Todavía me aparece bloqueada la tarjeta de crédito?"
+    es-AR:
+      - "¿La tarjeta de crédito sigue bloqueada?"
+      - "¿Todavía figura bloqueada la tarjeta de crédito?"
+    pt-BR:
+      - "O meu cartão de crédito continua bloqueado?"
+      - "O cartão de crédito ainda está bloqueado?"
+  - id: sts-033
+    slots: {product_kind: card}
+    es-MX:
+      - "Me dijeron que mi tarjeta estaba bloqueada, ¿todavía lo está?"
+      - "La semana pasada mi tarjeta estaba bloqueada, ¿sigue así?"
+    es-CO:
+      - "Me dijeron que la tarjeta estaba bloqueada, ¿todavía sigue así?"
+      - "La semana pasada la tarjeta estaba bloqueada, ¿ya está activa?"
+    es-AR:
+      - "Me dijeron que la tarjeta estaba bloqueada, ¿sigue así?"
+      - "La semana pasada la tarjeta estaba bloqueada, ¿ya está habilitada?"
+    pt-BR:
+      - "Me disseram que o cartão estava bloqueado, ainda está?"
+      - "Semana passada o cartão estava bloqueado, continua assim?"
+  - id: sts-034
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Está cerrada mi tarjeta vieja?"
+      - "¿La tarjeta anterior ya quedó cerrada?"
+    es-CO:
+      - "¿La tarjeta vieja ya quedó cerrada?"
+      - "¿Mi tarjeta anterior está cerrada?"
+    es-AR:
+      - "¿La tarjeta vieja ya está dada de baja?"
+      - "¿La tarjeta anterior quedó cerrada?"
+    pt-BR:
+      - "O meu cartão antigo está encerrado?"
+      - "O cartão anterior já foi encerrado?"
+  - id: sts-035
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Puedo pagar con mi tarjeta de débito o está desactivada?"
+      - "¿Mi tarjeta de débito está desactivada?"
+    es-CO:
+      - "¿Sí puedo pagar con la tarjeta débito o está desactivada?"
+      - "¿La tarjeta débito está desactivada?"
+    es-AR:
+      - "¿Puedo pagar con la tarjeta de débito o está desactivada?"
+      - "¿La tarjeta de débito está desactivada?"
+    pt-BR:
+      - "Posso pagar com o cartão de débito ou ele está desativado?"
+      - "O meu cartão de débito está desativado?"
+  - id: sts-036
+    slots: {product_kind: card, last4: "4122"}
+    es-MX:
+      - "¿Mi tarjeta terminación 4122 está lista para usarse?"
+      - "¿La tarjeta que termina en 4122 ya está activa?"
+    es-CO:
+      - "¿La tarjeta terminada en 4122 ya está lista para usar?"
+      - "¿La tarjeta que termina en 4122 sí está activa?"
+    es-AR:
+      - "¿La tarjeta terminada en 4122 ya la puedo usar?"
+      - "¿Me fijás si la tarjeta que termina en 4122 está activa?"
+    pt-BR:
+      - "O cartão final 4122 já está pronto para usar?"
+      - "O cartão com final 4122 está ativo?"
+  - id: sts-037
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "Confírmeme el estado de la tarjeta de crédito, por favor."
+      - "¿Me confirma en qué estado está la tarjeta de crédito?"
+    es-CO:
+      - "Me confirma el estado de la tarjeta crédito, por favor."
+      - "¿Me dice en qué estado está mi tarjeta de crédito?"
+    es-AR:
+      - "Confirmame el estado de la tarjeta de crédito."
+      - "¿Me decís en qué estado está la tarjeta de crédito?"
+    pt-BR:
+      - "Me confirma a situação do cartão de crédito, por favor."
+      - "Qual é a situação do meu cartão de crédito?"
+  - id: sts-038
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿La tarjeta de débito está inactiva?"
+      - "¿Mi tarjeta de débito aparece como inactiva?"
+    es-CO:
+      - "¿La tarjeta débito está inactiva?"
+      - "¿Me aparece inactiva la tarjeta débito?"
+    es-AR:
+      - "¿Me decís si la tarjeta de débito está inactiva?"
+      - "¿Figura inactiva la tarjeta de débito?"
+    pt-BR:
+      - "O cartão de débito está inativo?"
+      - "Meu cartão de débito aparece como inativo?"
+  - id: sts-039
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Ya puedo volver a usar mi tarjeta?"
+      - "¿Mi tarjeta ya funciona otra vez?"
+    es-CO:
+      - "¿Ya puedo volver a usar la tarjeta?"
+      - "¿La tarjeta ya funciona otra vez?"
+    es-AR:
+      - "¿Ya la puedo volver a usar a la tarjeta?"
+      - "¿La tarjeta ya anda de nuevo?"
+    pt-BR:
+      - "Já posso voltar a usar o meu cartão?"
+      - "O cartão já está funcionando de novo?"
+  - id: sts-040
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Mi tarjeta está habilitada para retirar en cajero?"
+      - "¿Puedo sacar dinero en cajero con mi tarjeta o está deshabilitada?"
+    es-CO:
+      - "¿La tarjeta está habilitada para retirar en cajero?"
+      - "¿Puedo sacar plata del cajero con la tarjeta o está deshabilitada?"
+    es-AR:
+      - "¿La tarjeta está habilitada para sacar en el cajero?"
+      - "¿Puedo sacar guita del cajero con la tarjeta o está inhabilitada?"
+    pt-BR:
+      - "O cartão está habilitado para saque no caixa eletrônico?"
+      - "Posso sacar no caixa com o cartão ou ele está desabilitado?"

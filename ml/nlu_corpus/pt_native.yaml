@@ -1,0 +1,75 @@
+# Portuguese written directly in Portuguese (eval plan 8.2 pt-native subset), not parallel to
+# any Spanish seed. One utterance per group. Test split only, reported separately.
+groups:
+  - {id: ptn-bal-1, intent: balance_inquiry, slots: {balance_item: balance}, pt-BR: ["Quanto que tá a minha fatura esse mês?"]}
+  - {id: ptn-bal-2, intent: balance_inquiry, slots: {product_kind: savings_account, balance_item: balance}, pt-BR: ["Me fala quanto tem guardado na minha poupança, por favor."]}
+  - {id: ptn-bal-3, intent: balance_inquiry, slots: {product_kind: credit_card, balance_item: available_credit}, pt-BR: ["Qual é o limite disponível do meu cartão de crédito agora?"]}
+  - {id: ptn-bal-4, intent: balance_inquiry, slots: {product_kind: card, last4: "3321", balance_item: available_credit}, pt-BR: ["Quanto eu ainda tenho de limite pra usar no cartão final 3321?"]}
+  - {id: ptn-bal-5, intent: balance_inquiry, slots: {product_kind: card, balance_item: minimum_payment}, pt-BR: ["Qual o valor mínimo que eu tenho que pagar na fatura do cartão?"]}
+  - {id: ptn-bal-6, intent: balance_inquiry, slots: {product_kind: credit_card, balance_item: due_date}, pt-BR: ["Em que dia vence a fatura do meu cartão de crédito?"]}
+  - {id: ptn-lst-1, intent: card_list, slots: {product_kind: card}, pt-BR: ["Vc consegue me dizer quantos cartões tenho ativos?"]}
+  - {id: ptn-lst-2, intent: card_list, slots: {product_kind: card}, pt-BR: ["Quais são os cartões vinculados à minha conta?"]}
+  - {id: ptn-lst-3, intent: card_list, slots: {product_kind: credit_card}, pt-BR: ["Tenho algum cartão de crédito no meu nome?"]}
+  - {id: ptn-lst-4, intent: card_list, slots: {product_kind: card}, pt-BR: ["Lista pra mim todos os cartões que eu tenho, pfv."]}
+  - {id: ptn-lst-5, intent: card_list, slots: {product_kind: debit_card}, pt-BR: ["Quantos cartões de débito estão ligados à minha conta?"]}
+  - {id: ptn-lst-6, intent: card_list, slots: {product_kind: card}, pt-BR: ["Me fala os cartões que estão na minha conta hoje."]}
+  - {id: ptn-sts-1, intent: card_status, slots: {product_kind: card}, pt-BR: ["Meu cartão tá liberado pra usar?"]}
+  - {id: ptn-sts-2, intent: card_status, slots: {product_kind: credit_card, last4: "5590"}, pt-BR: ["O cartão de crédito final 5590 continua bloqueado?"]}
+  - {id: ptn-sts-3, intent: card_status, slots: {product_kind: debit_card}, pt-BR: ["Dá uma olhada se o meu cartão de débito tá ativo, por favor."]}
+  - {id: ptn-sts-4, intent: card_status, slots: {product_kind: card}, pt-BR: ["Meu cartão foi cancelado ou ainda tá valendo?"]}
+  - {id: ptn-sts-5, intent: card_status, slots: {product_kind: card}, pt-BR: ["O cartão novo já foi desbloqueado?"]}
+  - {id: ptn-sts-6, intent: card_status, slots: {product_kind: card}, pt-BR: ["Tá tudo ok com o meu cartão ou tem alguma restrição?"]}
+  - {id: ptn-txl-1, intent: transaction_list, slots: {product_kind: card, date: "last_n_days:15"}, pt-BR: ["Me manda o extrato do cartão dos últimos 15 dias."]}
+  - {id: ptn-txl-2, intent: transaction_list, slots: {merchant: Uber, date: this_week}, pt-BR: ["Quais corridas de Uber eu paguei essa semana?"]}
+  - {id: ptn-txl-3, intent: transaction_list, slots: {product_kind: credit_card, date: yesterday}, pt-BR: ["Quero ver tudo que passou no cartão de crédito ontem."]}
+  - {id: ptn-txl-4, intent: transaction_list, slots: {product_kind: card, tx_status: pending}, pt-BR: ["Tem algum lançamento pendente no meu cartão?"]}
+  - {id: ptn-txl-5, intent: transaction_list, slots: {amount: "300 USD", date: last_month}, pt-BR: ["Mostra os gastos acima de 300 dólares do mês passado."]}
+  - {id: ptn-txl-6, intent: transaction_list, slots: {product_kind: card, date: "month:05"}, pt-BR: ["Quanto eu torrei no cartão em maio?"]}
+  - {id: ptn-txd-1, intent: transaction_detail, slots: {merchant: Farmacia Salud, tx_status: declined}, pt-BR: ["Pq a compra na Farmacia Salud deu negada?"]}
+  - {id: ptn-txd-2, intent: transaction_detail, slots: {amount: "49 USD", date: yesterday}, pt-BR: ["Que cobrança é essa de 49 dólares que caiu ontem?"]}
+  - {id: ptn-txd-3, intent: transaction_detail, slots: {merchant: Cine Premium, tx_status: pending}, pt-BR: ["O pagamento no Cine Premium ficou pendente, o que rolou?"]}
+  - {id: ptn-txd-4, intent: transaction_detail, slots: {}, pt-BR: ["O que quer dizer o código 51 que apareceu na compra?"]}
+  - {id: ptn-txd-5, intent: transaction_detail, slots: {merchant: Centro Comercial, tx_status: reversed}, pt-BR: ["Por que estornaram a compra que fiz no Centro Comercial?"]}
+  - {id: ptn-txd-6, intent: transaction_detail, slots: {tx_status: declined, date: today}, pt-BR: ["Meu cartão não passou na maquininha hoje, por quê?"]}
+  - {id: ptn-blk-1, intent: card_block, slots: {product_kind: card}, pt-BR: ["Fui roubado agora há pouco, bloqueia meu cartão urgente."]}
+  - {id: ptn-blk-2, intent: card_block, slots: {product_kind: card}, pt-BR: ["Esqueci o cartão no caixa do mercado e quando voltei já não estava lá."]}
+  - {id: ptn-blk-3, intent: card_block, slots: {product_kind: credit_card, last4: "9081"}, pt-BR: ["Quero travar meu cartão de crédito final 9081."]}
+  - {id: ptn-blk-4, intent: card_block, slots: {product_kind: debit_card}, pt-BR: ["Bateram minha carteira no metrô, preciso bloquear o cartão de débito."]}
+  - {id: ptn-blk-5, intent: card_block, slots: {product_kind: card}, pt-BR: ["Sumiu meu cartão, dá pra bloquear?"]}
+  - {id: ptn-blk-6, intent: card_block, slots: {product_kind: card}, pt-BR: ["Bloqueia tudo, levaram minha bolsa com os cartões."]}
+  - {id: ptn-dsp-1, intent: charge_dispute, slots: {amount: "89 USD"}, pt-BR: ["Caiu uma compra de 89 dólares que não fui eu."]}
+  - {id: ptn-dsp-2, intent: charge_dispute, slots: {merchant: Streaming Music}, pt-BR: ["Tem uma cobrança indevida da Streaming Music na minha fatura."]}
+  - {id: ptn-dsp-3, intent: charge_dispute, slots: {merchant: Restaurante El Buen Sabor, date: yesterday}, pt-BR: ["Me cobraram duas vezes no Restaurante El Buen Sabor ontem."]}
+  - {id: ptn-dsp-4, intent: charge_dispute, slots: {}, pt-BR: ["Quero abrir uma contestação de uma compra que não reconheço."]}
+  - {id: ptn-dsp-5, intent: charge_dispute, slots: {}, pt-BR: ["Clonaram meu cartão, tem compras que eu não fiz."]}
+  - {id: ptn-dsp-6, intent: charge_dispute, slots: {last4: "4410"}, pt-BR: ["A compra no cartão final 4410 não foi feita por mim."]}
+  - {id: ptn-brs-1, intent: block_reason, slots: {product_kind: credit_card}, pt-BR: ["Por que meu cartão de crédito foi travado?"]}
+  - {id: ptn-brs-2, intent: block_reason, slots: {product_kind: card}, pt-BR: ["Qual foi o motivo de terem suspendido meu cartão?"]}
+  - {id: ptn-brs-3, intent: block_reason, slots: {product_kind: card}, pt-BR: ["Desde quando meu cartão tá bloqueado e por quê?"]}
+  - {id: ptn-brs-4, intent: block_reason, slots: {product_kind: card, last4: "2952"}, pt-BR: ["Meu cartão final 2952 tá bloqueado, o que houve?"]}
+  - {id: ptn-brs-5, intent: block_reason, slots: {product_kind: card}, pt-BR: ["Bloquearam meu cartão do nada, qual o motivo?"]}
+  - {id: ptn-brs-6, intent: block_reason, slots: {product_kind: card}, pt-BR: ["Foi por causa de atraso que bloquearam meu cartão?"]}
+  - {id: ptn-unb-1, intent: card_unblock, slots: {product_kind: card}, pt-BR: ["Achei o cartão, dá pra destravar?"]}
+  - {id: ptn-unb-2, intent: card_unblock, slots: {product_kind: card}, pt-BR: ["Quero liberar meu cartão de novo."]}
+  - {id: ptn-unb-3, intent: card_unblock, slots: {product_kind: card}, pt-BR: ["Meu cartão quebrou, como peço outro?"]}
+  - {id: ptn-unb-4, intent: card_unblock, slots: {product_kind: debit_card}, pt-BR: ["Preciso que reativem meu cartão de débito."]}
+  - {id: ptn-unb-5, intent: card_unblock, slots: {product_kind: card, last4: "7663"}, pt-BR: ["Como tiro o bloqueio do cartão final 7663?"]}
+  - {id: ptn-unb-6, intent: card_unblock, slots: {product_kind: credit_card}, pt-BR: ["O chip do cartão de crédito parou de funcionar, quero a segunda via."]}
+  - {id: ptn-hum-1, intent: human_request, slots: {}, pt-BR: ["Tem como eu falar com alguém de verdade?"]}
+  - {id: ptn-hum-2, intent: human_request, slots: {}, pt-BR: ["Me transfere pra um atendente aí."]}
+  - {id: ptn-hum-3, intent: human_request, slots: {}, pt-BR: ["Chama alguém pra me atender, pfv."]}
+  - {id: ptn-hum-4, intent: human_request, slots: {}, pt-BR: ["Prefiro resolver isso com uma pessoa."]}
+  - {id: ptn-hum-5, intent: human_request, slots: {}, pt-BR: ["Cadê o atendimento humano?"]}
+  - {id: ptn-hum-6, intent: human_request, slots: {}, pt-BR: ["Quero ser atendida por uma pessoa, não por robô."]}
+  - {id: ptn-end-1, intent: conversation_end, slots: {}, pt-BR: ["Valeu demais, era só isso mesmo."]}
+  - {id: ptn-end-2, intent: conversation_end, slots: {}, pt-BR: ["Show de bola, obrigado, falou."]}
+  - {id: ptn-end-3, intent: conversation_end, slots: {}, pt-BR: ["Tranquilo, já resolvi, tchau."]}
+  - {id: ptn-end-4, intent: conversation_end, slots: {}, pt-BR: ["Era isso, brigadão."]}
+  - {id: ptn-end-5, intent: conversation_end, slots: {}, pt-BR: ["Beleza, obrigada pela ajuda, até mais."]}
+  - {id: ptn-end-6, intent: conversation_end, slots: {}, pt-BR: ["Tá ótimo, não preciso de mais nada."]}
+  - {id: ptn-oos-1, intent: out_of_scope, slots: {}, pt-BR: ["Quero fazer uma TED para outra conta."]}
+  - {id: ptn-oos-2, intent: out_of_scope, slots: {}, pt-BR: ["Como faço pra pedir um aumento de limite?"]}
+  - {id: ptn-oos-3, intent: out_of_scope, slots: {}, pt-BR: ["Quero contratar um consórcio."]}
+  - {id: ptn-oos-4, intent: out_of_scope, slots: {}, pt-BR: ["Dá pra antecipar meu FGTS por aqui?"]}
+  - {id: ptn-oos-5, intent: out_of_scope, slots: {}, pt-BR: ["Quero cadastrar uma chave Pix."]}
+  - {id: ptn-oos-6, intent: out_of_scope, slots: {}, pt-BR: ["Oi, boa noite."]}
