@@ -1,0 +1,2 @@
+﻿customer_id,document_number,document_type,first_name,last_name,date_of_birth,gender,email,mobile_phone,landline_phone,address,city,state,country,postal_code,detected_accent,segment,credit_score,estimated_monthly_income,occupation,marital_status,education_level,registration_date,registration_branch_id,customer_status,last_updated,accepts_marketing
+CLI-X7VXKV9P7ZC6,FIXTURE,CC,FIXTURE,FIXTURE,,F,FIXTURE,FIXTURE,FIXTURE,FIXTURE,Cartagena,Bolívar,Colombia,,colombian,Basic,636.0,6410089.34,Consultant,Single,Graduate,2022-12-11 21:42:53,SUC-89BC9IO5,Active,2023-05-26 21:42:53,True

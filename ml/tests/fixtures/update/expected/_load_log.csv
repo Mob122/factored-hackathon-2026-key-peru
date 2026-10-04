@@ -1,0 +1,5 @@
+gold_batch_id,table,rows_inserted,rows_updated,rows_unchanged,rows_rejected,status,max_process_date
+gold-20260619T063000-00000002,customers,0,0,0,0,published,2026-06-18
+gold-20260619T063000-00000002,cards,0,1,0,0,published,2026-06-18
+gold-20260619T063000-00000002,card_transactions,1,0,0,0,published,2026-06-18
+gold-20260619T063000-00000002,balance_products,0,1,0,0,published,2026-06-18

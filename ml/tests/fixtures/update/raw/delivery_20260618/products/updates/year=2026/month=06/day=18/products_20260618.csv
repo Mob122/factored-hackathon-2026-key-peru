@@ -1,0 +1,2 @@
+﻿product_id,customer_id,product_type,product_number,currency,current_balance,credit_limit,interest_rate,opening_date,expiration_date,opening_branch_id,product_status,opening_channel,has_linked_app,days_past_due,last_transaction_date,last_updated
+PRD-I97V8EFELBUP,CLI-X7VXKV9P7ZC6,Tarjeta Crédito,4000000000007921,COP,14667875.79,83267555.49,35.15,2022-07-07,2026-07-06,SUC-RFQLK7RX,Blocked,Branch,False,0.0,,2026-06-18 15:10:00

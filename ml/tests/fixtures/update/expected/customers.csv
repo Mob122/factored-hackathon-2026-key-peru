@@ -1,0 +1,2 @@
+customer_id,country,segment,customer_status,source_file,gold_batch_id,gold_loaded_at
+CLI-X7VXKV9P7ZC6,Colombia,Basic,Active,customers.csv,gold-20260618T063000-00000001,2026-06-18 06:30:00
