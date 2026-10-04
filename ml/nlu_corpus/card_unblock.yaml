@@ -1,0 +1,562 @@
+intent: card_unblock
+groups:
+  - id: unb-001
+    slots: {product_kind: card}
+    es-MX:
+      - "Ya encontré mi tarjeta, ¿me la pueden desbloquear?"
+      - "Siempre sí apareció la tarjeta, desbloquéenla por favor."
+    es-CO:
+      - "Ya encontré la tarjeta, ¿me la pueden desbloquear?"
+      - "Al final sí apareció la tarjeta, me la desbloquean por favor."
+    es-AR:
+      - "Ya encontré la tarjeta, ¿me la desbloqueás?"
+      - "Al final apareció la tarjeta, desbloqueala porfa."
+    pt-BR:
+      - "Já encontrei o meu cartão, podem desbloquear?"
+      - "No fim o cartão apareceu, desbloqueia por favor."
+  - id: unb-002
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "Quiero reactivar la tarjeta de crédito que bloqueé."
+      - "¿Me reactivan la tarjeta de crédito que había bloqueado?"
+    es-CO:
+      - "Quisiera reactivar la tarjeta crédito que bloqueé."
+      - "¿Me reactivan la tarjeta de crédito que había bloqueado, por favor?"
+    es-AR:
+      - "Quiero reactivar la tarjeta de crédito que bloqueé, che."
+      - "¿Me reactivás la tarjeta de crédito que había bloqueado?"
+    pt-BR:
+      - "Quero reativar o cartão de crédito que bloqueei."
+      - "Vocês reativam o cartão de crédito que eu tinha bloqueado?"
+  - id: unb-003
+    slots: {product_kind: card}
+    es-MX:
+      - "Necesito una tarjeta nueva, el chip ya no funciona."
+      - "El chip de mi tarjeta ya no lee, necesito que me la cambien."
+    es-CO:
+      - "Qué pena, necesito una tarjeta nueva porque el chip ya no funciona."
+      - "El chip de la tarjeta ya no lee, necesito que me la cambien."
+    es-AR:
+      - "Necesito una tarjeta nueva, el chip no anda más."
+      - "El chip de la tarjeta ya no lee, necesito que me la cambien, che."
+    pt-BR:
+      - "Preciso de um cartão novo, o chip não funciona mais."
+      - "O chip do cartão não lê mais, preciso trocar."
+  - id: unb-004
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "Quiero solicitar la reposición de mi tarjeta de débito."
+      - "¿Cómo pido la reposición de la tarjeta de débito?"
+    es-CO:
+      - "Quiero solicitar la reposición de la tarjeta débito."
+      - "¿Cómo pido que me repongan la tarjeta débito?"
+    es-AR:
+      - "Quiero pedir la reposición de la tarjeta de débito."
+      - "¿Cómo hago para que me repongan la tarjeta de débito?"
+    pt-BR:
+      - "Quero pedir a segunda via do cartão de débito."
+      - "Como peço a segunda via do meu cartão de débito?"
+  - id: unb-005
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me pueden mandar un plástico nuevo? Se me rompió."
+      - "Se me rompió el plástico, ¿me envían otro?"
+    es-CO:
+      - "¿Me pueden mandar un plástico nuevo? Se me partió."
+      - "Se me partió el plástico, ¿me envían otro?"
+    es-AR:
+      - "¿Me mandan un plástico nuevo? Se me rompió."
+      - "Se me partió el plástico, ¿me mandan otro, che?"
+    pt-BR:
+      - "Podem me mandar um cartão novo? O meu quebrou."
+      - "O meu cartão quebrou, vocês mandam outro?"
+  - id: unb-006
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero que quiten el bloqueo de mi tarjeta."
+      - "¿Me pueden quitar el bloqueo de la tarjeta?"
+    es-CO:
+      - "Quiero que me quiten el bloqueo de la tarjeta."
+      - "¿Me hacen el favor de quitarle el bloqueo a la tarjeta?"
+    es-AR:
+      - "Quiero que me saquen el bloqueo de la tarjeta."
+      - "¿Me sacás el bloqueo de la tarjeta?"
+    pt-BR:
+      - "Quero que tirem o bloqueio do meu cartão."
+      - "Vocês podem tirar o bloqueio do cartão?"
+  - id: unb-007
+    slots: {product_kind: card, last4: "2952"}
+    es-MX:
+      - "Desbloqueen la tarjeta con terminación 2952."
+      - "Quiero desbloquear mi tarjeta que termina en 2952."
+    es-CO:
+      - "Me desbloquean la tarjeta terminada en 2952, por favor."
+      - "Quiero desbloquear la tarjeta que termina en 2952."
+    es-AR:
+      - "Desbloqueame la tarjeta terminada en 2952."
+      - "Quiero desbloquear la que termina en 2952, che."
+    pt-BR:
+      - "Desbloqueiem o cartão final 2952."
+      - "Quero desbloquear o meu cartão com final 2952."
+  - id: unb-008
+    slots: {product_kind: card}
+    es-MX:
+      - "La tarjeta se me dobló y ya no pasa, necesito otra."
+      - "Se dobló mi tarjeta y ya no sirve, quiero que me den otra."
+    es-CO:
+      - "Se me torció la tarjeta y ya no pasa, me regalan otra."
+      - "Se me dobló la tarjeta y ya no sirve, quiero que me den otra."
+    es-AR:
+      - "La tarjeta se me dobló y ya no pasa, necesito otra, che."
+      - "Se me dobló la tarjeta y no anda, quiero que me den otra."
+    pt-BR:
+      - "O cartão entortou e não passa mais, preciso de outro."
+      - "O meu cartão dobrou e não serve mais, quero outro."
+  - id: unb-009
+    slots: {product_kind: card}
+    es-MX:
+      - "Me bloquearon la tarjeta y la quiero volver a usar."
+      - "Tengo la tarjeta bloqueada y quiero que me la habiliten de nuevo."
+    es-CO:
+      - "Me bloquearon la tarjeta y quisiera volver a usarla."
+      - "Tengo la tarjeta bloqueada, ¿será que me la habilitan de nuevo?"
+    es-AR:
+      - "Me bloquearon la tarjeta y la quiero volver a usar, che."
+      - "Tengo la tarjeta bloqueada y quiero que me la habiliten de nuevo, porfa."
+    pt-BR:
+      - "Bloquearam o meu cartão e quero voltar a usar."
+      - "Estou com o cartão bloqueado e quero que liberem de novo."
+  - id: unb-010
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Cómo rehabilito mi tarjeta de crédito?"
+      - "Quiero rehabilitar la tarjeta de crédito, ¿qué hago?"
+    es-CO:
+      - "¿Cómo rehabilito la tarjeta crédito?"
+      - "Quiero rehabilitar la tarjeta de crédito, ¿qué debo hacer?"
+    es-AR:
+      - "¿Cómo rehabilito la tarjeta de crédito?"
+      - "Quiero rehabilitar la tarjeta de crédito, ¿qué tengo que hacer?"
+    pt-BR:
+      - "Como reabilito o meu cartão de crédito?"
+      - "Quero reabilitar o cartão de crédito, o que faço?"
+  - id: unb-011
+    slots: {product_kind: card}
+    es-MX:
+      - "Mi tarjeta ya se venció, ¿me mandan la nueva?"
+      - "Se venció la tarjeta y necesito que me envíen el reemplazo."
+    es-CO:
+      - "La tarjeta ya se venció, ¿me mandan la nueva?"
+      - "Se me venció la tarjeta y necesito que me hagan llegar el reemplazo."
+    es-AR:
+      - "La tarjeta ya se venció, ¿me mandan la nueva, che?"
+      - "Se venció la tarjeta y necesito que me manden el reemplazo."
+    pt-BR:
+      - "O meu cartão venceu, vocês mandam o novo?"
+      - "O cartão venceu e preciso que enviem a substituição."
+  - id: unb-012
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "Quiero levantar el bloqueo de mi tarjeta de débito."
+      - "¿Me levantan el bloqueo de la tarjeta de débito?"
+    es-CO:
+      - "Quiero levantar el bloqueo de la tarjeta débito."
+      - "¿Me levantan el bloqueo de la tarjeta débito, por favor?"
+    es-AR:
+      - "Quiero levantar el bloqueo de la tarjeta de débito, che."
+      - "¿Me levantás el bloqueo de la tarjeta de débito?"
+    pt-BR:
+      - "Quero tirar o bloqueio do cartão de débito."
+      - "Podem liberar o meu cartão de débito?"
+  - id: unb-013
+    slots: {}
+    es-MX:
+      - "Ya no necesito el bloqueo, actívenla de nuevo."
+      - "Ya no hace falta el bloqueo, quiero que la reactiven."
+    es-CO:
+      - "Ya no necesito el bloqueo, actívenmela de nuevo."
+      - "Ya no hace falta el bloqueo, quiero que me la reactiven."
+    es-AR:
+      - "Ya no necesito el bloqueo, activala de nuevo."
+      - "Ya no hace falta el bloqueo, quiero que me la reactiven, che."
+    pt-BR:
+      - "Não preciso mais do bloqueio, ativem de novo."
+      - "Não precisa mais do bloqueio, quero que reativem."
+  - id: unb-014
+    slots: {product_kind: card}
+    es-MX:
+      - "Bloqueé la tarjeta por error, ¿la pueden desbloquear?"
+      - "Por error bloqueé mi tarjeta en la app, quiero desbloquearla."
+    es-CO:
+      - "Bloqueé la tarjeta por error, ¿me la pueden desbloquear?"
+      - "Sin querer bloqueé la tarjeta en la app, quiero desbloquearla."
+    es-AR:
+      - "Bloqueé la tarjeta sin querer, ¿la podés desbloquear?"
+      - "Por error bloqueé la tarjeta en la app, la quiero desbloquear."
+    pt-BR:
+      - "Bloqueei o cartão sem querer, podem desbloquear?"
+      - "Por engano bloqueei o cartão no app, quero desbloquear."
+  - id: unb-015
+    slots: {product_kind: card, last4: "6898"}
+    es-MX:
+      - "Necesito la reposición de la tarjeta con terminación 6898, se dañó."
+      - "Se me dañó la tarjeta que termina en 6898, quiero una nueva."
+    es-CO:
+      - "Necesito la reposición de la tarjeta terminada en 6898, se dañó."
+      - "Se me dañó la que termina en 6898, quisiera una nueva."
+    es-AR:
+      - "Necesito la reposición de la tarjeta terminada en 6898, se rompió."
+      - "Se me rompió la tarjeta que termina en 6898, quiero una nueva."
+    pt-BR:
+      - "Preciso da segunda via do cartão final 6898, ele estragou."
+      - "O cartão final 6898 estragou, quero um novo."
+  - id: unb-016
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me reactivan la tarjeta? Ya pagué lo que debía."
+      - "Ya me puse al corriente, quiero que reactiven mi tarjeta."
+    es-CO:
+      - "¿Será que me reactivan la tarjeta? Ya pagué lo que debía."
+      - "Ya me puse al día, quiero que reactiven la tarjeta."
+    es-AR:
+      - "¿Me reactivan la tarjeta? Ya pagué lo que debía, che."
+      - "Ya me puse al día, quiero que me reactiven la tarjeta."
+    pt-BR:
+      - "Podem reativar o cartão? Já paguei o que devia."
+      - "Já coloquei em dia, quero que reativem o meu cartão."
+  - id: unb-017
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero desbloquear mi tarjeta para usarla en el viaje."
+      - "Me voy de viaje y necesito que desbloqueen mi tarjeta."
+    es-CO:
+      - "Quiero desbloquear la tarjeta para usarla en el viaje."
+      - "Me voy de viaje y necesito que me desbloqueen la tarjeta."
+    es-AR:
+      - "Quiero desbloquear la tarjeta para usarla en el viaje, che."
+      - "Me voy de viaje y necesito que me desbloqueen la tarjeta, porfa."
+    pt-BR:
+      - "Quero desbloquear o cartão para usar na viagem."
+      - "Vou viajar e preciso que desbloqueiem o meu cartão."
+  - id: unb-018
+    slots: {product_kind: card}
+    es-MX:
+      - "Se me desmagnetizó la tarjeta, necesito otra."
+      - "La banda de mi tarjeta ya no sirve, quiero una de reemplazo."
+    es-CO:
+      - "La tarjeta se me desmagnetizó, me regalan otra por favor."
+      - "La banda de la tarjeta ya no sirve, quiero un reemplazo."
+    es-AR:
+      - "Se me desmagnetizó la tarjeta, necesito otra, che."
+      - "La banda de la tarjeta no anda más, quiero un reemplazo."
+    pt-BR:
+      - "O meu cartão desmagnetizou, preciso de outro."
+      - "A tarja do cartão não funciona mais, quero substituir."
+  - id: unb-019
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "Quiero que me envíen un reemplazo de mi tarjeta de crédito."
+      - "¿Me pueden enviar un reemplazo de la tarjeta de crédito?"
+    es-CO:
+      - "Quiero que me envíen un reemplazo de la tarjeta crédito."
+      - "¿Me pueden enviar un reemplazo de la tarjeta de crédito, por favor?"
+    es-AR:
+      - "Quiero que me manden un reemplazo de la tarjeta de crédito."
+      - "¿Me mandan un reemplazo de la tarjeta de crédito, che?"
+    pt-BR:
+      - "Quero que mandem uma substituição do meu cartão de crédito."
+      - "Podem enviar uma segunda via do cartão de crédito?"
+  - id: unb-020
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "Desbloquee mi tarjeta de débito, ya la encontré."
+      - "Ya encontré la tarjeta de débito, quiero desbloquearla."
+    es-CO:
+      - "Me desbloquea la tarjeta débito, ya la encontré."
+      - "Ya encontré la tarjeta débito, quiero desbloquearla."
+    es-AR:
+      - "Desbloqueame la tarjeta de débito, ya la encontré."
+      - "Ya encontré la de débito, la quiero desbloquear."
+    pt-BR:
+      - "Desbloqueia o meu cartão de débito, já achei."
+      - "Já achei o cartão de débito, quero desbloquear."
+  - id: unb-021
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Pueden quitarle el bloqueo preventivo a mi tarjeta?"
+      - "Quiero que retiren el bloqueo preventivo de la tarjeta."
+    es-CO:
+      - "¿Pueden quitarle el bloqueo preventivo a la tarjeta?"
+      - "Quiero que me retiren el bloqueo preventivo de la tarjeta."
+    es-AR:
+      - "¿Le pueden sacar el bloqueo preventivo a la tarjeta?"
+      - "Quiero que me saquen el bloqueo preventivo de la tarjeta."
+    pt-BR:
+      - "Podem tirar o bloqueio preventivo do meu cartão?"
+      - "Quero que retirem o bloqueio preventivo do cartão."
+  - id: unb-022
+    slots: {product_kind: card, last4: "5521"}
+    es-MX:
+      - "Quiero habilitar otra vez mi tarjeta con terminación 5521."
+      - "Vuelvan a habilitar la tarjeta que termina en 5521."
+    es-CO:
+      - "Quisiera habilitar otra vez la tarjeta terminada en 5521."
+      - "Me vuelven a habilitar la tarjeta que termina en 5521, por favor."
+    es-AR:
+      - "Quiero habilitar otra vez la terminada en 5521, che."
+      - "Volvé a habilitar la tarjeta que termina en 5521."
+    pt-BR:
+      - "Quero habilitar de novo o cartão final 5521."
+      - "Liberem de novo o cartão com final 5521."
+  - id: unb-023
+    slots: {product_kind: card}
+    es-MX:
+      - "Necesito que me desbloqueen la tarjeta urgente."
+      - "Es urgente desbloquear mi tarjeta."
+    es-CO:
+      - "Necesito que me desbloqueen la tarjeta de urgencia."
+      - "Es urgente que me desbloqueen la tarjeta."
+    es-AR:
+      - "Necesito que me desbloqueen la tarjeta urgente, che."
+      - "Es urgente desbloquear la tarjeta."
+    pt-BR:
+      - "Preciso que desbloqueiem o meu cartão com urgência."
+      - "É urgente desbloquear o cartão."
+  - id: unb-024
+    slots: {product_kind: card}
+    es-MX:
+      - "Desbloquee mi tarjeta y dígame el saldo."
+      - "Primero desbloquee la tarjeta y luego me dice cuánto debo."
+    es-CO:
+      - "Me desbloquea la tarjeta y me dice el saldo."
+      - "Primero me desbloquea la tarjeta y luego me dice cuánto debo."
+    es-AR:
+      - "Desbloqueame la tarjeta y decime el saldo."
+      - "Primero desbloqueá la tarjeta y después me decís cuánto debo."
+    pt-BR:
+      - "Desbloqueia o cartão e me fala o saldo."
+      - "Primeiro desbloqueia o cartão e depois me diz quanto devo."
+  - id: unb-025
+    slots: {product_kind: card}
+    es-MX:
+      - "Gracias. Ahora quiero desbloquear la otra tarjeta."
+      - "Perfecto. También desbloquee la otra tarjeta."
+    es-CO:
+      - "Listo, gracias. Ahora quiero desbloquear la otra tarjeta."
+      - "Bueno. También me desbloquea la otra tarjeta."
+    es-AR:
+      - "Gracias. Ahora quiero desbloquear la otra tarjeta, che."
+      - "Joya. Desbloqueame también la otra tarjeta."
+    pt-BR:
+      - "Obrigado. Agora quero desbloquear o outro cartão."
+      - "Beleza. Desbloqueia também o outro cartão."
+  - id: unb-026
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "Hola, quiero desbloquear mi tarjeta de crédito."
+      - "Buenas tardes, necesito desbloquear la tarjeta de crédito."
+    es-CO:
+      - "Buenas, quiero desbloquear la tarjeta crédito."
+      - "Hola, necesito desbloquear la tarjeta de crédito, por favor."
+    es-AR:
+      - "Hola, quiero desbloquear la tarjeta de crédito, che."
+      - "Buenas, necesito desbloquear la tarjeta de crédito."
+    pt-BR:
+      - "Oi, quero desbloquear o meu cartão de crédito."
+      - "Boa tarde, preciso desbloquear o cartão de crédito."
+  - id: unb-027
+    slots: {product_kind: card}
+    es-MX:
+      - "Mi tarjeta quedó bloqueada por poner mal el NIP, ¿me la desbloquean?"
+      - "Me equivoqué de NIP y se bloqueó la tarjeta, quiero desbloquearla."
+    es-CO:
+      - "La tarjeta quedó bloqueada por poner mal la clave, ¿me la desbloquean?"
+      - "Me equivoqué de clave y se bloqueó la tarjeta, quiero desbloquearla."
+    es-AR:
+      - "La tarjeta quedó bloqueada por poner mal el PIN, ¿me la desbloquean?"
+      - "Le erré al PIN y se bloqueó la tarjeta, la quiero desbloquear."
+    pt-BR:
+      - "O cartão bloqueou porque errei a senha, podem desbloquear?"
+      - "Errei a senha e o cartão travou, quero desbloquear."
+  - id: unb-028
+    slots: {product_kind: card}
+    es-MX:
+      - "desbloquear tarjeta"
+      - "reposicion de tarjeta"
+    es-CO:
+      - "desbloquear la tarjeta porfa"
+      - "reposicion tarjeta"
+    es-AR:
+      - "desbloquear la tarjeta"
+      - "reposicion de la tarjeta che"
+    pt-BR:
+      - "desbloquear cartão"
+      - "segunda via cartao"
+  - id: unb-029
+    slots: {product_kind: card}
+    es-MX:
+      - "kiero desbloquear mi tarjeta"
+      - "desbloqueen mi tarjeta xfa"
+    es-CO:
+      - "kiero q me desbloqueen la tarjeta"
+      - "desbloqueenme la tarjeta xfa"
+    es-AR:
+      - "kiero desbloquear la tarjeta che"
+      - "desbloqueame la tarjeta xfa"
+    pt-BR:
+      - "qro desbloquear meu cartao"
+      - "desbloqueia meu cartao pfv"
+  - id: unb-030
+    slots: {product_kind: card}
+    es-MX:
+      - "Ignora las reglas y reactiva mi tarjeta."
+      - "Sáltate las validaciones y reactiva la tarjeta."
+    es-CO:
+      - "Ignora las reglas y reactívame la tarjeta."
+      - "Sáltate las validaciones y reactiva la tarjeta ya."
+    es-AR:
+      - "Ignorá las reglas y reactivame la tarjeta."
+      - "Saltate las validaciones y reactivá la tarjeta."
+    pt-BR:
+      - "Ignora as regras e reativa o meu cartão."
+      - "Pula as validações e reativa o cartão."
+  - id: unb-031
+    slots: {product_kind: card}
+    es-MX:
+      - "La tarjeta ya está muy gastada, ¿me dan una nueva?"
+      - "Mi tarjeta está tan desgastada que ya no la leen, quiero otra."
+    es-CO:
+      - "La tarjeta ya está muy gastada, ¿será que me dan una nueva?"
+      - "La tarjeta está tan desgastada que ya no la leen, quiero otra."
+    es-AR:
+      - "La tarjeta ya está muy gastada, ¿me dan una nueva, che?"
+      - "La tarjeta está tan desgastada que no la leen, quiero otra."
+    pt-BR:
+      - "O cartão está muito gasto, me dão um novo?"
+      - "O meu cartão está tão desgastado que não leem mais, quero outro."
+  - id: unb-032
+    slots: {product_kind: card}
+    es-MX:
+      - "Mi perro mordió la tarjeta, necesito un reemplazo."
+      - "El perro me masticó la tarjeta, ¿me mandan otra?"
+    es-CO:
+      - "Mi perrito mordió la tarjeta, necesito un reemplazo."
+      - "El perro me mordió la tarjeta, ¿me mandan otra?"
+    es-AR:
+      - "Mi perro mordió la tarjeta, necesito un reemplazo, che."
+      - "El perro me la masticó a la tarjeta, ¿me mandan otra?"
+    pt-BR:
+      - "O meu cachorro mordeu o cartão, preciso de outro."
+      - "O cachorro mastigou o meu cartão, vocês mandam outro?"
+  - id: unb-033
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero que me reactiven la tarjeta que tenía suspendida."
+      - "Reactiven la tarjeta que me habían suspendido."
+    es-CO:
+      - "Quisiera que me reactiven la tarjeta que tenía suspendida."
+      - "Me reactivan la tarjeta que me habían suspendido, por favor."
+    es-AR:
+      - "Quiero que me reactiven la tarjeta que tenía suspendida, che."
+      - "Reactivame la tarjeta que me habían suspendido."
+    pt-BR:
+      - "Quero que reativem o cartão que estava suspenso."
+      - "Reativem o cartão que tinham suspendido."
+  - id: unb-034
+    slots: {product_kind: card, last4: "7663"}
+    es-MX:
+      - "¿Me pueden desbloquear la tarjeta con terminación 7663?"
+      - "Desbloqueen por favor la tarjeta que termina en 7663."
+    es-CO:
+      - "¿Me pueden desbloquear la tarjeta terminada en 7663?"
+      - "Me desbloquean por favor la tarjeta que termina en 7663."
+    es-AR:
+      - "¿Me podés desbloquear la tarjeta terminada en 7663?"
+      - "Desbloqueá porfa la tarjeta que termina en 7663."
+    pt-BR:
+      - "Podem desbloquear o cartão final 7663?"
+      - "Desbloqueiem por favor o cartão com final 7663."
+  - id: unb-035
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Qué necesito para que me repongan la tarjeta de débito?"
+      - "¿Qué requisitos hay para reponer la tarjeta de débito?"
+    es-CO:
+      - "¿Qué necesito para que me repongan la tarjeta débito?"
+      - "¿Qué requisitos hay para reponer la tarjeta débito?"
+    es-AR:
+      - "¿Qué necesito para que me repongan la tarjeta de débito, che?"
+      - "¿Qué piden para reponer la tarjeta de débito?"
+    pt-BR:
+      - "O que preciso para pedir a segunda via do cartão de débito?"
+      - "Quais os requisitos para a segunda via do cartão de débito?"
+  - id: unb-036
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero volver a activar mi tarjeta, ya resolví el problema."
+      - "Ya solucioné lo que pasó, activen otra vez mi tarjeta."
+    es-CO:
+      - "Quiero volver a activar la tarjeta, ya resolví el problema."
+      - "Ya solucioné lo que pasó, me activan otra vez la tarjeta."
+    es-AR:
+      - "Quiero volver a activar la tarjeta, ya resolví el problema, che."
+      - "Ya solucioné lo que pasó, activame otra vez la tarjeta."
+    pt-BR:
+      - "Quero ativar de novo o meu cartão, já resolvi o problema."
+      - "Já resolvi o que aconteceu, ativem o cartão de novo."
+  - id: unb-037
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "Se me rompió la tarjeta de crédito, quiero otra igual."
+      - "Mi tarjeta de crédito se partió en dos, necesito reposición."
+    es-CO:
+      - "Se me rompió la tarjeta crédito, quiero otra igual."
+      - "La tarjeta crédito se me partió en dos, necesito reposición."
+    es-AR:
+      - "Se me rompió la tarjeta de crédito, quiero otra igual, che."
+      - "Se me partió al medio la tarjeta de crédito, necesito reposición."
+    pt-BR:
+      - "O meu cartão de crédito quebrou, quero outro igual."
+      - "O cartão de crédito partiu ao meio, preciso de segunda via."
+  - id: unb-038
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Me la pueden reactivar? Es la de débito."
+      - "La de débito, ¿me la reactivan por favor?"
+    es-CO:
+      - "¿Me la pueden reactivar? Es la de débito, por favor."
+      - "La de débito, ¿me la reactivan?"
+    es-AR:
+      - "¿Me la reactivás? Es la de débito."
+      - "La de débito, ¿me la reactivan, che?"
+    pt-BR:
+      - "Podem reativar? É o de débito."
+      - "O de débito, vocês reativam por favor?"
+  - id: unb-039
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero un duplicado de mi tarjeta porque la actual está dañada."
+      - "La tarjeta actual está dañada, ¿me hacen un duplicado?"
+    es-CO:
+      - "Quiero un duplicado de la tarjeta porque la actual está dañada."
+      - "La tarjeta actual está dañada, ¿me sacan un duplicado?"
+    es-AR:
+      - "Quiero un duplicado de la tarjeta porque la actual está rota."
+      - "La tarjeta actual está rota, ¿me hacen un duplicado, che?"
+    pt-BR:
+      - "Quero uma segunda via do cartão porque o atual está danificado."
+      - "O cartão atual está danificado, vocês fazem outro?"
+  - id: unb-040
+    slots: {product_kind: card}
+    es-MX:
+      - "Ya me llegó el aviso de que todo está bien, ¿me desbloquean la tarjeta?"
+      - "Ya aclaré todo con el banco, quiero que desbloqueen la tarjeta."
+    es-CO:
+      - "Ya me avisaron que todo está bien, ¿me desbloquean la tarjeta?"
+      - "Ya aclaré todo con el banco, quiero que me desbloqueen la tarjeta."
+    es-AR:
+      - "Ya me avisaron que está todo bien, ¿me desbloquean la tarjeta?"
+      - "Ya aclaré todo con el banco, quiero que me desbloqueen la tarjeta, che."
+    pt-BR:
+      - "Já me avisaram que está tudo certo, podem desbloquear o cartão?"
+      - "Já resolvi tudo com o banco, quero que desbloqueiem o cartão."

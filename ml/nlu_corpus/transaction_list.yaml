@@ -1,0 +1,562 @@
+intent: transaction_list
+groups:
+  - id: txl-001
+    slots: {date: last_week}
+    es-MX:
+      - "Quiero ver los movimientos de la semana pasada."
+      - "¿Me enseña mis movimientos de la semana pasada?"
+    es-CO:
+      - "¿Me regala los movimientos de la semana pasada?"
+      - "Necesito revisar lo que se movió la semana pasada."
+    es-AR:
+      - "Mostrame los movimientos de la semana pasada."
+      - "¿Me pasás qué movimientos tuve la semana pasada?"
+    pt-BR:
+      - "Quero ver as movimentações da semana passada."
+      - "Me mostra os lançamentos da semana passada?"
+  - id: txl-002
+    slots: {product_kind: credit_card, date: yesterday}
+    es-MX:
+      - "¿Qué compras hice ayer con la tarjeta de crédito?"
+      - "Enséñeme lo que pagué ayer con mi tarjeta de crédito."
+    es-CO:
+      - "¿Qué compras hice ayer con la tarjeta crédito?"
+      - "Me muestra lo que compré ayer con la tarjeta de crédito."
+    es-AR:
+      - "¿Qué compré ayer con la tarjeta de crédito?"
+      - "Mostrame los consumos de ayer en la tarjeta de crédito."
+    pt-BR:
+      - "Quais compras eu fiz ontem no cartão de crédito?"
+      - "Me mostra o que eu comprei ontem com o cartão de crédito."
+  - id: txl-003
+    slots: {merchant: Uber, date: this_month}
+    es-MX:
+      - "Muéstreme las compras en Uber de este mes."
+      - "¿Cuántos viajes de Uber me han cobrado este mes?"
+    es-CO:
+      - "¿Me muestra los cobros de Uber de este mes?"
+      - "Quiero ver lo que he pagado en Uber este mes."
+    es-AR:
+      - "Mostrame los consumos de Uber de este mes."
+      - "¿Cuánto llevo gastado en Uber este mes?"
+    pt-BR:
+      - "Me mostra as compras no Uber deste mês."
+      - "Quanto eu gastei com Uber este mês?"
+  - id: txl-004
+    slots: {merchant: Mercado Central, date: last_month}
+    es-MX:
+      - "¿Cuánto gasté en Mercado Central el mes pasado?"
+      - "Quiero ver las compras de Mercado Central del mes pasado."
+    es-CO:
+      - "¿Cuánta plata gasté en Mercado Central el mes pasado?"
+      - "Me muestra las compras en Mercado Central del mes pasado."
+    es-AR:
+      - "¿Cuánta guita dejé en Mercado Central el mes pasado?"
+      - "Pasame los consumos en Mercado Central del mes pasado."
+    pt-BR:
+      - "Quanto gastei no Mercado Central mês passado?"
+      - "Quero ver as compras no Mercado Central do mês passado."
+  - id: txl-005
+    slots: {product_kind: card, tx_status: declined}
+    es-MX:
+      - "Quiero ver las compras rechazadas de la tarjeta."
+      - "¿Qué compras me han rechazado con la tarjeta?"
+    es-CO:
+      - "¿Me muestra las compras rechazadas de la tarjeta?"
+      - "Necesito ver todos los pagos rechazados de mi tarjeta."
+    es-AR:
+      - "Mostrame las compras rechazadas de la tarjeta."
+      - "¿Qué consumos me rebotaron con la tarjeta?"
+    pt-BR:
+      - "Quero ver as compras recusadas do cartão."
+      - "Quais compras foram recusadas no meu cartão?"
+  - id: txl-006
+    slots: {product_kind: debit_card, tx_status: pending}
+    es-MX:
+      - "¿Tengo compras pendientes en la tarjeta de débito?"
+      - "Muéstreme los cargos pendientes de mi tarjeta de débito."
+    es-CO:
+      - "¿Tengo compras pendientes en la tarjeta débito?"
+      - "¿Qué cobros pendientes tiene la tarjeta débito?"
+    es-AR:
+      - "¿Tengo consumos pendientes en la tarjeta de débito?"
+      - "Mostrame lo pendiente de la tarjeta de débito, las compras que no se acreditaron."
+    pt-BR:
+      - "Tenho compras pendentes no cartão de débito?"
+      - "Quais lançamentos estão pendentes no cartão de débito?"
+  - id: txl-007
+    slots: {amount: "100 USD"}
+    es-MX:
+      - "Muéstreme los cargos mayores a 100 dólares."
+      - "¿Qué compras de más de 100 dólares he hecho?"
+    es-CO:
+      - "¿Me muestra los cobros de más de 100 dólares?"
+      - "Necesito ver las compras por encima de 100 dólares."
+    es-AR:
+      - "Mostrame los consumos de más de 100 dólares."
+      - "¿Qué compras superan los 100 dólares?"
+    pt-BR:
+      - "Me mostra as compras acima de 100 dólares."
+      - "Quais lançamentos passam de 100 dólares?"
+  - id: txl-008
+    slots: {product_kind: card, last4: "6000", date: "month:05"}
+    es-MX:
+      - "Movimientos de la tarjeta con terminación 6000 en mayo."
+      - "¿Qué cargos tuvo en mayo mi tarjeta que termina en 6000?"
+    es-CO:
+      - "Me regala los movimientos de la tarjeta terminada en 6000 en mayo."
+      - "¿Qué compras se hicieron en mayo con la tarjeta que termina en 6000?"
+    es-AR:
+      - "Pasame los movimientos de la tarjeta terminada en 6000 en mayo."
+      - "¿Qué consumos tuvo en mayo la tarjeta que termina en 6000?"
+    pt-BR:
+      - "Movimentações do cartão final 6000 em maio."
+      - "Quais compras teve o cartão final 6000 em maio?"
+  - id: txl-009
+    slots: {merchant: Cable TV}
+    es-MX:
+      - "¿Qué cargos tengo de Cable TV?"
+      - "Muéstreme todos los cobros de Cable TV."
+    es-CO:
+      - "¿Qué cobros me ha hecho Cable TV?"
+      - "Quiero ver los pagos que tengo con Cable TV."
+    es-AR:
+      - "¿Qué débitos tengo de Cable TV?"
+      - "Mostrame todos los consumos de Cable TV."
+    pt-BR:
+      - "Quais cobranças eu tenho da Cable TV?"
+      - "Me mostra todos os pagamentos para a Cable TV."
+  - id: txl-010
+    slots: {}
+    es-MX:
+      - "Quiero ver mis últimos diez movimientos."
+      - "¿Me enseña mis movimientos más recientes?"
+    es-CO:
+      - "¿Me regala mis últimos diez movimientos?"
+      - "Necesito ver los movimientos más recientes."
+    es-AR:
+      - "Pasame mis últimos diez movimientos."
+      - "Mostrame los movimientos más recientes."
+    pt-BR:
+      - "Quero ver as minhas últimas dez movimentações."
+      - "Me mostra os lançamentos mais recentes."
+  - id: txl-011
+    slots: {product_kind: card, date: "weekday:fri"}
+    es-MX:
+      - "¿Qué compré con la tarjeta el viernes?"
+      - "Enséñeme los cargos de la tarjeta del viernes."
+    es-CO:
+      - "¿Qué compras hice con la tarjeta el viernes?"
+      - "Me muestra los movimientos de la tarjeta del viernes."
+    es-AR:
+      - "¿Qué consumí con la tarjeta el viernes?"
+      - "Mostrame los consumos de la tarjeta del viernes."
+    pt-BR:
+      - "O que eu comprei com o cartão na sexta-feira?"
+      - "Me mostra as compras do cartão na sexta."
+  - id: txl-012
+    slots: {date: "since:05-15"}
+    es-MX:
+      - "¿Qué transacciones tengo desde el 15 de mayo?"
+      - "Muéstreme todo lo que se ha cargado desde el 15 de mayo."
+    es-CO:
+      - "¿Me regala las transacciones desde el 15 de mayo?"
+      - "Necesito ver los movimientos desde el 15 de mayo."
+    es-AR:
+      - "Pasame los movimientos desde el 15 de mayo."
+      - "¿Qué consumos tengo desde el 15 de mayo?"
+    pt-BR:
+      - "Quais transações eu tenho desde 15 de maio?"
+      - "Quero ver os lançamentos a partir de 15 de maio."
+  - id: txl-013
+    slots: {merchant: Farmacia Salud, date: "last_n_days:30"}
+    es-MX:
+      - "Lista de compras en Farmacia Salud de los últimos 30 días."
+      - "¿Qué he comprado en Farmacia Salud en los últimos 30 días?"
+    es-CO:
+      - "¿Me muestra las compras en Farmacia Salud de los últimos 30 días?"
+      - "Quiero ver lo que pagué en Farmacia Salud los últimos 30 días."
+    es-AR:
+      - "Mostrame los consumos en Farmacia Salud de los últimos 30 días."
+      - "¿Qué gasté en Farmacia Salud en los últimos 30 días?"
+    pt-BR:
+      - "Lista das compras na Farmacia Salud dos últimos 30 dias."
+      - "O que eu gastei na Farmacia Salud nos últimos 30 dias?"
+  - id: txl-014
+    slots: {product_kind: credit_card, date: this_month}
+    es-MX:
+      - "¿Cuánto he gastado este mes con la tarjeta de crédito?"
+      - "¿Qué compras llevo este mes en la tarjeta de crédito?"
+    es-CO:
+      - "¿Cuánto he gastado este mes con la tarjeta crédito?"
+      - "Me muestra las compras de este mes en la tarjeta de crédito."
+    es-AR:
+      - "¿Cuánto llevo gastado este mes con la tarjeta de crédito?"
+      - "Pasame los consumos de este mes en la tarjeta de crédito."
+    pt-BR:
+      - "Quanto eu já gastei este mês no cartão de crédito?"
+      - "Quais compras eu fiz este mês no cartão de crédito?"
+  - id: txl-015
+    slots: {date: today}
+    es-MX:
+      - "Muéstreme los movimientos de hoy."
+      - "¿Qué cargos se han hecho hoy?"
+    es-CO:
+      - "¿Me regala los movimientos de hoy?"
+      - "¿Qué compras se han hecho hoy?"
+    es-AR:
+      - "Mostrame los movimientos de hoy."
+      - "¿Qué consumos tuve hoy?"
+    pt-BR:
+      - "Me mostra as movimentações de hoje."
+      - "Quais compras foram feitas hoje?"
+  - id: txl-016
+    slots: {product_kind: card, tx_status: reversed}
+    es-MX:
+      - "¿Me muestra los pagos revertidos de mi tarjeta?"
+      - "Quiero ver los cargos que se revirtieron en la tarjeta."
+    es-CO:
+      - "¿Me regala los movimientos revertidos de la tarjeta?"
+      - "Necesito ver las compras reversadas de mi tarjeta."
+    es-AR:
+      - "Mostrame los consumos revertidos de la tarjeta."
+      - "¿Qué compras se revirtieron en la tarjeta?"
+    pt-BR:
+      - "Me mostra os pagamentos estornados do meu cartão."
+      - "Quais compras foram estornadas no cartão?"
+  - id: txl-017
+    slots: {date: last_week}
+    es-MX:
+      - "Muéstreme todo lo que gasté en gasolina la semana pasada."
+      - "¿Cuánto se me fue en gasolina la semana pasada?"
+    es-CO:
+      - "¿Me muestra lo que gasté en gasolina la semana pasada?"
+      - "¿Cuánta plata se me fue en gasolina la semana pasada?"
+    es-AR:
+      - "Mostrame lo que gasté en nafta la semana pasada."
+      - "¿Cuánto se me fue en nafta la semana pasada?"
+    pt-BR:
+      - "Me mostra tudo o que gastei com gasolina semana passada."
+      - "Quanto eu gastei de gasolina na semana passada?"
+  - id: txl-018
+    slots: {product_kind: card, last4: "0044", date: "last_n_days:7"}
+    es-MX:
+      - "¿Qué cargos tengo en la tarjeta terminación 0044 de los últimos 7 días?"
+      - "Movimientos de los últimos 7 días de la tarjeta que termina en 0044."
+    es-CO:
+      - "¿Me regala los cobros de la tarjeta terminada en 0044 de los últimos 7 días?"
+      - "Necesito las compras de los últimos 7 días de la tarjeta que termina en 0044."
+    es-AR:
+      - "Pasame los consumos de los últimos 7 días de la tarjeta terminada en 0044."
+      - "¿Qué movimientos tuvo la tarjeta que termina en 0044 en los últimos 7 días?"
+    pt-BR:
+      - "Quais lançamentos tem o cartão final 0044 nos últimos 7 dias?"
+      - "Movimentações dos últimos 7 dias do cartão final 0044."
+  - id: txl-019
+    slots: {date: last_weekend}
+    es-MX:
+      - "Necesito revisar mis consumos del fin de semana."
+      - "¿Qué compras hice el fin de semana?"
+    es-CO:
+      - "¿Me muestra las compras del fin de semana?"
+      - "Quiero revisar los gastos del fin de semana."
+    es-AR:
+      - "Pasame los consumos del fin de semana."
+      - "¿En qué gasté el fin de semana?"
+    pt-BR:
+      - "Preciso ver os gastos do fim de semana."
+      - "O que eu comprei no fim de semana?"
+  - id: txl-020
+    slots: {merchant: Internet Plus, date: this_month}
+    es-MX:
+      - "¿Tengo algún cargo de Internet Plus este mes?"
+      - "¿Ya me cobró Internet Plus este mes? Quiero ver los cargos."
+    es-CO:
+      - "¿Tengo algún cobro de Internet Plus este mes?"
+      - "Muéstreme si hay cobros de Internet Plus este mes."
+    es-AR:
+      - "¿Tengo algún débito de Internet Plus este mes?"
+      - "Fijate si hay consumos de Internet Plus este mes."
+    pt-BR:
+      - "Tenho alguma cobrança da Internet Plus este mês?"
+      - "Me mostra se tem lançamentos da Internet Plus este mês."
+  - id: txl-021
+    slots: {}
+    es-MX:
+      - "Muéstreme los movimientos y luego el saldo."
+      - "Primero los movimientos recientes y después dígame cuánto debo."
+    es-CO:
+      - "Me muestra los movimientos y después el saldo, por favor."
+      - "Primero los últimos movimientos y luego cuánto debo."
+    es-AR:
+      - "Mostrame los movimientos y después el saldo."
+      - "Primero los últimos consumos y después cuánto debo."
+    pt-BR:
+      - "Me mostra as movimentações e depois o saldo."
+      - "Primeiro os lançamentos recentes e depois quanto eu devo."
+  - id: txl-022
+    slots: {product_kind: savings_account, date: this_month}
+    es-MX:
+      - "¿Qué movimientos tiene mi cuenta de ahorros este mes?"
+      - "Muéstreme los movimientos de este mes en la cuenta de ahorro."
+    es-CO:
+      - "¿Me regala los movimientos de la cuenta de ahorros de este mes?"
+      - "¿Qué ha entrado y salido de la cuenta de ahorros este mes? Quiero los movimientos."
+    es-AR:
+      - "¿Qué movimientos tuvo la caja de ahorro este mes?"
+      - "Pasame los movimientos de este mes en la caja de ahorro."
+    pt-BR:
+      - "Quais movimentações teve a minha poupança este mês?"
+      - "Me mostra o extrato deste mês da conta poupança."
+  - id: txl-023
+    slots: {merchant: Restaurante El Buen Sabor}
+    es-MX:
+      - "Quiero ver mis compras en Restaurante El Buen Sabor."
+      - "¿Cuántas veces he pagado en Restaurante El Buen Sabor?"
+    es-CO:
+      - "¿Me muestra lo que he pagado en Restaurante El Buen Sabor?"
+      - "Necesito ver las cuentas que pagué en Restaurante El Buen Sabor."
+    es-AR:
+      - "Mostrame los consumos en Restaurante El Buen Sabor."
+      - "¿Cuántas veces fui a Restaurante El Buen Sabor según los consumos?"
+    pt-BR:
+      - "Quero ver as minhas compras no Restaurante El Buen Sabor."
+      - "Quantas vezes eu paguei no Restaurante El Buen Sabor?"
+  - id: txl-024
+    slots: {date: last_month}
+    es-MX:
+      - "¿Cuáles fueron mis compras más grandes del mes pasado?"
+      - "Enséñeme los cargos más altos del mes pasado."
+    es-CO:
+      - "¿Cuáles fueron las compras más grandes del mes pasado?"
+      - "Me muestra los cobros más altos del mes pasado."
+    es-AR:
+      - "¿Cuáles fueron los consumos más grandes del mes pasado?"
+      - "Mostrame los gastos más altos del mes pasado."
+    pt-BR:
+      - "Quais foram as minhas maiores compras no mês passado?"
+      - "Me mostra os lançamentos mais altos do mês passado."
+  - id: txl-025
+    slots: {tx_status: approved, date: yesterday}
+    es-MX:
+      - "Muéstreme las compras aprobadas de ayer."
+      - "¿Qué compras me aprobaron ayer?"
+    es-CO:
+      - "¿Me muestra las compras aprobadas de ayer?"
+      - "¿Cuáles transacciones salieron aprobadas ayer?"
+    es-AR:
+      - "Mostrame los consumos aprobados de ayer."
+      - "¿Qué compras quedaron aprobadas ayer?"
+    pt-BR:
+      - "Me mostra as compras aprovadas de ontem."
+      - "Quais transações foram aprovadas ontem?"
+  - id: txl-026
+    slots: {amount: "50 USD"}
+    es-MX:
+      - "¿Qué cargos de 50 dólares tengo?"
+      - "Busque los cargos por 50 dólares, por favor."
+    es-CO:
+      - "¿Qué cobros de 50 dólares tengo?"
+      - "Me busca las compras por 50 dólares, por favor."
+    es-AR:
+      - "¿Qué consumos de 50 dólares tengo?"
+      - "Buscame las compras de 50 dólares."
+    pt-BR:
+      - "Quais cobranças de 50 dólares eu tenho?"
+      - "Procura as compras de 50 dólares, por favor."
+  - id: txl-027
+    slots: {product_kind: card, date: "last_n_days:60"}
+    es-MX:
+      - "Necesito el historial de la tarjeta de los últimos 60 días."
+      - "Muéstreme los cargos de la tarjeta de los últimos 60 días."
+    es-CO:
+      - "Me regala el historial de la tarjeta de los últimos 60 días."
+      - "¿Me regala los movimientos de la tarjeta de los últimos 60 días?"
+    es-AR:
+      - "Necesito el historial de la tarjeta de los últimos 60 días, porfa."
+      - "Pasame los consumos de la tarjeta de los últimos 60 días."
+    pt-BR:
+      - "Preciso do histórico do cartão dos últimos 60 dias."
+      - "Me mostra os lançamentos do cartão dos últimos 60 dias."
+  - id: txl-028
+    slots: {merchant: Uber, date: this_week}
+    es-MX:
+      - "¿Cuántas veces usé Uber esta semana?"
+      - "Muéstreme los viajes de Uber que pagué esta semana."
+    es-CO:
+      - "¿Cuántos cobros de Uber tengo esta semana?"
+      - "Quiero ver lo que pagué en Uber esta semana."
+    es-AR:
+      - "¿Cuántas veces pagué Uber esta semana?"
+      - "Mostrame los consumos de Uber de esta semana."
+    pt-BR:
+      - "Quantas vezes eu usei o Uber nesta semana?"
+      - "Me mostra as corridas de Uber que paguei nesta semana."
+  - id: txl-029
+    slots: {date: yesterday}
+    es-MX:
+      - "Ayer fui al súper y quiero ver las compras de ayer."
+      - "Hice varias compras ayer, ¿me las muestra?"
+    es-CO:
+      - "Ayer fui al supermercado y quiero ver las compras de ayer."
+      - "Hice varias compras ayer, ¿me las muestra todas?"
+    es-AR:
+      - "Ayer fui al súper y quiero ver los consumos de ayer."
+      - "Hice varias compras ayer, ¿me las mostrás?"
+    pt-BR:
+      - "Ontem fui ao mercado e quero ver as compras de ontem."
+      - "Fiz várias compras ontem, pode me mostrar?"
+  - id: txl-030
+    slots: {date: "since:05-01"}
+    es-MX:
+      - "Quiero ver los movimientos desde el 1 de mayo."
+      - "¿Qué cargos tengo desde el 1 de mayo para acá?"
+    es-CO:
+      - "¿Me regala los movimientos desde el 1 de mayo?"
+      - "Necesito los cobros desde el 1 de mayo hasta hoy."
+    es-AR:
+      - "Pasame los movimientos desde el 1 de mayo."
+      - "¿Qué consumos tengo desde el 1 de mayo?"
+    pt-BR:
+      - "Quero ver as movimentações desde 1 de maio."
+      - "Quais lançamentos tenho a partir de 1 de maio?"
+  - id: txl-031
+    slots: {product_kind: card, date: day_before_yesterday}
+    es-MX:
+      - "¿Hubo compras en mi tarjeta antier?"
+      - "Muéstreme los cargos de anteayer en la tarjeta."
+    es-CO:
+      - "¿Hubo compras en la tarjeta antier?"
+      - "¿Me muestra los movimientos de antier en la tarjeta?"
+    es-AR:
+      - "¿Hubo consumos en la tarjeta anteayer?"
+      - "Mostrame los movimientos de anteayer en la tarjeta."
+    pt-BR:
+      - "Teve compras no meu cartão anteontem?"
+      - "Me mostra os lançamentos de anteontem no cartão."
+  - id: txl-032
+    slots: {date: "date:06-03"}
+    es-MX:
+      - "Muéstreme los cargos del 3 de junio."
+      - "¿Qué compras tengo registradas el 3 de junio?"
+    es-CO:
+      - "¿Me regala los cobros del 3 de junio?"
+      - "¿Qué movimientos hubo el 3 de junio?"
+    es-AR:
+      - "Pasame los consumos del 3 de junio."
+      - "¿Qué movimientos tuve el 3 de junio?"
+    pt-BR:
+      - "Me mostra as cobranças de 3 de junho."
+      - "Quais compras eu fiz em 3 de junho?"
+  - id: txl-033
+    slots: {date: "month:05"}
+    es-MX:
+      - "Quiero un reporte de mis gastos de mayo."
+      - "¿En qué se me fue el dinero en mayo? Quiero ver los cargos."
+    es-CO:
+      - "Necesito un reporte de los gastos de mayo."
+      - "¿En qué se me fue la plata en mayo? Quiero ver las compras."
+    es-AR:
+      - "Quiero un detalle de los gastos de mayo."
+      - "¿En qué se me fue la guita en mayo? Quiero ver los consumos."
+    pt-BR:
+      - "Quero um relatório dos meus gastos de maio."
+      - "Onde foi parar o meu dinheiro em maio? Quero ver as compras."
+  - id: txl-034
+    slots: {product_kind: card}
+    es-MX:
+      - "movimientos tarjeta"
+      - "ultimos cargos de la tarjeta"
+    es-CO:
+      - "movimientos de la tarjeta"
+      - "ultimas compras tarjeta porfa"
+    es-AR:
+      - "consumos tarjeta"
+      - "ultimos consumos de la tarjeta"
+    pt-BR:
+      - "extrato do cartão"
+      - "ultimas compras do cartao"
+  - id: txl-035
+    slots: {date: this_week}
+    es-MX:
+      - "que compras hice esta semana"
+      - "cuanto llevo gastado esta semana"
+    es-CO:
+      - "q compras he hecho esta semana"
+      - "cuanto he gastado esta semana"
+    es-AR:
+      - "q consumos tuve esta semana"
+      - "cuanto gaste esta semana"
+    pt-BR:
+      - "o q eu comprei essa semana"
+      - "quanto gastei essa semana"
+  - id: txl-036
+    slots: {merchant: Streaming Music}
+    es-MX:
+      - "¿Qué cobros me ha hecho Streaming Music?"
+      - "Muéstreme cuántas veces me ha cobrado Streaming Music."
+    es-CO:
+      - "¿Me muestra los cobros que me ha hecho Streaming Music?"
+      - "Quiero ver las cuotas que me ha cobrado Streaming Music."
+    es-AR:
+      - "¿Qué débitos me hizo Streaming Music?"
+      - "Mostrame cuántas veces me cobró Streaming Music."
+    pt-BR:
+      - "Quais cobranças a Streaming Music já me fez?"
+      - "Me mostra quantas vezes a Streaming Music me cobrou."
+  - id: txl-037
+    slots: {tx_status: declined, date: this_month}
+    es-MX:
+      - "¿Me pasa las transacciones rechazadas de este mes?"
+      - "¿Cuántas compras me rechazaron este mes?"
+    es-CO:
+      - "¿Me regala las transacciones rechazadas de este mes?"
+      - "¿Cuántas compras me han rechazado este mes?"
+    es-AR:
+      - "Pasame las transacciones rechazadas de este mes."
+      - "¿Cuántos consumos me rebotaron este mes?"
+    pt-BR:
+      - "Me passa as transações recusadas deste mês."
+      - "Quantas compras foram recusadas este mês?"
+  - id: txl-038
+    slots: {product_kind: credit_card, tx_status: pending}
+    es-MX:
+      - "Muéstreme los cargos pendientes de la tarjeta de crédito."
+      - "¿Qué compras siguen pendientes en mi tarjeta de crédito?"
+    es-CO:
+      - "¿Me muestra los cobros pendientes de la tarjeta crédito?"
+      - "¿Qué compras siguen pendientes en la tarjeta de crédito?"
+    es-AR:
+      - "Mostrame los consumos pendientes de la tarjeta de crédito."
+      - "¿Qué compras siguen pendientes en la tarjeta de crédito, me decís?"
+    pt-BR:
+      - "Me mostra as compras pendentes do cartão de crédito."
+      - "Quais lançamentos ainda estão pendentes no cartão de crédito?"
+  - id: txl-039
+    slots: {date: last_week}
+    es-MX:
+      - "¿Cuánto gasté en total la semana pasada?"
+      - "¿Cuánto dinero se me fue la semana pasada en compras?"
+    es-CO:
+      - "¿Me dice cuánto gasté en total la semana pasada?"
+      - "¿Cuánta plata se me fue en compras la semana pasada?"
+    es-AR:
+      - "¿Cuánto gasté en total la semana pasada, me decís?"
+      - "¿Cuánta guita se me fue en compras la semana pasada?"
+    pt-BR:
+      - "Quanto eu gastei no total semana passada?"
+      - "Quanto dinheiro foi embora em compras semana passada?"
+  - id: txl-040
+    slots: {amount: "200000 PESO"}
+    es-MX:
+      - "Quiero ver las compras de más de 200,000 pesos."
+      - "¿Qué cargos pasan de 200,000 pesos?"
+    es-CO:
+      - "¿Me muestra las compras de más de 200.000 pesos?"
+      - "¿Qué cobros pasan de 200.000 pesos?"
+    es-AR:
+      - "Mostrame los consumos de más de 200.000 pesos."
+      - "¿Qué compras superan los 200.000 pesos?"
+    pt-BR:
+      - "Quero ver as compras acima de 200.000 pesos."
+      - "Quais lançamentos passam de 200.000 pesos?"

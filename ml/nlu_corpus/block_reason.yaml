@@ -1,0 +1,562 @@
+intent: block_reason
+groups:
+  - id: brs-001
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Por qué está suspendida mi tarjeta de crédito?"
+      - "¿Me dice por qué me suspendieron la tarjeta de crédito?"
+    es-CO:
+      - "¿Por qué tengo suspendida la tarjeta crédito?"
+      - "¿Me regala el motivo de la suspensión de la tarjeta de crédito?"
+    es-AR:
+      - "¿Por qué tengo suspendida la tarjeta de crédito, me decís?"
+      - "¿Cuál es el motivo de que la tarjeta de crédito figure suspendida?"
+    pt-BR:
+      - "Por que o meu cartão de crédito está suspenso?"
+      - "Pode me dizer por que suspenderam o cartão de crédito?"
+  - id: brs-002
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "Me bloquearon la tarjeta de débito sin avisar, ¿cuál fue el motivo?"
+      - "¿Por qué me bloquearon la tarjeta de débito sin avisarme?"
+    es-CO:
+      - "Me bloquearon la tarjeta débito sin avisar, ¿cuál fue el motivo?"
+      - "¿Por qué me bloquearon la tarjeta débito sin avisarme?"
+    es-AR:
+      - "Me bloquearon la tarjeta de débito sin avisar, ¿por qué fue?"
+      - "¿Por qué me bloquearon la de débito sin avisarme, che?"
+    pt-BR:
+      - "Bloquearam o meu cartão de débito sem avisar, qual foi o motivo?"
+      - "Por que bloquearam o cartão de débito sem me avisar?"
+  - id: brs-003
+    slots: {product_kind: card, last4: "2952"}
+    es-MX:
+      - "¿Cuál es la razón del bloqueo de mi tarjeta con terminación 2952?"
+      - "¿Por qué está bloqueada la tarjeta que termina en 2952?"
+    es-CO:
+      - "¿Cuál es la razón del bloqueo de la tarjeta terminada en 2952?"
+      - "¿Por qué me aparece bloqueada la tarjeta que termina en 2952?"
+    es-AR:
+      - "¿Cuál es el motivo del bloqueo de la tarjeta terminada en 2952?"
+      - "¿Por qué figura bloqueada la tarjeta que termina en 2952?"
+    pt-BR:
+      - "Qual é o motivo do bloqueio do cartão final 2952?"
+      - "Por que o cartão final 2952 está bloqueado?"
+  - id: brs-004
+    slots: {product_kind: card}
+    es-MX:
+      - "Intenté pagar y me dijeron que mi tarjeta está bloqueada, ¿por qué la bloquearon?"
+      - "En la caja me dijeron que la tarjeta estaba bloqueada, ¿por qué?"
+    es-CO:
+      - "Intenté pagar y me dijeron que la tarjeta está bloqueada, ¿por qué la bloquearon?"
+      - "En la caja me dijeron que la tarjeta estaba bloqueada, ¿qué pasó?"
+    es-AR:
+      - "Quise pagar y me dijeron que la tarjeta está bloqueada, ¿por qué la bloquearon?"
+      - "En la caja me dijeron que la tarjeta estaba bloqueada, ¿qué pasó, che?"
+    pt-BR:
+      - "Tentei pagar e disseram que o meu cartão está bloqueado, por que bloquearam?"
+      - "No caixa me falaram que o cartão estava bloqueado, por quê?"
+  - id: brs-005
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Desde cuándo está bloqueada mi tarjeta?"
+      - "¿Cuándo me bloquearon la tarjeta?"
+    es-CO:
+      - "¿Desde cuándo tengo la tarjeta bloqueada?"
+      - "¿En qué fecha me bloquearon la tarjeta?"
+    es-AR:
+      - "¿Desde cuándo figura bloqueada la tarjeta?"
+      - "¿Cuándo me la bloquearon a la tarjeta?"
+    pt-BR:
+      - "Desde quando o meu cartão está bloqueado?"
+      - "Quando bloquearam o meu cartão?"
+  - id: brs-006
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué hice para que me bloquearan la tarjeta?"
+      - "¿Hice algo malo para que me bloquearan la tarjeta?"
+    es-CO:
+      - "¿Qué hice yo para que me bloquearan la tarjeta?"
+      - "¿Será que hice algo para que me bloquearan la tarjeta?"
+    es-AR:
+      - "¿Qué hice para que me bloquearan la tarjeta, che?"
+      - "¿Hice algo mal para que me bloquearan la tarjeta?"
+    pt-BR:
+      - "O que eu fiz para bloquearem o meu cartão?"
+      - "Fiz alguma coisa errada para bloquearem o cartão?"
+  - id: brs-007
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me bloquearon la tarjeta por falta de pago?"
+      - "¿El bloqueo de la tarjeta es porque no pagué?"
+    es-CO:
+      - "¿Me bloquearon la tarjeta por no pagar?"
+      - "¿El bloqueo de la tarjeta es por mora?"
+    es-AR:
+      - "¿Me bloquearon la tarjeta por falta de pago, che?"
+      - "¿El bloqueo de la tarjeta es porque estoy atrasado?"
+    pt-BR:
+      - "Bloquearam o meu cartão por falta de pagamento?"
+      - "O bloqueio do cartão é porque eu não paguei?"
+  - id: brs-008
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Fue por seguridad que me bloquearon la tarjeta?"
+      - "¿Me bloquearon la tarjeta por motivos de seguridad?"
+    es-CO:
+      - "¿Será que me bloquearon la tarjeta por seguridad?"
+      - "¿El bloqueo de la tarjeta fue por seguridad?"
+    es-AR:
+      - "¿Fue por seguridad que me bloquearon la tarjeta, che?"
+      - "¿La tarjeta la bloquearon por seguridad?"
+    pt-BR:
+      - "Foi por segurança que bloquearam o meu cartão?"
+      - "Bloquearam o cartão por motivo de segurança?"
+  - id: brs-009
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Por qué me inhabilitaron la tarjeta de crédito?"
+      - "¿Por qué está inhabilitada mi tarjeta de crédito?"
+    es-CO:
+      - "¿Por qué me inhabilitaron la tarjeta crédito?"
+      - "¿Por qué me aparece inhabilitada la tarjeta de crédito?"
+    es-AR:
+      - "¿Por qué me inhabilitaron la tarjeta de crédito, che?"
+      - "¿Por qué figura inhabilitada la tarjeta de crédito?"
+    pt-BR:
+      - "Por que desabilitaram o meu cartão de crédito?"
+      - "Por que o cartão de crédito está desabilitado?"
+  - id: brs-010
+    slots: {product_kind: card}
+    es-MX:
+      - "Hoy desperté y mi tarjeta estaba bloqueada, ¿qué ocurrió?"
+      - "Ayer funcionaba y hoy amaneció bloqueada mi tarjeta, ¿por qué?"
+    es-CO:
+      - "Hoy me levanté y la tarjeta estaba bloqueada, ¿qué ocurrió?"
+      - "Ayer servía y hoy la tarjeta está bloqueada, ¿por qué?"
+    es-AR:
+      - "Hoy me levanté y la tarjeta estaba bloqueada, ¿qué pasó?"
+      - "Ayer andaba y hoy la tarjeta figura bloqueada, ¿por qué?"
+    pt-BR:
+      - "Hoje acordei e o cartão estava bloqueado, o que aconteceu?"
+      - "Ontem funcionava e hoje o cartão está bloqueado, por quê?"
+  - id: brs-011
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me pueden explicar el motivo de la suspensión de mi tarjeta?"
+      - "Quiero saber el motivo de la suspensión de la tarjeta."
+    es-CO:
+      - "¿Me pueden explicar el motivo de la suspensión de la tarjeta?"
+      - "Quisiera saber la razón de la suspensión de mi tarjeta."
+    es-AR:
+      - "¿Me explican el motivo de la suspensión de la tarjeta?"
+      - "Quiero saber por qué me suspendieron la tarjeta."
+    pt-BR:
+      - "Podem me explicar o motivo da suspensão do meu cartão?"
+      - "Quero saber o motivo da suspensão do cartão."
+  - id: brs-012
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Cuándo bloquearon mi tarjeta de débito y por qué?"
+      - "¿Cuándo y por qué se bloqueó la tarjeta de débito?"
+    es-CO:
+      - "¿Cuándo bloquearon la tarjeta débito y por qué?"
+      - "¿Cuándo y por qué se me bloqueó la tarjeta débito?"
+    es-AR:
+      - "¿Cuándo bloquearon la tarjeta de débito y por qué?"
+      - "¿Cuándo y por qué se me bloqueó la tarjeta de débito?"
+    pt-BR:
+      - "Quando bloquearam o cartão de débito e por quê?"
+      - "Quando e por que o cartão de débito foi bloqueado?"
+  - id: brs-013
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Por qué tengo la tarjeta bloqueada si pagué a tiempo?"
+      - "Pagué puntual y aun así me bloquearon la tarjeta, ¿por qué?"
+    es-CO:
+      - "¿Por qué me aparece la tarjeta bloqueada si yo pagué a tiempo?"
+      - "Pagué puntual y de todas formas me bloquearon la tarjeta, ¿por qué?"
+    es-AR:
+      - "¿Por qué tengo la tarjeta bloqueada si pagué en término?"
+      - "Pagué a tiempo y igual me bloquearon la tarjeta, ¿por qué?"
+    pt-BR:
+      - "Por que o meu cartão está bloqueado se eu paguei em dia?"
+      - "Paguei em dia e mesmo assim bloquearam o cartão, por quê?"
+  - id: brs-014
+    slots: {product_kind: card}
+    es-MX:
+      - "La app dice que mi tarjeta está bloqueada, ¿a qué se debe?"
+      - "En la aplicación me sale la tarjeta bloqueada, ¿a qué se debe?"
+    es-CO:
+      - "En la app me sale que la tarjeta está bloqueada, ¿eso a qué se debe?"
+      - "En la aplicación me sale la tarjeta bloqueada, ¿por qué será?"
+    es-AR:
+      - "La app me dice que la tarjeta está bloqueada, ¿a qué se debe, che?"
+      - "En la aplicación me figura la tarjeta bloqueada, ¿por qué?"
+    pt-BR:
+      - "O app diz que o meu cartão está bloqueado, por que isso?"
+      - "No aplicativo aparece o cartão bloqueado, qual o motivo?"
+  - id: brs-015
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Por qué cancelaron mi tarjeta?"
+      - "¿Por qué el banco me canceló la tarjeta?"
+    es-CO:
+      - "¿Por qué me cancelaron la tarjeta?"
+      - "¿Por qué el banco me canceló la tarjeta sin avisar?"
+    es-AR:
+      - "¿Por qué me dieron de baja la tarjeta?"
+      - "¿Por qué el banco me canceló la tarjeta, che?"
+    pt-BR:
+      - "Por que cancelaram o meu cartão?"
+      - "Por que o banco cancelou o meu cartão?"
+  - id: brs-016
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué motivo tuvieron para suspenderme la tarjeta?"
+      - "¿Con qué motivo me suspendieron la tarjeta?"
+    es-CO:
+      - "¿Qué motivo tuvieron ustedes para suspenderme la tarjeta?"
+      - "¿Con qué razón me suspendieron la tarjeta?"
+    es-AR:
+      - "¿Qué motivo tuvieron para suspenderme la tarjeta, me decís?"
+      - "¿Por qué motivo me la suspendieron a la tarjeta?"
+    pt-BR:
+      - "Qual motivo tiveram para suspender o meu cartão?"
+      - "Com que motivo suspenderam o cartão?"
+  - id: brs-017
+    slots: {product_kind: card, last4: "7663"}
+    es-MX:
+      - "Me bloquearon la tarjeta con terminación 7663, ¿por qué fue?"
+      - "¿Por qué bloquearon mi tarjeta que termina en 7663?"
+    es-CO:
+      - "Me bloquearon la tarjeta terminada en 7663, ¿por qué fue?"
+      - "¿Por qué bloquearon la tarjeta que termina en 7663?"
+    es-AR:
+      - "Me bloquearon la tarjeta terminada en 7663, ¿por qué fue, che?"
+      - "¿Por qué me bloquearon la que termina en 7663?"
+    pt-BR:
+      - "Bloquearam o cartão final 7663, por que foi?"
+      - "Por que bloquearam o meu cartão com final 7663?"
+  - id: brs-018
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Por qué la tarjeta de crédito aparece con bloqueo preventivo?"
+      - "Mi tarjeta de crédito tiene un bloqueo preventivo, ¿por qué?"
+    es-CO:
+      - "¿Por qué la tarjeta crédito aparece con bloqueo preventivo?"
+      - "La tarjeta de crédito tiene un bloqueo preventivo, ¿por qué será?"
+    es-AR:
+      - "¿Por qué la tarjeta de crédito figura con bloqueo preventivo?"
+      - "La tarjeta de crédito tiene un bloqueo preventivo, ¿por qué?"
+    pt-BR:
+      - "Por que o cartão de crédito está com bloqueio preventivo?"
+      - "O cartão de crédito tem um bloqueio preventivo, por quê?"
+  - id: brs-019
+    slots: {}
+    es-MX:
+      - "¿Me bloquearon por un viaje al extranjero?"
+      - "¿El bloqueo fue porque viajé fuera del país?"
+    es-CO:
+      - "¿Me bloquearon porque viajé al exterior?"
+      - "¿El bloqueo fue porque salí del país?"
+    es-AR:
+      - "¿Me bloquearon por un viaje al exterior, che?"
+      - "¿El bloqueo fue porque viajé afuera?"
+    pt-BR:
+      - "Me bloquearam por causa de uma viagem ao exterior?"
+      - "O bloqueio foi porque viajei para fora do país?"
+  - id: brs-020
+    slots: {}
+    es-MX:
+      - "¿Por qué me bloquearon si no hice nada raro?"
+      - "No hice nada fuera de lo normal, ¿por qué me bloquearon?"
+    es-CO:
+      - "¿Por qué me bloquearon si yo no he hecho nada raro?"
+      - "No hice nada fuera de lo normal, ¿por qué me bloquearon entonces?"
+    es-AR:
+      - "¿Por qué me bloquearon si no hice nada raro, che?"
+      - "No hice nada fuera de lo común, ¿por qué me bloquearon?"
+    pt-BR:
+      - "Por que me bloquearam se eu não fiz nada de estranho?"
+      - "Não fiz nada fora do normal, por que me bloquearam?"
+  - id: brs-021
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué significa que mi tarjeta esté bloqueada por seguridad? ¿Por qué pasó?"
+      - "Mi tarjeta dice bloqueada por seguridad, ¿por qué pasó eso?"
+    es-CO:
+      - "¿Qué significa que la tarjeta esté bloqueada por seguridad? ¿Por qué pasó?"
+      - "La tarjeta dice bloqueada por seguridad, ¿por qué pasó eso?"
+    es-AR:
+      - "¿Qué significa que la tarjeta esté bloqueada por seguridad? ¿Por qué pasó, che?"
+      - "La tarjeta dice bloqueada por seguridad, ¿por qué?"
+    pt-BR:
+      - "O que significa o meu cartão estar bloqueado por segurança? Por que aconteceu?"
+      - "O cartão diz bloqueado por segurança, por que isso aconteceu?"
+  - id: brs-022
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Hubo algún problema que provocó el bloqueo de mi tarjeta?"
+      - "¿Qué problema causó el bloqueo de la tarjeta?"
+    es-CO:
+      - "¿Hubo algún problema que provocó el bloqueo de la tarjeta?"
+      - "¿Qué problema causó el bloqueo de mi tarjeta?"
+    es-AR:
+      - "¿Hubo algún problema que provocó el bloqueo de la tarjeta, che?"
+      - "¿Qué quilombo causó el bloqueo de la tarjeta?"
+    pt-BR:
+      - "Teve algum problema que causou o bloqueio do meu cartão?"
+      - "Que problema causou o bloqueio do cartão?"
+  - id: brs-023
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Quién bloqueó mi tarjeta y por qué?"
+      - "¿Ustedes bloquearon mi tarjeta? ¿Por qué?"
+    es-CO:
+      - "¿Quién bloqueó la tarjeta y por qué?"
+      - "¿Ustedes bloquearon la tarjeta? ¿Por qué?"
+    es-AR:
+      - "¿Quién bloqueó la tarjeta y por qué, che?"
+      - "¿Ustedes me bloquearon la tarjeta? ¿Por qué?"
+    pt-BR:
+      - "Quem bloqueou o meu cartão e por quê?"
+      - "Vocês bloquearam o meu cartão? Por quê?"
+  - id: brs-024
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Por qué bloquearon mi tarjeta de débito?"
+      - "¿Por qué tengo bloqueada la tarjeta de débito?"
+    es-CO:
+      - "¿Por qué bloquearon la tarjeta débito?"
+      - "¿Por qué tengo bloqueada la tarjeta débito?"
+    es-AR:
+      - "¿Por qué me bloquearon la tarjeta de débito, che?"
+      - "¿Por qué tengo bloqueada la de débito?"
+    pt-BR:
+      - "Por que bloquearam o meu cartão de débito?"
+      - "Por que o meu cartão de débito está bloqueado?"
+  - id: brs-025
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Por qué está bloqueada mi tarjeta y cuánto debo?"
+      - "Dígame por qué me bloquearon la tarjeta y luego el saldo."
+    es-CO:
+      - "¿Por qué está bloqueada la tarjeta y cuánto debo?"
+      - "Dígame por qué me bloquearon la tarjeta y después el saldo."
+    es-AR:
+      - "¿Por qué está bloqueada la tarjeta y cuánto debo, che?"
+      - "Decime por qué me bloquearon la tarjeta y después el saldo."
+    pt-BR:
+      - "Por que o meu cartão está bloqueado e quanto eu devo?"
+      - "Me diz por que bloquearam o cartão e depois o saldo."
+  - id: brs-026
+    slots: {product_kind: card}
+    es-MX:
+      - "Gracias. ¿Y por qué me suspendieron la otra tarjeta?"
+      - "Ok. ¿Y la otra tarjeta por qué está suspendida?"
+    es-CO:
+      - "Listo, gracias. ¿Y por qué me suspendieron la otra tarjeta?"
+      - "Bueno. ¿Y la otra tarjeta por qué está suspendida?"
+    es-AR:
+      - "Gracias. ¿Y por qué me suspendieron la otra tarjeta, che?"
+      - "Dale. ¿Y la otra tarjeta por qué figura suspendida?"
+    pt-BR:
+      - "Obrigado. E por que suspenderam o outro cartão?"
+      - "Beleza. E o outro cartão, por que está suspenso?"
+  - id: brs-027
+    slots: {product_kind: card}
+    es-MX:
+      - "Hola, ¿por qué no puedo usar mi tarjeta? Dice bloqueada."
+      - "Hola, mi tarjeta dice bloqueada, ¿por qué?"
+    es-CO:
+      - "Buenas, ¿por qué no puedo usar la tarjeta? Dice bloqueada."
+      - "Hola, la tarjeta me dice bloqueada, ¿por qué?"
+    es-AR:
+      - "Hola, ¿por qué no puedo usar la tarjeta? Dice bloqueada."
+      - "Buenas, la tarjeta dice bloqueada, ¿por qué?"
+    pt-BR:
+      - "Oi, por que não consigo usar o cartão? Diz bloqueado."
+      - "Olá, o meu cartão diz bloqueado, por quê?"
+  - id: brs-028
+    slots: {product_kind: card}
+    es-MX:
+      - "¿El bloqueo de mi tarjeta fue por un intento de fraude?"
+      - "¿Me bloquearon la tarjeta porque detectaron un fraude?"
+    es-CO:
+      - "¿El bloqueo de la tarjeta fue por un intento de fraude?"
+      - "¿Me bloquearon la tarjeta porque detectaron fraude?"
+    es-AR:
+      - "¿El bloqueo de la tarjeta fue por un intento de fraude, che?"
+      - "¿Me bloquearon la tarjeta porque vieron algo raro?"
+    pt-BR:
+      - "O bloqueio do meu cartão foi por tentativa de fraude?"
+      - "Bloquearam o cartão porque detectaram fraude?"
+  - id: brs-029
+    slots: {product_kind: card}
+    es-MX:
+      - "motivo bloqueo tarjeta"
+      - "por que bloqueada mi tarjeta"
+    es-CO:
+      - "motivo del bloqueo de la tarjeta"
+      - "porque esta bloqueada la tarjeta"
+    es-AR:
+      - "motivo bloqueo de la tarjeta"
+      - "por que esta bloqueada la tarjeta che"
+    pt-BR:
+      - "motivo bloqueio cartão"
+      - "pq meu cartao ta bloqueado"
+  - id: brs-030
+    slots: {product_kind: card}
+    es-MX:
+      - "xq me bloquearon la tarjeta"
+      - "pq esta suspendida mi tarjeta"
+    es-CO:
+      - "xq me bloquearon la tarjeta si yo pague"
+      - "pq me suspendieron la tarjeta"
+    es-AR:
+      - "xq me bloquearon la tarjeta che"
+      - "pq me suspendieron la tarjeta che"
+    pt-BR:
+      - "pq bloquearam meu cartao"
+      - "pq suspenderam o cartao"
+  - id: brs-031
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Por qué me desactivaron la tarjeta?"
+      - "¿Por qué está desactivada mi tarjeta?"
+    es-CO:
+      - "¿Por qué me desactivaron la tarjeta si no debo nada?"
+      - "¿Por qué me aparece desactivada la tarjeta?"
+    es-AR:
+      - "¿Por qué me desactivaron la tarjeta, che?"
+      - "¿Por qué figura desactivada la tarjeta?"
+    pt-BR:
+      - "Por que desativaram o meu cartão?"
+      - "Por que o meu cartão está desativado?"
+  - id: brs-032
+    slots: {product_kind: credit_card, last4: "3390"}
+    es-MX:
+      - "¿Qué causó la suspensión de la tarjeta de crédito con terminación 3390?"
+      - "¿Por qué suspendieron la tarjeta de crédito que termina en 3390?"
+    es-CO:
+      - "¿Qué causó la suspensión de la tarjeta crédito terminada en 3390?"
+      - "¿Me regala el motivo por el que suspendieron la tarjeta crédito que termina en 3390?"
+    es-AR:
+      - "¿Qué causó la suspensión de la tarjeta de crédito terminada en 3390?"
+      - "¿Por qué me suspendieron la tarjeta de crédito que termina en 3390?"
+    pt-BR:
+      - "O que causou a suspensão do cartão de crédito final 3390?"
+      - "Por que suspenderam o cartão de crédito final 3390?"
+  - id: brs-033
+    slots: {product_kind: card}
+    es-MX:
+      - "Me llegó un mensaje de que bloquearon mi tarjeta, ¿por qué?"
+      - "Recibí un SMS que dice que mi tarjeta fue bloqueada, ¿qué pasó?"
+    es-CO:
+      - "Me llegó un mensaje de que bloquearon la tarjeta, ¿por qué?"
+      - "Recibí un mensaje de texto que dice que la tarjeta fue bloqueada, ¿qué pasó?"
+    es-AR:
+      - "Me llegó un mensaje de que me bloquearon la tarjeta, ¿por qué, che?"
+      - "Me llegó un SMS que dice que la tarjeta fue bloqueada, ¿qué pasó, che?"
+    pt-BR:
+      - "Chegou uma mensagem dizendo que bloquearam o meu cartão, por quê?"
+      - "Recebi um SMS dizendo que o cartão foi bloqueado, o que houve?"
+  - id: brs-034
+    slots: {product_kind: card}
+    es-MX:
+      - "Tengo la tarjeta bloqueada hace una semana, ¿por qué fue?"
+      - "Hace una semana que me bloquearon la tarjeta y nadie me dice por qué."
+    es-CO:
+      - "Llevo una semana con la tarjeta bloqueada, ¿por qué fue?"
+      - "Hace una semana me bloquearon la tarjeta y nadie me dice el motivo."
+    es-AR:
+      - "Tengo la tarjeta bloqueada hace una semana, ¿por qué fue, che?"
+      - "Hace una semana me bloquearon la tarjeta y nadie me explica por qué."
+    pt-BR:
+      - "Estou com o cartão bloqueado faz uma semana, por que foi?"
+      - "Faz uma semana que bloquearam o cartão e ninguém me diz o motivo."
+  - id: brs-035
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Mi tarjeta se bloqueó por poner mal el NIP?"
+      - "¿Se bloqueó la tarjeta porque me equivoqué de NIP?"
+    es-CO:
+      - "¿La tarjeta se bloqueó por poner mal la clave?"
+      - "¿Se bloqueó la tarjeta porque me equivoqué de clave?"
+    es-AR:
+      - "¿La tarjeta se bloqueó por poner mal el PIN?"
+      - "¿Se bloqueó la tarjeta porque le erré al PIN?"
+    pt-BR:
+      - "O meu cartão bloqueou por eu errar a senha?"
+      - "O cartão foi bloqueado porque errei a senha?"
+  - id: brs-036
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Por qué el banco me bloqueó la tarjeta sin preguntar?"
+      - "¿Por qué el banco bloqueó mi tarjeta sin consultarme?"
+    es-CO:
+      - "¿Por qué ustedes me bloquearon la tarjeta sin preguntarme?"
+      - "¿Por qué el banco me bloqueó la tarjeta sin llamarme?"
+    es-AR:
+      - "¿Por qué el banco me bloqueó la tarjeta sin preguntar, che?"
+      - "¿Por qué el banco me la bloqueó sin consultarme?"
+    pt-BR:
+      - "Por que o banco bloqueou o meu cartão sem perguntar?"
+      - "Por que o banco bloqueou o cartão sem me consultar?"
+  - id: brs-037
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me explican qué pasó con mi tarjeta? Aparece suspendida."
+      - "Mi tarjeta aparece suspendida, ¿me explican el motivo?"
+    es-CO:
+      - "¿Me explican qué pasó con la tarjeta? Aparece suspendida."
+      - "La tarjeta aparece suspendida, ¿me explican el motivo?"
+    es-AR:
+      - "¿Me explican qué pasó con la tarjeta? Figura suspendida."
+      - "La tarjeta figura suspendida, ¿me explican el motivo?"
+    pt-BR:
+      - "Podem me explicar o que houve com o cartão? Aparece suspenso."
+      - "O cartão aparece suspenso, podem explicar o motivo?"
+  - id: brs-038
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Por qué tengo bloqueado el plástico?"
+      - "¿Por qué me bloquearon el plástico?"
+    es-CO:
+      - "¿Por qué me aparece bloqueado el plástico?"
+      - "¿Por qué me bloquearon el plástico si no debo nada?"
+    es-AR:
+      - "¿Por qué tengo bloqueado el plástico, che?"
+      - "¿Por qué me lo bloquearon al plástico?"
+    pt-BR:
+      - "Por que o meu cartão físico está bloqueado?"
+      - "Por que bloquearam o meu cartão físico?"
+  - id: brs-039
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Por qué me congelaron la tarjeta?"
+      - "¿Por qué está congelada mi tarjeta?"
+    es-CO:
+      - "¿Por qué me congelaron la tarjeta sin avisar?"
+      - "¿Por qué me aparece congelada la tarjeta?"
+    es-AR:
+      - "¿Por qué me congelaron la tarjeta, che?"
+      - "¿Por qué figura congelada la tarjeta?"
+    pt-BR:
+      - "Por que travaram o meu cartão?"
+      - "Por que o meu cartão está travado?"
+  - id: brs-040
+    slots: {product_kind: card}
+    es-MX:
+      - "Me bloquearon la tarjeta, ¿me puede decir la razón?"
+      - "¿Me dice la razón por la que me bloquearon la tarjeta?"
+    es-CO:
+      - "Me bloquearon la tarjeta, ¿me colabora con la razón?"
+      - "¿Me regala la razón por la que me bloquearon la tarjeta?"
+    es-AR:
+      - "Me bloquearon la tarjeta, ¿me podés decir la razón?"
+      - "¿Me decís la razón por la que me bloquearon la tarjeta?"
+    pt-BR:
+      - "Bloquearam o meu cartão, pode me dizer a razão?"
+      - "Pode me dizer a razão de terem bloqueado o meu cartão?"

@@ -1,0 +1,562 @@
+intent: card_list
+groups:
+  - id: lst-001
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué tarjetas tengo registradas con el banco?"
+      - "¿Me dice cuáles tarjetas tengo registradas?"
+    es-CO:
+      - "¿Me regala cuáles tarjetas tengo registradas con ustedes?"
+      - "¿Me confirma qué tarjetas tengo inscritas?"
+    es-AR:
+      - "¿Me decís qué tarjetas tengo registradas en el banco?"
+      - "Fijate cuáles son las tarjetas que tengo registradas."
+    pt-BR:
+      - "Quais cartões eu tenho cadastrados no banco?"
+      - "Pode me dizer quais cartões estão cadastrados?"
+  - id: lst-002
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Cuántas tarjetas de crédito tengo con ustedes?"
+      - "¿Cuántas tarjetas de crédito están a mi nombre?"
+    es-CO:
+      - "¿Me regala cuántas tarjetas crédito tengo con el banco?"
+      - "¿Cuántas tarjetas crédito tengo a mi nombre?"
+    es-AR:
+      - "¿Me decís cuántas tarjetas de crédito tengo en el banco?"
+      - "¿Cuántas tarjetas de crédito figuran a mi nombre?"
+    pt-BR:
+      - "Quantos cartões de crédito eu tenho com vocês?"
+      - "Quantos cartões de crédito estão no meu nome?"
+  - id: lst-003
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Cuántas tarjetas de débito tengo?"
+      - "¿Qué tarjetas de débito tengo con el banco?"
+    es-CO:
+      - "¿Cuántas tarjetas débito tengo?"
+      - "¿Cuáles tarjetas débito tengo con ustedes?"
+    es-AR:
+      - "¿Cuántas tarjetas de débito tengo en total?"
+      - "¿Qué tarjetas de débito me dieron?"
+    pt-BR:
+      - "Quantos cartões de débito eu tenho?"
+      - "Quais são os meus cartões de débito?"
+  - id: lst-004
+    slots: {product_kind: card}
+    es-MX:
+      - "Muéstreme todas mis tarjetas."
+      - "Quiero ver todas las tarjetas que tengo."
+    es-CO:
+      - "Me muestra todas mis tarjetas, por favor."
+      - "Quisiera ver todas las tarjetas que tengo con el banco."
+    es-AR:
+      - "Mostrame todas mis tarjetas."
+      - "Quiero ver todas las tarjetas que tengo en el banco."
+    pt-BR:
+      - "Me mostra todos os meus cartões."
+      - "Quero ver todos os cartões que eu tenho."
+  - id: lst-005
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Tengo alguna tarjeta de crédito con ustedes?"
+      - "¿Tengo tarjeta de crédito en este banco?"
+    es-CO:
+      - "¿Será que tengo alguna tarjeta de crédito con el banco?"
+      - "¿Yo sí tengo tarjeta crédito con ustedes?"
+    es-AR:
+      - "¿Tengo alguna tarjeta de crédito en el banco?"
+      - "¿Tengo tarjeta de crédito con ustedes o no?"
+    pt-BR:
+      - "Eu tenho algum cartão de crédito com vocês?"
+      - "Tenho cartão de crédito neste banco?"
+  - id: lst-006
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Cuáles de mis tarjetas están activas?"
+      - "¿Qué tarjetas tengo activas en este momento?"
+    es-CO:
+      - "¿Me regala cuáles de mis tarjetas están activas ahorita?"
+      - "¿Qué tarjetas me aparecen activas?"
+    es-AR:
+      - "¿Cuáles de mis tarjetas están habilitadas?"
+      - "¿Qué tarjetas tengo habilitadas ahora?"
+    pt-BR:
+      - "Quais dos meus cartões estão ativos?"
+      - "Quais cartões eu tenho ativos agora?"
+  - id: lst-007
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero ver un listado de mis plásticos."
+      - "¿Qué plásticos tengo con ustedes?"
+    es-CO:
+      - "¿Me regala el listado de los plásticos que tengo?"
+      - "¿Cuáles plásticos tengo con el banco?"
+    es-AR:
+      - "Pasame la lista de mis plásticos."
+      - "¿Qué plásticos tengo en el banco?"
+    pt-BR:
+      - "Quero ver a lista dos meus cartões de plástico."
+      - "Quais cartões físicos eu tenho?"
+  - id: lst-008
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Cuántas tarjetas tengo en total?"
+      - "¿En total cuántas tarjetas tengo con el banco?"
+    es-CO:
+      - "¿Me dice cuántas tarjetas tengo en total con ustedes?"
+      - "¿En total cuántas tarjetas me aparecen?"
+    es-AR:
+      - "¿Me decís cuántas tarjetas tengo en total?"
+      - "¿En total cuántas tarjetas tengo a mi nombre?"
+    pt-BR:
+      - "Quantos cartões eu tenho no total?"
+      - "No total, quantos cartões tenho com vocês?"
+  - id: lst-009
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Qué tarjetas de crédito tengo vigentes?"
+      - "¿Cuáles son mis tarjetas de crédito vigentes?"
+    es-CO:
+      - "¿Me regala cuáles tarjetas crédito tengo vigentes?"
+      - "¿Cuáles tarjetas de crédito tengo al día?"
+    es-AR:
+      - "¿Qué tarjetas de crédito tengo vigentes, me decís?"
+      - "¿Cuáles son las tarjetas de crédito que siguen vigentes?"
+    pt-BR:
+      - "Quais cartões de crédito eu tenho em vigor?"
+      - "Quais são os meus cartões de crédito válidos?"
+  - id: lst-010
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me recuerda qué tarjetas tengo? No me acuerdo cuál es cuál."
+      - "Ya no sé qué tarjetas tengo, ¿me ayuda?"
+    es-CO:
+      - "Qué pena, ¿me recuerda qué tarjetas tengo? Ya se me olvidó."
+      - "No me acuerdo qué tarjetas tengo, ¿me colabora?"
+    es-AR:
+      - "¿Me recordás qué tarjetas tengo? No me acuerdo."
+      - "Ya no sé qué tarjetas tengo, ¿me ayudás?"
+    pt-BR:
+      - "Pode me lembrar quais cartões eu tenho? Não lembro."
+      - "Não sei mais quais cartões tenho, me ajuda?"
+  - id: lst-011
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Tengo tarjeta de débito con ustedes?"
+      - "¿Me dieron tarjeta de débito o no?"
+    es-CO:
+      - "¿Tengo tarjeta débito con el banco?"
+      - "¿Será que tengo una tarjeta débito con ustedes?"
+    es-AR:
+      - "¿Tengo tarjeta de débito en el banco?"
+      - "¿Me dieron una tarjeta de débito?"
+    pt-BR:
+      - "Eu tenho cartão de débito com vocês?"
+      - "Recebi algum cartão de débito do banco?"
+  - id: lst-012
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué tarjetas tengo y cuánto debo en cada una?"
+      - "Dígame cuáles tarjetas tengo y luego el saldo de cada una."
+    es-CO:
+      - "¿Me regala cuáles tarjetas tengo y cuánto debo en cada una?"
+      - "Dígame qué tarjetas tengo y después el saldo."
+    es-AR:
+      - "¿Qué tarjetas tengo y cuánto debo en cada una, me decís?"
+      - "Decime qué tarjetas tengo y después el saldo de cada una."
+    pt-BR:
+      - "Quais cartões eu tenho e quanto devo em cada um?"
+      - "Me diz quais cartões tenho e depois o saldo de cada um."
+  - id: lst-013
+    slots: {product_kind: card}
+    es-MX:
+      - "Gracias. ¿Y qué otras tarjetas tengo?"
+      - "Perfecto. Ahora dígame qué otras tarjetas tengo."
+    es-CO:
+      - "Listo, muchas gracias. ¿Y qué otras tarjetas tengo?"
+      - "Bueno. ¿Y cuáles otras tarjetas tengo con ustedes?"
+    es-AR:
+      - "Genial, gracias. ¿Y qué otras tarjetas tengo?"
+      - "Joya. ¿Y cuáles otras tarjetas tengo?"
+    pt-BR:
+      - "Obrigado. E quais outros cartões eu tenho?"
+      - "Beleza. E que outros cartões tenho?"
+  - id: lst-014
+    slots: {product_kind: card}
+    es-MX:
+      - "Buenas noches, ¿qué tarjetas tengo a mi nombre?"
+      - "Buen día, quiero saber cuántas tarjetas tengo."
+    es-CO:
+      - "Buenas noches, ¿me regala qué tarjetas tengo a mi nombre?"
+      - "Buen día, quisiera saber cuántas tarjetas tengo."
+    es-AR:
+      - "Buenas noches, ¿qué tarjetas tengo a mi nombre, me decís?"
+      - "Buen día, quería saber cuántas tarjetas tengo."
+    pt-BR:
+      - "Boa noite, quais cartões estão no meu nome?"
+      - "Bom dia, quero saber quantos cartões eu tenho."
+  - id: lst-015
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Cuántas tarjetas adicionales tengo?"
+      - "¿Qué tarjetas adicionales tengo dadas de alta?"
+    es-CO:
+      - "¿Cuántas tarjetas amparadas tengo?"
+      - "¿Qué tarjetas amparadas tengo con ustedes?"
+    es-AR:
+      - "¿Cuántas extensiones de tarjeta tengo?"
+      - "¿Qué extensiones de tarjeta tengo?"
+    pt-BR:
+      - "Quantos cartões adicionais eu tenho?"
+      - "Quais cartões adicionais estão ativos na minha conta?"
+  - id: lst-016
+    slots: {product_kind: card}
+    es-MX:
+      - "Enumere mis tarjetas, por favor."
+      - "¿Me puede enlistar mis tarjetas?"
+    es-CO:
+      - "Me enumera mis tarjetas, por favor."
+      - "¿Me hace una lista de mis tarjetas?"
+    es-AR:
+      - "Enumerame mis tarjetas, porfa."
+      - "¿Me hacés una lista de mis tarjetas?"
+    pt-BR:
+      - "Lista os meus cartões, por favor."
+      - "Pode fazer uma lista dos meus cartões?"
+  - id: lst-017
+    slots: {product_kind: card}
+    es-MX:
+      - "Deme la lista de las tarjetas que tengo activas."
+      - "Necesito la lista de tarjetas activas a mi nombre."
+    es-CO:
+      - "Me regala el listado de las tarjetas que tengo activas."
+      - "Necesito el listado de tarjetas activas a mi nombre."
+    es-AR:
+      - "Dame la lista de las tarjetas que tengo activas."
+      - "Necesito la lista de tarjetas habilitadas a mi nombre."
+    pt-BR:
+      - "Me dá a lista dos cartões que tenho ativos."
+      - "Preciso da lista de cartões ativos no meu nome."
+  - id: lst-018
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Cuáles son mis tarjetas de crédito?"
+      - "Muéstreme mis tarjetas de crédito."
+    es-CO:
+      - "¿Me regala cuáles son mis tarjetas crédito?"
+      - "Me muestra las tarjetas crédito que tengo."
+    es-AR:
+      - "¿Cuáles son mis tarjetas de crédito, me decís?"
+      - "Mostrame las tarjetas de crédito que tengo."
+    pt-BR:
+      - "Quais são os meus cartões de crédito?"
+      - "Me mostra os cartões de crédito que eu tenho."
+  - id: lst-019
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Tengo más de una tarjeta con ustedes?"
+      - "¿Nada más tengo una tarjeta o tengo más?"
+    es-CO:
+      - "¿Será que tengo más de una tarjeta con ustedes?"
+      - "¿Solo tengo una tarjeta o tengo varias?"
+    es-AR:
+      - "¿Tengo más de una tarjeta en el banco?"
+      - "¿Tengo una sola tarjeta o tengo más?"
+    pt-BR:
+      - "Eu tenho mais de um cartão com vocês?"
+      - "Tenho só um cartão ou tenho mais?"
+  - id: lst-020
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "No me acuerdo si tengo tarjeta de crédito con ustedes."
+      - "No recuerdo si me dieron tarjeta de crédito, ¿me confirma?"
+    es-CO:
+      - "Qué pena, no me acuerdo si tengo tarjeta crédito con ustedes."
+      - "No recuerdo si me aprobaron tarjeta de crédito, ¿me confirma?"
+    es-AR:
+      - "No me acuerdo si tengo tarjeta de crédito con ustedes, ¿me fijás?"
+      - "No sé si me dieron la tarjeta de crédito, ¿me confirmás?"
+    pt-BR:
+      - "Não lembro se tenho cartão de crédito com vocês."
+      - "Não sei se me deram cartão de crédito, pode confirmar?"
+  - id: lst-021
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué tarjetas tengo y cuáles están bloqueadas?"
+      - "Dígame mis tarjetas y si alguna está bloqueada."
+    es-CO:
+      - "¿Me regala qué tarjetas tengo y cuáles están bloqueadas?"
+      - "Dígame mis tarjetas y cuál está bloqueada."
+    es-AR:
+      - "¿Qué tarjetas tengo y cuáles están bloqueadas, me decís?"
+      - "Decime mis tarjetas y si alguna está bloqueada."
+    pt-BR:
+      - "Quais cartões eu tenho e quais estão bloqueados?"
+      - "Me fala os meus cartões e se algum está bloqueado."
+  - id: lst-022
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Cuáles tarjetas están a mi nombre?"
+      - "¿Qué tarjetas aparecen a mi nombre?"
+    es-CO:
+      - "¿Cuáles tarjetas aparecen a mi nombre?"
+      - "¿Qué tarjetas hay a mi nombre?"
+    es-AR:
+      - "¿Cuáles tarjetas figuran a mi nombre?"
+      - "¿Qué tarjetas tengo yo a mi nombre?"
+    pt-BR:
+      - "Quais cartões aparecem no meu nome?"
+      - "Que cartões existem no meu nome?"
+  - id: lst-023
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Cuáles de mis tarjetas están bloqueadas?"
+      - "¿Qué tarjetas mías aparecen como bloqueadas?"
+    es-CO:
+      - "¿Me dice cuáles de mis tarjetas están bloqueadas?"
+      - "¿Qué tarjetas mías salen bloqueadas?"
+    es-AR:
+      - "¿Cuáles de mis tarjetas están bloqueadas, me fijás?"
+      - "¿Qué tarjetas mías figuran como bloqueadas?"
+    pt-BR:
+      - "Quais dos meus cartões estão bloqueados?"
+      - "Que cartões meus aparecem como bloqueados?"
+  - id: lst-024
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué tipo de tarjetas tengo?"
+      - "¿De qué tipo son las tarjetas que tengo?"
+    es-CO:
+      - "¿Qué tipo de tarjetas tengo con ustedes?"
+      - "¿De qué tipo son mis tarjetas?"
+    es-AR:
+      - "¿Me decís qué tipo de tarjetas tengo?"
+      - "¿De qué tipo son las tarjetas que tengo en el banco?"
+    pt-BR:
+      - "Que tipo de cartões eu tenho?"
+      - "De que tipo são os meus cartões?"
+  - id: lst-025
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero ver los últimos dígitos de mis tarjetas."
+      - "¿Con qué números terminan mis tarjetas?"
+    es-CO:
+      - "Quisiera ver los últimos dígitos de todas mis tarjetas."
+      - "¿En qué números terminan mis tarjetas?"
+    es-AR:
+      - "Quiero ver los últimos números de mis tarjetas."
+      - "¿En qué terminan mis tarjetas?"
+    pt-BR:
+      - "Quero ver os últimos dígitos dos meus cartões."
+      - "Com que números terminam os meus cartões?"
+  - id: lst-026
+    slots: {product_kind: card}
+    es-MX:
+      - "Tengo varias tarjetas y no sé cuáles son, ¿me ayuda?"
+      - "Creo que tengo varias tarjetas, ¿cuáles son?"
+    es-CO:
+      - "Tengo varias tarjetas y no sé cuáles son, ¿me colabora?"
+      - "Creo que tengo varias tarjetas, ¿cuáles me aparecen?"
+    es-AR:
+      - "Tengo varias tarjetas y no sé cuáles son, ¿me ayudás?"
+      - "Me parece que tengo varias tarjetas, ¿cuáles son?"
+    pt-BR:
+      - "Tenho vários cartões e não sei quais são, me ajuda?"
+      - "Acho que tenho vários cartões, quais são eles?"
+  - id: lst-027
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me confirma qué tarjetas tengo antes de seguir?"
+      - "Antes de nada, ¿qué tarjetas tengo?"
+    es-CO:
+      - "¿Me confirma cuáles tarjetas tengo antes de continuar?"
+      - "Antes que nada, ¿cuáles tarjetas tengo?"
+    es-AR:
+      - "¿Me confirmás qué tarjetas tengo antes de seguir?"
+      - "Antes que nada, ¿qué tarjetas tengo?"
+    pt-BR:
+      - "Pode confirmar quais cartões tenho antes de continuar?"
+      - "Antes de tudo, quais cartões eu tenho?"
+  - id: lst-028
+    slots: {product_kind: credit_card}
+    es-MX:
+      - "¿Con cuántas tarjetas de crédito cuento?"
+      - "¿Con cuántas tarjetas de crédito cuento en este banco?"
+    es-CO:
+      - "¿Con cuántas tarjetas crédito cuento con ustedes?"
+      - "¿Me regala cuántas tarjetas de crédito tengo vigentes?"
+    es-AR:
+      - "¿Con cuántas tarjetas de crédito cuento, me decís?"
+      - "¿Cuántas tarjetas de crédito tengo dadas de alta?"
+    pt-BR:
+      - "Com quantos cartões de crédito eu conto?"
+      - "Quantos cartões de crédito tenho ativos com vocês?"
+  - id: lst-029
+    slots: {product_kind: debit_card}
+    es-MX:
+      - "¿Qué tarjetas de débito tengo activas?"
+      - "¿Cuáles tarjetas de débito siguen activas?"
+    es-CO:
+      - "¿Qué tarjetas débito tengo activas?"
+      - "¿Cuáles tarjetas débito me siguen funcionando?"
+    es-AR:
+      - "¿Qué tarjetas de débito tengo habilitadas?"
+      - "¿Cuáles tarjetas de débito siguen andando?"
+    pt-BR:
+      - "Quais cartões de débito estão ativos?"
+      - "Quais cartões de débito ainda funcionam?"
+  - id: lst-030
+    slots: {product_kind: card}
+    es-MX:
+      - "Quiero ver todas mis tarjetas en una lista."
+      - "Póngame todas mis tarjetas en una lista."
+    es-CO:
+      - "Quisiera ver todas mis tarjetas en un listado."
+      - "Me pone todas mis tarjetas en una lista, por favor."
+    es-AR:
+      - "Quiero ver todas mis tarjetas en una lista, porfa."
+      - "Poneme todas mis tarjetas en una lista."
+    pt-BR:
+      - "Quero ver todos os meus cartões numa lista."
+      - "Coloca todos os meus cartões numa lista."
+  - id: lst-031
+    slots: {product_kind: card}
+    es-MX:
+      - "mis tarjetas"
+      - "lista de tarjetas porfa"
+    es-CO:
+      - "mis tarjetas por favor"
+      - "listado de tarjetas"
+    es-AR:
+      - "mis tarjetas porfa"
+      - "lista de mis tarjetas"
+    pt-BR:
+      - "meus cartões"
+      - "lista de cartões por favor"
+  - id: lst-032
+    slots: {product_kind: card}
+    es-MX:
+      - "oye q tarjetas tengo activas"
+      - "cuantas tarjetas tengo ahorita"
+    es-CO:
+      - "cuales tarjetas tengo"
+      - "q tarjetas me aparecen"
+    es-AR:
+      - "che q tarjetas tengo"
+      - "cuantas tarjetas tengo"
+    pt-BR:
+      - "quais cartoes eu tenho"
+      - "qnts cartoes tenho"
+  - id: lst-033
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué tarjetas me han dado ustedes?"
+      - "¿Qué tarjetas me ha emitido el banco?"
+    es-CO:
+      - "¿Cuáles tarjetas me han entregado ustedes?"
+      - "¿Qué tarjetas me ha expedido el banco?"
+    es-AR:
+      - "¿Qué tarjetas me dieron ustedes?"
+      - "¿Qué tarjetas me emitió el banco?"
+    pt-BR:
+      - "Quais cartões vocês já me deram?"
+      - "Quais cartões o banco emitiu para mim?"
+  - id: lst-034
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me podría decir cuántas tarjetas tengo y de qué tipo?"
+      - "Quiero saber cuántas tarjetas tengo y si son de crédito o débito."
+    es-CO:
+      - "¿Me regala cuántas tarjetas tengo y de qué tipo son?"
+      - "Quiero saber cuántas tarjetas tengo y si son crédito o débito."
+    es-AR:
+      - "¿Me podrías decir cuántas tarjetas tengo y de qué tipo?"
+      - "Quiero saber cuántas tarjetas tengo y si son de crédito o de débito."
+    pt-BR:
+      - "Pode me dizer quantos cartões tenho e de que tipo?"
+      - "Quero saber quantos cartões tenho e se são de crédito ou débito."
+  - id: lst-035
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué tarjetas tengo para pagar en línea?"
+      - "¿Cuáles tarjetas tengo que pueda usar en internet?"
+    es-CO:
+      - "¿Qué tarjetas tengo para comprar por internet?"
+      - "¿Cuáles tarjetas tengo que sirvan para compras en línea?"
+    es-AR:
+      - "¿Qué tarjetas tengo para comprar online?"
+      - "¿Cuáles tarjetas tengo que pueda usar en Mercado Libre?"
+    pt-BR:
+      - "Quais cartões eu tenho para comprar online?"
+      - "Quais cartões tenho que posso usar na internet?"
+  - id: lst-036
+    slots: {product_kind: card}
+    es-MX:
+      - "Hola, necesito saber cuáles son mis tarjetas."
+      - "Hola, ¿me ayuda a ver qué tarjetas tengo?"
+    es-CO:
+      - "Buenas, necesito saber cuáles son mis tarjetas."
+      - "Buenas, ¿me colabora viendo qué tarjetas tengo?"
+    es-AR:
+      - "Hola, necesito saber cuáles son mis tarjetas, porfa."
+      - "Hola, ¿me ayudás a ver qué tarjetas tengo?"
+    pt-BR:
+      - "Oi, preciso saber quais são os meus cartões."
+      - "Olá, me ajuda a ver quais cartões eu tenho?"
+  - id: lst-037
+    slots: {product_kind: card}
+    es-MX:
+      - "Revise qué tarjetas tengo a mi nombre, por favor."
+      - "Revíseme cuántas tarjetas tengo."
+    es-CO:
+      - "Me revisa qué tarjetas tengo a mi nombre, por favor."
+      - "Me revisa cuántas tarjetas tengo."
+    es-AR:
+      - "Revisá qué tarjetas tengo a mi nombre."
+      - "Fijate cuántas tarjetas tengo."
+    pt-BR:
+      - "Verifica quais cartões estão no meu nome, por favor."
+      - "Confere quantos cartões eu tenho."
+  - id: lst-038
+    slots: {product_kind: card}
+    es-MX:
+      - "Mi esposa dice que tengo dos tarjetas, ¿cuáles son?"
+      - "Me dijeron que tengo otra tarjeta, ¿qué tarjetas tengo?"
+    es-CO:
+      - "Mi señora dice que tengo dos tarjetas, ¿cuáles son?"
+      - "Me dijeron que tengo otra tarjeta, ¿cuáles tarjetas tengo?"
+    es-AR:
+      - "Mi mujer dice que tengo dos tarjetas, ¿cuáles son?"
+      - "Me dijeron que tengo otra tarjeta, ¿qué tarjetas tengo, me decís?"
+    pt-BR:
+      - "Minha esposa diz que tenho dois cartões, quais são?"
+      - "Me disseram que tenho outro cartão, quais cartões eu tenho?"
+  - id: lst-039
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Qué tarjetas tengo? Quiero saber cuál uso para el viaje."
+      - "Para mi viaje necesito saber qué tarjetas tengo."
+    es-CO:
+      - "¿Qué tarjetas tengo? Quiero saber cuál llevo al viaje."
+      - "Para el viaje necesito saber cuáles tarjetas tengo."
+    es-AR:
+      - "¿Qué tarjetas tengo? Quiero ver cuál me llevo de viaje."
+      - "Para el viaje necesito saber qué tarjetas tengo, porfa."
+    pt-BR:
+      - "Quais cartões eu tenho? Quero ver qual levo na viagem."
+      - "Para a viagem preciso saber quais cartões tenho."
+  - id: lst-040
+    slots: {product_kind: card}
+    es-MX:
+      - "¿Me lee las tarjetas que tengo con el banco?"
+      - "Dígame una por una las tarjetas que tengo."
+    es-CO:
+      - "¿Me lee las tarjetas que tengo con ustedes?"
+      - "Me dice una por una las tarjetas que tengo."
+    es-AR:
+      - "¿Me leés las tarjetas que tengo con el banco?"
+      - "Decime una por una las tarjetas que tengo."
+    pt-BR:
+      - "Pode ler os cartões que eu tenho com o banco?"
+      - "Me fala um por um os cartões que eu tenho."
