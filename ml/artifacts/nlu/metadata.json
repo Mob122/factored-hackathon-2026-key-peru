@@ -1,0 +1,15 @@
+{
+ "model_type": "tfidf_word1-2_char2-5_logistic_regression",
+ "C": 10.0,
+ "model_sha256": "7d123688fe5996cf7e466ec9db982a3741a4b1ebb72cad7151577abd8a1d7453",
+ "sklearn_version": "1.9.1",
+ "intents_version": "intents-1.0",
+ "dataset_version": "nlu-utt-0.1",
+ "corpus_sha256": "3e0ea818824bbc6cc1c9319dabea6c185576f567af664933b233292aa05de2f9",
+ "trained_on": "train split only",
+ "n_train": 2564,
+ "git_commit": "50d833bc8e94a34f4f9ed4c7769d519d512175bb",
+ "data_provenance": "team-generated, LLM-assisted, not yet human-reviewed",
+ "cv_winner": "e5_lr",
+ "deployed_reason": "TF-IDF + LR deployed regardless of the CV winner, for size and latency (team decision before test scoring)"
+}

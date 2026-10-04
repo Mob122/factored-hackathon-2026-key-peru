@@ -1,0 +1,29 @@
+{
+ "method": "split_conformal_aps_nonrandomized",
+ "alpha": 0.1,
+ "threshold": 0.9901633306565674,
+ "max_set": 2,
+ "classes": [
+  "balance_inquiry",
+  "card_list",
+  "card_status",
+  "transaction_list",
+  "transaction_detail",
+  "card_block",
+  "charge_dispute",
+  "block_reason",
+  "card_unblock",
+  "human_request",
+  "conversation_end",
+  "out_of_scope"
+ ],
+ "n_calibration": 776,
+ "mondrian_by_language": null,
+ "pre_registered": true,
+ "alternatives": {
+  "lac": {
+   "threshold": 0.743581825660147,
+   "status": "exploratory, not pre-registered; adopting it needs an eval-plan amendment before held-out A"
+  }
+ }
+}

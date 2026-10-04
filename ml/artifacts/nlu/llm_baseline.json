@@ -1,0 +1,7 @@
+{
+ "model": "gpt-4o-mini",
+ "split": "test",
+ "prompt_sha256": "2570605a124cecb286556556605018aef1c1654b70d5430607d605bcd46decca",
+ "status": "not run",
+ "reason": "OPENAI_API_KEY not set"
+}
