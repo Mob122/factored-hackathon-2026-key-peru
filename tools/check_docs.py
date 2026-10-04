@@ -19,7 +19,6 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Paths cited in the docs for artifacts that are planned but do not exist yet.
 NOT_YET = {
     "docs/data_card.md",
-    "docs/model_card_intent.md",
     "docs/writeup.md",
     "backend/.env",
     "ml/tests/fixtures/update",
@@ -29,14 +28,14 @@ NOT_YET = {
 
 # Current contract and document versions.
 CURRENT = {
-    "cards-synthetic": "0.4",
-    "sm": "0.3",
+    "cards-synthetic": "0.6",
+    "sm": "0.4",
     "gold": "0.2",
     "fresh": "0.2",
     "audit": "0.2",
     "eval-report": "0.2",
-    "eval-plan": "0.2",
-    "golden": "0.4",
+    "eval-plan": "0.3",
+    "golden": "0.5",
     "intents": "1.0",
     "ops": "0.1",
 }
@@ -71,6 +70,9 @@ def headings(body):
 
 
 def main():
+    # Windows consoles default to cp1252, which cannot print some characters in the docs.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     os.chdir(ROOT)
     text = load_docs()
     problems = []

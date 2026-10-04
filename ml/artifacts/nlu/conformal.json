@@ -20,7 +20,7 @@
  "n_calibration": 832,
  "mondrian_by_language": null,
  "status": "adopted for the deployed model by amendment eval-plan-0.3 (decided after the APS result, before held-out A)",
- "safety_override": "card_block is added to the set when rules.block_signal fires (predict.apply_block_override)",
+ "safety_overrides": "card_block and charge_dispute are added to the set when rules.block_signal or rules.dispute_signal fires (predict.apply_overrides)",
  "alternatives": {
   "aps": {
    "threshold": 0.988877817839221,

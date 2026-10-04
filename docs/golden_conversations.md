@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Version | `golden-0.4`, 2026-09-29 |
-| Policy | `docs/policy_cards.md` `cards-synthetic-0.4` (SYNTHETIC) |
-| State machine | `docs/contracts/state_machine.md` `sm-0.3` |
+| Version | `golden-0.5`, 2026-10-04 |
+| Policy | `docs/policy_cards.md` `cards-synthetic-0.6` (SYNTHETIC) |
+| State machine | `docs/contracts/state_machine.md` `sm-0.4` |
 | Intents | `docs/intents.md` `intents-1.0` |
 | Personas | `docs/findings/day2/personas.md` |
 | Purpose | Expected behavior for 12 end-to-end dialogues. They are the reference for the grader, the scenario set and the demo. They are **scripted, not transcripts**: nothing is built yet. |
@@ -25,6 +25,12 @@ classified as `conversation_end` (T-11); policy `cards-synthetic-0.4`, state mac
 flag F-29 closed by the gold table `balance_products` (`gold-0.2`). All 12 customers have
 `customer_status` `Active`, so POL-AUTH-09 does not change any dialogue; its behavior is covered
 by the held-out template in `docs/eval_plan.md` 3.2.
+
+Changes in 0.5: policy `cards-synthetic-0.6`, state machine `sm-0.4`; case files cite
+`policy_version` `cards-synthetic-0.6`. Dialogue 4 turn 1 (an out-of-scope singleton) cites
+POL-ESC-13, and its handoff offer is the template POL-HND-08 (wording unchanged). No dialogue
+blocks a card after theft or fraud wording (dialogue 2 reports a loss), so POL-ACT-12 changes
+none of them.
 
 ## How to read this document
 
@@ -375,12 +381,12 @@ Customer: "Olá, quero pedir um empréstimo pessoal. Quanto eu consigo pegar?"
 
 Pipeline: conformal set `{out_of_scope}`. No tool calls.
 
-Rules: POL-GEN-04, POL-ANS-05, POL-ANS-14.
+Rules: POL-GEN-04, POL-ANS-05, POL-ANS-14, POL-ESC-13.
 
 Assistant:
 1. "Não consigo ajudar com empréstimos." `[policy:POL-ANS-14]` `[policy:POL-GEN-04]`
 2. "Posso consultar seus cartões, o status de um cartão e suas transações, explicar uma transação, bloquear um cartão e informar o saldo de cartões de crédito e contas poupança." `[policy:POL-ANS-05]`
-3. "Quer que eu transfira você para um atendente?" `[policy:POL-GEN-04]`
+3. "Quer que eu transfira você para um atendente?" `[policy:POL-ESC-13]` `[template:POL-HND-08]`
 
 **Turn 2** · 10:00:40 · `IDLE → ANSWERING → IDLE` (T-06, T-18)
 
@@ -489,7 +495,7 @@ Case file (input to c5, `case_id` from its result):
 {
   "case_id": "CASE-D5-0001",
   "created_at": "2026-06-18T10:01:06",
-  "policy_version": "cards-synthetic-0.4",
+  "policy_version": "cards-synthetic-0.6",
   "reason_rule_ids": ["POL-ESC-01"],
   "language": "es",
   "customer_id": "CLI-AYAHYQEG16BZ",
@@ -596,7 +602,7 @@ Case file (as filed by c4, then updated by T-38):
 {
   "case_id": "CASE-D6-0001",
   "created_at": "2026-06-18T10:00:12",
-  "policy_version": "cards-synthetic-0.4",
+  "policy_version": "cards-synthetic-0.6",
   "reason_rule_ids": ["POL-ESC-02", "POL-ESC-03"],
   "language": "pt",
   "customer_id": "CLI-AN7KXGR09TB2",
@@ -712,7 +718,7 @@ value is stored nowhere; the audit log keeps only a keyed hash that the security
 {
   "case_id": "CASE-D7-0001",
   "created_at": "2026-06-18T10:00:52",
-  "policy_version": "cards-synthetic-0.4",
+  "policy_version": "cards-synthetic-0.6",
   "reason_rule_ids": ["POL-ESC-10", "POL-AUTH-05"],
   "language": "es",
   "customer_id": "CLI-GHRMPXT32BKK",
@@ -824,7 +830,7 @@ Case file (input to c3):
 {
   "case_id": "CASE-D8-0001",
   "created_at": "2026-06-18T10:00:42",
-  "policy_version": "cards-synthetic-0.4",
+  "policy_version": "cards-synthetic-0.6",
   "reason_rule_ids": ["POL-ESC-03", "POL-ESC-08"],
   "language": "es",
   "customer_id": "CLI-EHVV6YJ6SL5W",
@@ -1097,7 +1103,7 @@ Case file (input to c8):
 {
   "case_id": "CASE-D10-0001",
   "created_at": "2026-06-18T10:01:40",
-  "policy_version": "cards-synthetic-0.4",
+  "policy_version": "cards-synthetic-0.6",
   "reason_rule_ids": ["POL-ACT-05", "POL-ESC-07"],
   "language": "pt",
   "customer_id": "CLI-JAS4V4U7H60H",

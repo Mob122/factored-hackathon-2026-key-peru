@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Contract version | `sm-0.3` |
-| Date | 2026-09-29 |
-| Policy | `docs/policy_cards.md`, version `cards-synthetic-0.4` (SYNTHETIC) |
+| Contract version | `sm-0.4` |
+| Date | 2026-10-04 |
+| Policy | `docs/policy_cards.md`, version `cards-synthetic-0.6` (SYNTHETIC) |
 | Intents | `docs/intents.md` (`intents-1.0`) |
 | Owners | Aldair (specification) · Martín (implementation in the orchestrator and tool gateway) |
 | Tools | the contracts in `docs/proposal.md` section 8 (v3.1), including `list_balance_products` and `get_balance` |
@@ -16,6 +16,8 @@ G-05; new T-38 to T-50. Existing transition IDs keep their meaning or are marked
 Changes in 0.3: final intent names from `docs/intents.md` (the provisional names are gone);
 balance tools approved; `authenticate` returns `customer_status`; changed T-01, T-10, T-11,
 G-02; new T-51 (POL-AUTH-09) and INV-14.
+
+Changes in 0.4: policy `cards-synthetic-0.6`. T-10 cites POL-ESC-13: an out-of-scope singleton gets the capability list and the handoff offer POL-HND-08. T-34 cites POL-ACT-12: after a verified block whose request carried theft or fraud wording, POL-ACT-13 follows POL-ACT-11. The classifier's conformal set can include `card_block` or `charge_dispute` added by its safety overrides (POL-ESC-06); no transition or state changes for that.
 
 The state machine is deterministic code in the orchestrator. The LLM never chooses a state or
 a transition and never calls a tool directly. It receives verified facts and a decision, and
@@ -146,7 +148,7 @@ eligible product (POL-ANS-07).
 | T-07 | `IDLE` | *(changed)* single intent `card_block`, card resolved | `ACTION_PRECHECK` | | POL-ACT-01, POL-ANS-07 |
 | T-08 | `IDLE` | *(changed)* single intent `block_reason` with card resolved; or `card_unblock`, `human_request` | `ANSWERING` with `then_handoff` (`block_reason`), else `HANDOFF` | For `block_reason` the status is read and stated first, then T-20. | POL-ESC-02, 03, 09, POL-ANS-07 |
 | T-09 | `IDLE` | *(changed)* single intent `charge_dispute`, card resolved | `ANSWERING` with `dispute` | Search the card's transactions with the customer's details (or the last 30 days if none given). | POL-ESC-01, POL-ANS-09, 12 |
-| T-10 | `IDLE` | *(changed)* single intent `out_of_scope`, or an intent whose `product_kind` slot names a product the intent does not serve (`docs/intents.md` section 2) | `IDLE` | Say what the assistant can do and offer a transfer. If the customer accepts, G-03. | POL-GEN-04, POL-ANS-05, 14 |
+| T-10 | `IDLE` | *(changed)* single intent `out_of_scope`, or an intent whose `product_kind` slot names a product the intent does not serve (`docs/intents.md` section 2) | `IDLE` | Say what the assistant can do and offer a transfer with POL-HND-08, never a plain refusal. If the customer accepts, G-03. | POL-GEN-04, POL-ANS-05, 14, POL-ESC-13 |
 | T-11 | `IDLE` | *(changed)* single intent `conversation_end` | `ENDED` | Closing reply, no tool. | POL-GEN-01 |
 | T-12 | `CLARIFY_INTENT` | reply resolves to a single intent | `IDLE` routing (T-05 to T-10, T-39, T-42) | The clarified intent is routed in the same turn. `clarify_turns` += 1. | POL-ESC-06 |
 | T-13 | `CLARIFY_INTENT` | still ambiguous and `clarify_turns` < `MAX_CLARIFY_TURNS` | `CLARIFY_INTENT` | Ask again. | POL-ESC-06 |
@@ -170,7 +172,7 @@ eligible product (POL-ANS-07).
 | T-31 | `STEP_UP` | *(changed)* customer cancels or changes the subject | `IDLE`, or `HANDOFF` if `then_handoff` | Pending action cleared. A new request is re-routed from `IDLE` in the same turn. | POL-ACT-03 |
 | T-32 | `AWAIT_CONFIRMATION` | clear yes for the named card, token valid, from a later customer turn than the prompt | `EXECUTING` | | POL-ACT-02, 04 |
 | T-33 | `AWAIT_CONFIRMATION` | *(changed)* no, an ambiguous answer, another last 4, or an expired token | `IDLE`, or `HANDOFF` if `then_handoff` | Pending action and token cleared. Cancellation confirmed. | POL-ACT-03 |
-| T-34 | `EXECUTING` | *(changed)* pre-read `Active` → `block_card` → verification read returns `Blocked` | `IDLE`, or `HANDOFF` if `then_handoff` | Reply POL-ACT-11 (the block result is always told before any transfer). Action recorded `executed: true, verified: true`. | POL-ACT-05, 06, 09, 11 |
+| T-34 | `EXECUTING` | *(changed)* pre-read `Active` → `block_card` → verification read returns `Blocked` | `IDLE`, or `HANDOFF` if `then_handoff` | Reply POL-ACT-11 (the block result is always told before any transfer). If the message that started the block request carried theft or fraud wording (classifier signals kept with the pending action), POL-ACT-13 follows; the next message is classified in `IDLE` as usual. Action recorded `executed: true, verified: true`. | POL-ACT-05, 06, 09, 11, 12 |
 | T-35 | `EXECUTING` | *(changed)* `block_card` errors or times out, the verification read is not `Blocked`, or the read fails after retries | `HANDOFF` (priority `urgent`) | Action recorded with `executed` `true`/`false`/`unknown` and `verified: false`. Reply POL-ACT-10 once `open_handoff` returns. | POL-ACT-05, 06, 09, 10, POL-ESC-07, POL-REL-01, 02, POL-HND-15 |
 | T-36 | `HANDOFF` | `open_handoff` returns a `case_id` | `HANDED_OFF` | Reason in plain words + POL-HND-03 (or POL-ACT-10 for T-35). | POL-HND-01, 03, 10 to 15 |
 | T-37 | `HANDOFF` | `open_handoff` fails after retries | `HANDED_OFF` (fallback flag) | POL-HND-05, case file written to the fallback queue, no case ID given. | POL-HND-02, 05, POL-REL-02, 03 |
