@@ -299,7 +299,10 @@ def cross_split_leaks(df: pl.DataFrame) -> dict[str, int]:
 # Outputs --------------------------------------------------------------------
 
 
-def to_frame(rows: list[dict], split_of: dict[str, str]) -> pl.DataFrame:
+def to_frame(
+    rows: list[dict], split_of: dict[str, str], component: dict[str, str]
+) -> pl.DataFrame:
+    """One row per utterance; `leak_group` is the merged component used for CV folds."""
     records = []
     for r in rows:
         rec = {k: r[k] for k in ("utterance_id", "seed_group_id", "group_kind", "text")}
@@ -309,6 +312,7 @@ def to_frame(rows: list[dict], split_of: dict[str, str]) -> pl.DataFrame:
             intent=r["intent"],
             **{f"slot_{s}": r["slots"].get(s) for s in SLOTS},
             split=split_of[r["seed_group_id"]],
+            leak_group=component[r["seed_group_id"]],
             is_seed=r["is_seed"],
             origin=ORIGIN,
             authoring=AUTHORING,
@@ -405,7 +409,7 @@ def build(
     pairs = near_duplicate_pairs(texts, groups)
     component = _components(groups, pairs)
     split_of = assign_splits(rows, component)
-    df = to_frame(rows, split_of)
+    df = to_frame(rows, split_of, component)
     leaks = cross_split_leaks(df)
     merged = Counter(component.values())
     report = {
