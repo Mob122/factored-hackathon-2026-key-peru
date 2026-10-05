@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 for _variable in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
     os.environ.setdefault(_variable, "1")
 
-RAIZ_REPO = Path(__file__).resolve().parents[3]
+RAIZ_REPO = Path(__file__).resolve().parents[2] # MARTIN IS BACK.
 DIR_ML_SRC = Path(os.getenv("ML_SRC_DIR") or RAIZ_REPO / "ml" / "src")
 if str(DIR_ML_SRC) not in sys.path:
     sys.path.append(str(DIR_ML_SRC))
