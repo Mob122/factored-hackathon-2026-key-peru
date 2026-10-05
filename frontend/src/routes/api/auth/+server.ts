@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types';
+import { BACKEND_URL } from '$lib/server/backend';
 
 export const POST: RequestHandler = async ({request, cookies, url}) => {
     try {
@@ -10,7 +11,7 @@ export const POST: RequestHandler = async ({request, cookies, url}) => {
 
         if (tipoAuth === 'registrarse') {
             const { correo_electronico, password, nombre } = data;
-            const respuesta = await fetch('http://localhost:8000/autenticacion/registrar', {
+            const respuesta = await fetch(`${BACKEND_URL}/autenticacion/registrar`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -36,7 +37,7 @@ export const POST: RequestHandler = async ({request, cookies, url}) => {
         } else if (tipoAuth === 'login') {            
             const { correo_electronico, password } = data;
 
-            const respuesta = await fetch('http://localhost:8000/autenticacion/iniciar-sesion', {
+            const respuesta = await fetch(`${BACKEND_URL}/autenticacion/iniciar-sesion`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

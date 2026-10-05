@@ -1,5 +1,6 @@
 // src/hooks.server.ts
 import { redirect, type Handle } from '@sveltejs/kit';
+import { BACKEND_URL } from '$lib/server/backend';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('token');
@@ -9,7 +10,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	} else {
 		try {
 			// Validamos el token directamente contra el endpoint /me de FastAPI
-			const response = await fetch('http://localhost:8000/autenticacion/mi-perfil', {
+			const response = await fetch(`${BACKEND_URL}/autenticacion/mi-perfil`, {
 				method: 'GET',
 				headers: {
 					'Authorization': `Bearer ${token}`,

@@ -6,7 +6,7 @@ from sqlmodel import select
 
 import gold_golden as G
 import gold_prueba as g
-from conftest import Chat, abrir_sesion_cliente
+from conftest import Chat, abrir_sesion_cliente, cabeceras, crear_usuario, iniciar_sesion
 from models.auditoria import EventoAuditoria
 from services import auditoria
 
@@ -64,6 +64,25 @@ def test_hechos_del_policy_decision_van_con_seudonimos(http, jurado, agente):
     assert [f["transaction_ref"] for f in lista] == [auditoria.seudonimo("TRX-FIXTUREG000000000104")]
     assert "transaction_id" not in lista[0] and lista[0]["merchant"] == "Farmacia Salud"
     assert chat.eventos("security") == []
+
+
+def test_agente_lee_la_cadena_de_la_conversacion_de_un_caso(http, jurado, agente):
+    """POL-PII-07, POL-AUD-02, AT-3: desde el expediente (conversation_ref) el agente lee la cadena completa de la
+    conversación, con la verificación de hashes; un cliente no puede leerla."""
+    crear_usuario("agente", "agente@pruebas.keyperu.example")
+    token_agente = iniciar_sesion(http, "agente@pruebas.keyperu.example")
+    chat = Chat(http, jurado, G.D5, idioma= "es")
+    chat.decir("No reconozco un cobro de Empresa Telefónica en mi tarjeta de crédito terminada en 4950. Quiero reclamarlo.")
+    chat.decir("Sí, ese.")
+    assert chat.decir("No, por ahora solo quiero el reclamo.")["state"] == "HANDED_OFF"
+    caso = http.get(f"/casos/{chat.ultima['case_id']}", headers= cabeceras(token_agente)).json()
+
+    r = http.get(f"/auditoria/conversacion/{caso['conversation_ref']}", headers= cabeceras(token_agente))
+    assert r.status_code == 200 and r.json()["cadena_valida"] is True
+    eventos = r.json()["eventos"]
+    assert r.json()["total"] == len(eventos) and {e["conversation_id"] for e in eventos} == {caso["conversation_ref"]}
+    assert "handoff" in [e["event_type"] for e in eventos]
+    assert http.get(f"/auditoria/conversacion/{caso['conversation_ref']}", headers= cabeceras(chat.token)).status_code == 403
 
 
 def test_ids_de_evento_uuid7_ordenados():

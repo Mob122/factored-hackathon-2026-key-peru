@@ -60,3 +60,9 @@ class EventosAuditoria(BaseModel):
     session_id: str
     total: int
     eventos: List[Dict[str, Any]]
+
+class EventosConversacion(BaseModel):
+    conversation_id: str
+    total: int
+    cadena_valida: bool # La cadena de hashes de la conversación verifica (AT-3).
+    eventos: List[Dict[str, Any]]

@@ -1,0 +1,4236 @@
+{
+ "generated_by": "backend/scripts/capturar_contrato_api.py",
+ "gold": "demo_gold",
+ "bank_clock": "2026-06-18T10:00:00",
+ "llm_mode": "mock",
+ "examples": [
+  {
+   "id": "auth-login",
+   "title": "Seeded customer signs in",
+   "request": {
+    "method": "POST",
+    "path": "/autenticacion/iniciar-sesion",
+    "query": null,
+    "auth": null,
+    "body": {
+     "correo_electronico": "cli-sqjocedjjncz@clientes.keyperu.example",
+     "password": "<SEED_PASSWORD>"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": "<token>"
+   }
+  },
+  {
+   "id": "auth-profile",
+   "title": "Profile of the signed-in user",
+   "request": {
+    "method": "GET",
+    "path": "/autenticacion/mi-perfil",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "nombre": "Cliente de prueba, diálogo 11 (CLI-SQJOCEDJJNCZ)",
+     "correo_electronico": "cli-sqjocedjjncz@clientes.keyperu.example",
+     "es_activo": true,
+     "id": 11,
+     "rol": "cliente",
+     "customer_id": "CLI-SQJOCEDJJNCZ"
+    }
+   }
+  },
+  {
+   "id": "auth-session",
+   "title": "Session level and expiry",
+   "request": {
+    "method": "GET",
+    "path": "/autenticacion/mi-sesion",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "sesion_id": "ses_a0JcZJZe2Dfq5qvDaQ8Rqe3bk1gCRJQJ",
+     "rol": "cliente",
+     "nivel": "L1",
+     "metodo": "contrasena",
+     "customer_id": "CLI-SQJOCEDJJNCZ",
+     "idioma": null,
+     "expira_inactividad_en": "2026-10-05T04:50:43.017994Z",
+     "expira_absoluta_en": "2026-10-05T05:35:42.988737Z"
+    }
+   }
+  },
+  {
+   "id": "d11-t0",
+   "title": "Open the chat (turn 0)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": {}
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "reply": "Hola, ¿en qué puedo ayudarle?",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 0
+    }
+   }
+  },
+  {
+   "id": "d11-t1",
+   "title": "Balance, two eligible products: clarification",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "mensaje": "Hola, ¿cuál es mi saldo?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
+     "state": "SELECT_CARD",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "d11-t2",
+   "title": "Product chosen by type",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "mensaje": "La tarjeta de crédito."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "reply": "El saldo actual de su tarjeta de crédito terminada en 5070 es de 8.741.863,41 COP y su límite de crédito es de 84.596.594,05 COP, según los datos del 3 de octubre de 2026 a las 23:34.",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "d11-t3",
+   "title": "Available credit is never computed (POL-BAL-05)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "mensaje": "¿Y cuánto tengo disponible para usar?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "reply": "No puedo calcular el crédito disponible; solo puedo indicarle el saldo y el límite registrados. Si lo necesita, puedo transferirle con un asesor.",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 3
+    }
+   }
+  },
+  {
+   "id": "d11-t4",
+   "title": "Balance read again, never reused (POL-GEN-07)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "mensaje": "Ok. ¿Y el saldo de la tarjeta sigue igual que hace un rato?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "reply": "El saldo actual de su tarjeta de crédito terminada en 5070 es de 8.741.863,41 COP y su límite de crédito es de 84.596.594,05 COP, según los datos del 3 de octubre de 2026 a las 23:34.",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 4
+    }
+   }
+  },
+  {
+   "id": "d11-t5",
+   "title": "Closing",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "mensaje": "Gracias, eso es todo."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "reply": "Con gusto. Hasta luego.",
+     "state": "ENDED",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 5
+    }
+   }
+  },
+  {
+   "id": "d1-t0",
+   "title": "Open the chat (turn 0)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "cliente:CLI-5B9VSCP2GSML",
+    "body": {}
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "reply": "Hola, ¿en qué puedo ayudarle?",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 0
+    }
+   }
+  },
+  {
+   "id": "d1-t1",
+   "title": "Declined charge explained with its response code",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-5B9VSCP2GSML",
+    "body": {
+     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "mensaje": "Hola, hace unos días me rechazaron un pago en Uber con mi tarjeta terminada en 6873. ¿Qué pasó?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "reply": "La compra del 6 de junio de 2026 por 127.37 USD en Uber con la tarjeta terminada en 6873 fue rechazada. Tiene registrado el código de respuesta 54, que en las redes de pago significa: tarjeta vencida. Este código es lo que muestra el registro; no me permite confirmar la causa. Si necesita saber por qué ocurrió, puedo transferirle con un asesor.",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "d1-t2",
+   "title": "Card status; no expiration date is confirmed (POL-ANS-13)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-5B9VSCP2GSML",
+    "body": {
+     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "mensaje": "¿Entonces mi tarjeta está vencida?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "reply": "Su tarjeta de crédito terminada en 6873 está activa. No puedo confirmar fechas de vencimiento, así que no puedo decirle si el código 54 corresponde al estado real de su tarjeta. Si lo necesita, puedo transferirle con un asesor.",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "d1-t3",
+   "title": "Closing",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-5B9VSCP2GSML",
+    "body": {
+     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "mensaje": "No, así está bien. Gracias."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "reply": "Con gusto. Hasta luego.",
+     "state": "ENDED",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 3
+    }
+   }
+  },
+  {
+   "id": "d5-t0",
+   "title": "Open the chat (turn 0)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "cliente:CLI-AYAHYQEG16BZ",
+    "body": {}
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "reply": "Hola, ¿en qué puedo ayudarle?",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 0
+    }
+   }
+  },
+  {
+   "id": "d5-t1",
+   "title": "Dispute: the transaction is found and must be confirmed",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-AYAHYQEG16BZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "mensaje": "No reconozco un cobro de Empresa Telefónica en mi tarjeta de crédito terminada en 4950. Quiero reclamarlo."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "reply": "La compra del 1 de junio de 2026 por 392.25 USD en Empresa Telefónica con la tarjeta terminada en 4950 fue aprobada. ¿Es este el cobro que no reconoce?",
+     "state": "SELECT_TRANSACTION",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "d5-t2",
+   "title": "Confirmed: a block is offered",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-AYAHYQEG16BZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "mensaje": "Sí, ese."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "reply": "Su tarjeta de crédito terminada en 4950 está activa. ¿Quiere que la bloquee antes de transferir su reclamo? Para eso le pediré un código de verificación y su confirmación.",
+     "state": "OFFER_BLOCK",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "d5-t3",
+   "title": "Block declined: handoff with a case ID",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-AYAHYQEG16BZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "mensaje": "No, por ahora solo quiero el reclamo."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "reply": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-3630960D3B49.",
+     "state": "HANDED_OFF",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": "CASE-3630960D3B49",
+     "turn": 3
+    }
+   }
+  },
+  {
+   "id": "d5-t4",
+   "title": "Message after the handoff is appended to the case (T-38)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-AYAHYQEG16BZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "mensaje": "¿En cuánto tiempo me contactan?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "reply": "Agregué su mensaje a su caso, referencia CASE-3630960D3B49. Un asesor lo revisará.",
+     "state": "HANDED_OFF",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": "CASE-3630960D3B49",
+     "turn": 4
+    }
+   }
+  },
+  {
+   "id": "d12-t0",
+   "title": "Open the chat (turn 0)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "cliente:CLI-AN7KXGR09TB2",
+    "body": {}
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "reply": "Olá, em que posso ajudar?",
+     "state": "IDLE",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 0
+    }
+   }
+  },
+  {
+   "id": "d12-t1",
+   "title": "Savings balance, only one eligible: no question",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-AN7KXGR09TB2",
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "mensaje": "Oi, qual é o saldo da minha conta poupança?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "reply": "O saldo atual da sua conta poupança final 2700 é de 3,447.34 USD, segundo os dados de 3 de outubro de 2026 às 23:34.",
+     "state": "IDLE",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "d12-t2",
+   "title": "Three credit cards: clarification",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-AN7KXGR09TB2",
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "mensaje": "E o do cartão de crédito?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "reply": "Você tem três cartões de crédito: final 7858 (ativo), final 2960 (ativo) e final 2952 (bloqueado). De qual deles quer consultar o saldo? Informe os últimos 4 dígitos.",
+     "state": "SELECT_CARD",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "d12-t3",
+   "title": "Card chosen by last 4",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-AN7KXGR09TB2",
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "mensaje": "O 7858."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "reply": "O saldo atual do seu cartão de crédito final 7858 é de 1,126.12 USD e o limite de crédito é de 5,366.87 USD, segundo os dados de 3 de outubro de 2026 às 23:34.",
+     "state": "IDLE",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 3
+    }
+   }
+  },
+  {
+   "id": "d12-t4",
+   "title": "Closing",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-AN7KXGR09TB2",
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "mensaje": "Obrigado, era isso."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "reply": "Por nada. Até logo.",
+     "state": "ENDED",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 4
+    }
+   }
+  },
+  {
+   "id": "jurado-login",
+   "title": "Jurado signs in",
+   "request": {
+    "method": "POST",
+    "path": "/autenticacion/iniciar-sesion",
+    "query": null,
+    "auth": null,
+    "body": {
+     "correo_electronico": "jurado@keyperu.example",
+     "password": "<SEED_PASSWORD>"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": "<token>"
+   }
+  },
+  {
+   "id": "idp-search",
+   "title": "Search customers (filters and paging)",
+   "request": {
+    "method": "GET",
+    "path": "/identidad/clientes",
+    "query": {
+     "pais": "México",
+     "segmento": "Basic",
+     "estado_cliente": "Active",
+     "tamano": 3
+    },
+    "auth": "jurado",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "pagina": 1,
+     "tamano": 3,
+     "hay_mas": true,
+     "resultados": [
+      {
+       "customer_id": "CLI-0N6WSFJ54FF2",
+       "country": "México",
+       "segment": "Basic"
+      },
+      {
+       "customer_id": "CLI-1IKG56EOI0A5",
+       "country": "México",
+       "segment": "Basic"
+      },
+      {
+       "customer_id": "CLI-2IEJH2Q8IM11",
+       "country": "México",
+       "segment": "Basic"
+      }
+     ],
+     "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
+    }
+   }
+  },
+  {
+   "id": "idp-search-prefix",
+   "title": "Search by customer_id prefix",
+   "request": {
+    "method": "GET",
+    "path": "/identidad/clientes",
+    "query": {
+     "q": "CLI-1IKG"
+    },
+    "auth": "jurado",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "pagina": 1,
+     "tamano": 20,
+     "hay_mas": false,
+     "resultados": [
+      {
+       "customer_id": "CLI-1IKG56EOI0A5",
+       "country": "México",
+       "segment": "Basic"
+      }
+     ],
+     "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
+    }
+   }
+  },
+  {
+   "id": "d2-session",
+   "title": "Jurado starts a test session for a customer",
+   "request": {
+    "method": "POST",
+    "path": "/identidad/sesion-prueba",
+    "query": null,
+    "auth": "jurado",
+    "body": {
+     "customer_id": "CLI-JPK27B33SV65",
+     "idioma": "pt"
+    }
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "token": "<token>",
+     "tipo_token": "bearer",
+     "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o",
+     "customer_id": "CLI-JPK27B33SV65",
+     "customer_status": "Active",
+     "nivel": "L1",
+     "idioma": "pt",
+     "expira_inactividad_en": "2026-10-05T04:50:45.272723Z",
+     "expira_absoluta_en": "2026-10-05T05:35:45.272723Z",
+     "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
+    }
+   }
+  },
+  {
+   "id": "d2-t0",
+   "title": "Open the chat (turn 0)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "prueba:CLI-JPK27B33SV65",
+    "body": {}
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "reply": "Olá, em que posso ajudar?",
+     "state": "IDLE",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 0
+    }
+   }
+  },
+  {
+   "id": "d2-t1",
+   "title": "Block request: step-up required",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-JPK27B33SV65",
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "mensaje": "Oi, perdi meu cartão de crédito. Quero bloquear agora."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "reply": "O seu cartão de crédito final 8407 está ativo. Para bloquear, preciso confirmar sua identidade com um código de verificação; digite-o na janela de verificação, não aqui no chat.",
+     "state": "STEP_UP",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "d2-otp",
+   "title": "Jurado console issues a test one-time code",
+   "request": {
+    "method": "POST",
+    "path": "/identidad/otp-prueba",
+    "query": null,
+    "auth": "jurado",
+    "body": {
+     "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o"
+    }
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o",
+     "codigo": "960532",
+     "expira_en": "2026-10-05T04:40:45.363831Z",
+     "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
+    }
+   }
+  },
+  {
+   "id": "d2-t2",
+   "title": "Code sent from the verification widget: confirmation prompt",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-JPK27B33SV65",
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "codigo_step_up": "960532"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "reply": "Identidade confirmada. Vou bloquear o seu cartão de crédito final 8407. Depois do bloqueio ele deixa de funcionar e eu não consigo desbloqueá-lo; só um atendente pode fazer isso. Confirma o bloqueio do cartão final 8407? Responda sim ou não.",
+     "state": "AWAIT_CONFIRMATION",
+     "language": "pt",
+     "pending_confirmation": {
+      "card_last4": "8407",
+      "card_type": "Tarjeta Crédito",
+      "expires_at": "2026-10-05T04:37:45.413791+00:00"
+     },
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "d2-t3",
+   "title": "Explicit yes: block executed and verified",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-JPK27B33SV65",
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "mensaje": "Sim, pode bloquear."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "reply": "Pronto: o seu cartão de crédito final 8407 está bloqueado. Para desbloquear ou pedir um cartão novo, é preciso falar com um atendente; posso transferir você, se quiser.",
+     "state": "IDLE",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 3
+    }
+   }
+  },
+  {
+   "id": "d2-t4",
+   "title": "Closing",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-JPK27B33SV65",
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "mensaje": "Não, era só isso, valeu."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "reply": "Por nada. Até logo.",
+     "state": "ENDED",
+     "language": "pt",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 4
+    }
+   }
+  },
+  {
+   "id": "idp-session",
+   "title": "Jurado starts a test session for a customer",
+   "request": {
+    "method": "POST",
+    "path": "/identidad/sesion-prueba",
+    "query": null,
+    "auth": "jurado",
+    "body": {
+     "customer_id": "CLI-1IKG56EOI0A5",
+     "idioma": "es"
+    }
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "token": "<token>",
+     "tipo_token": "bearer",
+     "sesion_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+     "customer_id": "CLI-1IKG56EOI0A5",
+     "customer_status": "Active",
+     "nivel": "L1",
+     "idioma": "es",
+     "expira_inactividad_en": "2026-10-05T04:50:45.558314Z",
+     "expira_absoluta_en": "2026-10-05T05:35:45.558314Z",
+     "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
+    }
+   }
+  },
+  {
+   "id": "idp-t0",
+   "title": "Open the chat (turn 0)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "prueba:CLI-1IKG56EOI0A5",
+    "body": {}
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "reply": "Hola, ¿en qué puedo ayudarle?",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 0
+    }
+   }
+  },
+  {
+   "id": "idp-t1",
+   "title": "Balance: clarification between products",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-1IKG56EOI0A5",
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "mensaje": "Hola, ¿cuál es mi saldo?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 0990, de su cuenta de ahorros terminada en 5747 o de su cuenta de ahorros terminada en 1447. ¿Cuál quiere consultar?",
+     "state": "SELECT_CARD",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "idp-t2",
+   "title": "Credit card chosen by last 4",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-1IKG56EOI0A5",
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "mensaje": "La terminada en 0990."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "reply": "El saldo actual de su tarjeta de crédito terminada en 0990 es de 1,032.68 USD y su límite de crédito es de 13,678.19 USD, según los datos del 3 de octubre de 2026 a las 23:34.",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "idp-t3",
+   "title": "\"That card\" keeps the selected card (D-35)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-1IKG56EOI0A5",
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "mensaje": "¿Qué movimientos tuvo esa tarjeta en el último mes?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "reply": "Estas son las transacciones de su tarjeta de crédito terminada en 0990 entre el 19 de mayo de 2026 y el 18 de junio de 2026: - 24 de mayo de 2026, retiro, 214.92 USD, aprobada",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 3
+    }
+   }
+  },
+  {
+   "id": "idp-t4",
+   "title": "Closing",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-1IKG56EOI0A5",
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "mensaje": "Gracias, eso es todo."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "reply": "Con gusto. Hasta luego.",
+     "state": "ENDED",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 4
+    }
+   }
+  },
+  {
+   "id": "idp-audit",
+   "title": "Audit trail of the test session",
+   "request": {
+    "method": "GET",
+    "path": "/auditoria/ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+    "query": null,
+    "auth": "jurado",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+     "total": 18,
+     "eventos": [
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab18-73fa-9e23-8b92e7be1797",
+       "event_type": "session",
+       "occurred_at": "2026-10-05T04:35:45.560Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 0,
+       "trace_id": "2fb03f7320b2b878b1fce9f0a7352b8e",
+       "span_id": "b37205333e459f08",
+       "actor": "identity",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "UNAUTHENTICATED",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01",
+        "POL-AUTH-11"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "session_event": "authenticated",
+       "auth_level_before": "L0",
+       "auth_level_after": "L1",
+       "expires_at": "2026-10-05T05:35:45.558Z",
+       "step_up": null,
+       "failure_count": 0,
+       "language_preference": "es",
+       "customer_status": "Active",
+       "resume_intent": null,
+       "test_idp": {
+        "idp": "mock-test-idp",
+        "issued_by_user_id": 13,
+        "issued_by_role": "jurado",
+        "endpoint": "/identidad/sesion-prueba"
+       },
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": null,
+       "event_hash": "54d0748a632d18520b3dee252f93df6d0e30835d4b2bb2cc7b09ea61a6fa8d6b"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab34-719e-a86f-223c3aa9a279",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:45.588Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 0,
+       "trace_id": "f3886868e52c0994c27cddafaacfb5d1",
+       "span_id": "e7c911e9f7b994ec",
+       "actor": "identity",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "UNAUTHENTICATED",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01",
+        "POL-AUTH-09"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "tool_call_id": "c1",
+       "tool": "authenticate",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {},
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 0,
+       "result": {
+        "auth_level": "L1",
+        "language": "es",
+        "customer_status": "Active"
+       },
+       "result_digest": "{\"auth_level\":\"L1\",\"customer_status\":\"Active\",\"language\":\"es\"}",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "54d0748a632d18520b3dee252f93df6d0e30835d4b2bb2cc7b09ea61a6fa8d6b",
+       "event_hash": "904d24249ec83071e5b58798234410535e4df22fcd32908186c1422f175b0ac1"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab36-75af-ae22-1af0139e2b08",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:45.590Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 0,
+       "trace_id": "f3886868e52c0994c27cddafaacfb5d1",
+       "span_id": "49f9558c1c5ee542",
+       "actor": "orchestrator",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01",
+        "POL-GEN-03"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "state_before": "UNAUTHENTICATED",
+       "state_after": "IDLE",
+       "transition_id": "T-01",
+       "transitions": [
+        "T-01"
+       ],
+       "decision": "authenticate",
+       "intent": null,
+       "tool_call_ids": [
+        "c1"
+       ],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "Hola, ¿en qué puedo ayudarle?",
+        "language": "es",
+        "templates": [],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": false,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "904d24249ec83071e5b58798234410535e4df22fcd32908186c1422f175b0ac1",
+       "event_hash": "054dc2ede643b4a6ea4826c61c0dac18b3f74c9e7d0db7cc0ee85d64b7aa1cfe"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab48-7f9a-9b5c-6f03809cd92a",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:45.608Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 1,
+       "trace_id": "4c3064bd266c2d894709f5ac1b46709a",
+       "span_id": "f5b8f0b89ef35345",
+       "actor": "customer",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "text_redacted": "Hola, ¿cuál es mi saldo?",
+       "detected_language": "es",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "054dc2ede643b4a6ea4826c61c0dac18b3f74c9e7d0db7cc0ee85d64b7aa1cfe",
+       "event_hash": "b71fe996c6650cb7258f12d5538f791fd02fc1b1a4037aba19c98b6c665d7f97"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab4c-7da0-90a9-94648ba1f45f",
+       "event_type": "classification",
+       "occurred_at": "2026-10-05T04:35:45.612Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 1,
+       "trace_id": "4c3064bd266c2d894709f5ac1b46709a",
+       "span_id": "cc67f69d3fd33217",
+       "actor": "orchestrator",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-ESC-06"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "classifier_artifact_sha256": "a03e2969febf16b860e87d4020f01b6ab0a3be99f4325191a60bb6b8d6969c82",
+       "classifier": "tfidf_word1-2_char2-5_logistic_regression",
+       "top_intent": "balance_inquiry",
+       "top_score": 0.9712,
+       "conformal_set": [
+        "balance_inquiry"
+       ],
+       "conformal_alpha": 0.1,
+       "conformal_threshold": 0.6683924683762994,
+       "max_set": 2,
+       "scores": {
+        "balance_inquiry": 0.9712,
+        "out_of_scope": 0.0236,
+        "conversation_end": 0.001,
+        "transaction_detail": 0.0008,
+        "card_list": 0.0007
+       },
+       "safety_override": [],
+       "signals": {
+        "block_or_theft": false,
+        "theft": false,
+        "dispute_or_fraud": false
+       },
+       "context_override": [],
+       "fallback_reason": null,
+       "slots": {
+        "balance_item": "balance"
+       },
+       "routing": "act",
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "b71fe996c6650cb7258f12d5538f791fd02fc1b1a4037aba19c98b6c665d7f97",
+       "event_hash": "162158f651ea3f3345b26ba0d71b49062ea4e83d2d30eaa5e4470907c698fad9"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab57-7900-96c4-eaadec74e8b4",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:45.623Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 1,
+       "trace_id": "4c3064bd266c2d894709f5ac1b46709a",
+       "span_id": "25226ddd4afa61e0",
+       "actor": "tool_gateway",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "tool_call_id": "c2",
+       "tool": "list_balance_products",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {},
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 0,
+       "result": [
+        {
+         "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+         "kind": "credit_card",
+         "last4": "0990",
+         "status": "Active"
+        },
+        {
+         "card_ref": "d2129dc5e949dbbccbc9a5a4ee2a861c",
+         "kind": "savings_account",
+         "last4": "5747",
+         "status": "Active"
+        },
+        {
+         "card_ref": "1a290e042df38446c33786f8bc41284a",
+         "kind": "savings_account",
+         "last4": "1447",
+         "status": "Active"
+        }
+       ],
+       "result_digest": "5df5231005fb27b613b69c39d6a0654e1ade1c2fb91ec8a90cf7fa45389db92b",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "162158f651ea3f3345b26ba0d71b49062ea4e83d2d30eaa5e4470907c698fad9",
+       "event_hash": "0deac3414272e813a3e01b9c20cd4f9864adc96e0c45015c5768c9951f125d09"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab5a-79f5-97fd-032ae35fc2d6",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:45.626Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 1,
+       "trace_id": "4c3064bd266c2d894709f5ac1b46709a",
+       "span_id": "e5eb8f0e38869269",
+       "actor": "orchestrator",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "SELECT_CARD",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-ESC-06",
+        "POL-ANS-07",
+        "POL-ANS-17"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "state_before": "IDLE",
+       "state_after": "SELECT_CARD",
+       "transition_id": "T-05",
+       "transitions": [
+        "T-05"
+       ],
+       "decision": "clarify",
+       "intent": "balance_inquiry",
+       "tool_call_ids": [
+        "c2"
+       ],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "Puedo consultar el saldo de su tarjeta de crédito terminada en 0990, de su cuenta de ahorros terminada en 5747 o de su cuenta de ahorros terminada en 1447. ¿Cuál quiere consultar?",
+        "language": "es",
+        "templates": [],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": false,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "0deac3414272e813a3e01b9c20cd4f9864adc96e0c45015c5768c9951f125d09",
+       "event_hash": "0689315853172bf64faa5c210728dec6a22f38e2b517285e971ca61175fa49fc"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab6c-709e-a101-84a9fefba3f0",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:45.644Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 2,
+       "trace_id": "7c10bbf3033d44424d62ecebbba9253b",
+       "span_id": "27fb313b7ab73e7f",
+       "actor": "customer",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "SELECT_CARD",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "text_redacted": "La terminada en 0990.",
+       "detected_language": "other",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "0689315853172bf64faa5c210728dec6a22f38e2b517285e971ca61175fa49fc",
+       "event_hash": "2ae232c044a892016b18cf442f0796fc0c887d46d1a433595daa5c4419b284cd"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab7e-754f-a104-fcd4b6ce45dd",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:45.662Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 2,
+       "trace_id": "7c10bbf3033d44424d62ecebbba9253b",
+       "span_id": "517150b14a9787bb",
+       "actor": "tool_gateway",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "ANSWERING",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "tool_call_id": "c3",
+       "tool": "get_balance",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {
+        "card_ref": "072ce832fbf132c5193471f3a49f86d3"
+       },
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 15,
+       "result": {
+        "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+        "kind": "credit_card",
+        "last4": "0990",
+        "status": "Active",
+        "currency": "USD",
+        "current_balance": "1032.68",
+        "as_of": "2026-10-03 23:34:37",
+        "credit_limit": "13678.19",
+        "templates": [
+         "POL-BAL-01"
+        ]
+       },
+       "result_digest": "02bd11937d0e76e1440b2b9d01c4cef41e2e295e356285b68c3e2559d98826c0",
+       "data_as_of": "2026-10-03 23:34:37",
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "2ae232c044a892016b18cf442f0796fc0c887d46d1a433595daa5c4419b284cd",
+       "event_hash": "6f50f5266ab4140ac6cd02d2eb69bfdec902e51de9edba6cf658ecef11ea88de"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab82-7784-a7c8-6f6beb7fa261",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:45.666Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 2,
+       "trace_id": "7c10bbf3033d44424d62ecebbba9253b",
+       "span_id": "89f81f6770795bc4",
+       "actor": "orchestrator",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-ANS-07",
+        "POL-ANS-02",
+        "POL-ANS-15",
+        "POL-GEN-07",
+        "POL-BAL-01",
+        "POL-GEN-02"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "state_before": "SELECT_CARD",
+       "state_after": "IDLE",
+       "transition_id": "T-18",
+       "transitions": [
+        "T-15",
+        "T-06",
+        "T-18"
+       ],
+       "decision": "answer",
+       "intent": null,
+       "tool_call_ids": [
+        "c3"
+       ],
+       "facts_used": [
+        {
+         "fact": "balance",
+         "value": {
+          "kind": "credit_card",
+          "last4": "0990",
+          "status": "Active",
+          "currency": "USD",
+          "current_balance": "1032.68",
+          "credit_limit": "13678.19",
+          "as_of": "2026-10-03 23:34:37"
+         },
+         "tool_call_id": "c3"
+        }
+       ],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "El saldo actual de su tarjeta de crédito terminada en 0990 es de 1,032.68 USD y su límite de crédito es de 13,678.19 USD, según los datos del 3 de octubre de 2026 a las 23:34.",
+        "language": "es",
+        "templates": [
+         "POL-BAL-01"
+        ],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": false,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "6f50f5266ab4140ac6cd02d2eb69bfdec902e51de9edba6cf658ecef11ea88de",
+       "event_hash": "ab105d70b0c23252786e710071f7f50b8dd81b3b4d31ce5f2eaf5b70d09c5118"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab97-7c53-9bf1-31a24f7c8e8e",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:45.687Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 3,
+       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
+       "span_id": "c9e3d8368a0f5f05",
+       "actor": "customer",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "text_redacted": "¿Qué movimientos tuvo esa tarjeta en el último mes?",
+       "detected_language": "es",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "ab105d70b0c23252786e710071f7f50b8dd81b3b4d31ce5f2eaf5b70d09c5118",
+       "event_hash": "6d980aae1611aa40936757848de403a75277c9938f80a0280ad93ca68baebc80"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ab9c-77e6-a930-7a95ba3f3732",
+       "event_type": "classification",
+       "occurred_at": "2026-10-05T04:35:45.692Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 3,
+       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
+       "span_id": "0e56228b5ab3144a",
+       "actor": "orchestrator",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-ESC-06"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "classifier_artifact_sha256": "a03e2969febf16b860e87d4020f01b6ab0a3be99f4325191a60bb6b8d6969c82",
+       "classifier": "tfidf_word1-2_char2-5_logistic_regression",
+       "top_intent": "transaction_list",
+       "top_score": 0.9359,
+       "conformal_set": [
+        "transaction_list"
+       ],
+       "conformal_alpha": 0.1,
+       "conformal_threshold": 0.6683924683762994,
+       "max_set": 2,
+       "scores": {
+        "transaction_list": 0.9359,
+        "transaction_detail": 0.0203,
+        "out_of_scope": 0.01,
+        "balance_inquiry": 0.0098,
+        "card_block": 0.0064
+       },
+       "safety_override": [],
+       "signals": {
+        "block_or_theft": false,
+        "theft": false,
+        "dispute_or_fraud": false
+       },
+       "context_override": [],
+       "fallback_reason": null,
+       "slots": {
+        "product_kind": "card",
+        "date": "last_n_days:30"
+       },
+       "routing": "act",
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "6d980aae1611aa40936757848de403a75277c9938f80a0280ad93ca68baebc80",
+       "event_hash": "152b462bbd272ad3e8d29abbd3b66e850fc834ba762ce1e86cbdccc0e76378a3"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-aba6-742f-9541-cbe9afd23c4d",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:45.702Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 3,
+       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
+       "span_id": "56028e8ed416aec0",
+       "actor": "tool_gateway",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "tool_call_id": "c4",
+       "tool": "list_cards",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {},
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 0,
+       "result": [
+        {
+         "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+         "last4": "0990",
+         "type": "Tarjeta Crédito",
+         "status": "Active"
+        }
+       ],
+       "result_digest": "30f1f0051f3ef725f46a3c867fd38e2e2773f3d000ba481c0cc516b18db27224",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "152b462bbd272ad3e8d29abbd3b66e850fc834ba762ce1e86cbdccc0e76378a3",
+       "event_hash": "c16b6a24def32ec791b9b089654eaa842151ad04409370dc9f4f6d9254ba4e9c"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-abb8-769f-b72e-8a80d934670c",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:45.720Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 3,
+       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
+       "span_id": "774a42b2651d1663",
+       "actor": "tool_gateway",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "ANSWERING",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "tool_call_id": "c5",
+       "tool": "list_transactions",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {
+        "card_ref": "072ce832fbf132c5193471f3a49f86d3"
+       },
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 15,
+       "result": {
+        "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+        "from": "2026-05-19",
+        "to": "2026-06-18",
+        "window_capped": false,
+        "truncated": false,
+        "transactions": [
+         {
+          "transaction_ref": "39bda70613f1788363779a5af42df097",
+          "date": "2026-05-24 05:28:38",
+          "type": "Withdrawal",
+          "amount": "214.92",
+          "currency": "USD",
+          "merchant": null,
+          "status": "Approved",
+          "response_code": "00"
+         }
+        ]
+       },
+       "result_digest": "28d9a27006f82bdddd06ea813cf5ee29f8444cca217bf0326228058da8becaf6",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "c16b6a24def32ec791b9b089654eaa842151ad04409370dc9f4f6d9254ba4e9c",
+       "event_hash": "1a02f56e79823870b5270d3501b7f474b4c057fd80b9276fcae6bb06c175735f"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-abbb-7d92-81ce-b52b389e244f",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:45.723Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 3,
+       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
+       "span_id": "50f8e58820a81ef5",
+       "actor": "orchestrator",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-ESC-06",
+        "POL-ANS-02",
+        "POL-ANS-03",
+        "POL-GEN-02",
+        "POL-GEN-07"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "state_before": "IDLE",
+       "state_after": "IDLE",
+       "transition_id": "T-18",
+       "transitions": [
+        "T-06",
+        "T-18"
+       ],
+       "decision": "answer",
+       "intent": "transaction_list",
+       "tool_call_ids": [
+        "c4",
+        "c5"
+       ],
+       "facts_used": [
+        {
+         "fact": "transactions",
+         "value": [
+          {
+           "transaction_ref": "39bda70613f1788363779a5af42df097",
+           "date": "2026-05-24 05:28:38",
+           "amount": "214.92",
+           "currency": "USD",
+           "merchant": null,
+           "status": "Approved"
+          }
+         ],
+         "tool_call_id": "c5"
+        }
+       ],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "Estas son las transacciones de su tarjeta de crédito terminada en 0990 entre el 19 de mayo de 2026 y el 18 de junio de 2026: - 24 de mayo de 2026, retiro, 214.92 USD, aprobada",
+        "language": "es",
+        "templates": [],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": false,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "1a02f56e79823870b5270d3501b7f474b4c057fd80b9276fcae6bb06c175735f",
+       "event_hash": "f6b38e714138b4cb365b4236aaf96ff27c11b95764720902a8b656fc69cb6f50"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-abcd-7e8c-ab6f-48324ea32cf4",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:45.741Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 4,
+       "trace_id": "72b8c0edecdb487f3e7320b43b954354",
+       "span_id": "20a96bb1cfc91c17",
+       "actor": "customer",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "text_redacted": "Gracias, eso es todo.",
+       "detected_language": "es",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "f6b38e714138b4cb365b4236aaf96ff27c11b95764720902a8b656fc69cb6f50",
+       "event_hash": "88474de4b84407ec39872eac472c14c4b6c8edf50e34d7dab9a77f30f93b0039"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-abd1-7813-b904-ae39de1c961e",
+       "event_type": "classification",
+       "occurred_at": "2026-10-05T04:35:45.745Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 4,
+       "trace_id": "72b8c0edecdb487f3e7320b43b954354",
+       "span_id": "f773d373d3e1f2fb",
+       "actor": "orchestrator",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-ESC-06"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "classifier_artifact_sha256": "a03e2969febf16b860e87d4020f01b6ab0a3be99f4325191a60bb6b8d6969c82",
+       "classifier": "tfidf_word1-2_char2-5_logistic_regression",
+       "top_intent": "conversation_end",
+       "top_score": 0.9981,
+       "conformal_set": [
+        "conversation_end"
+       ],
+       "conformal_alpha": 0.1,
+       "conformal_threshold": 0.6683924683762994,
+       "max_set": 2,
+       "scores": {
+        "conversation_end": 0.9981,
+        "transaction_detail": 0.0004,
+        "card_block": 0.0003,
+        "out_of_scope": 0.0003,
+        "charge_dispute": 0.0002
+       },
+       "safety_override": [],
+       "signals": {
+        "block_or_theft": false,
+        "theft": false,
+        "dispute_or_fraud": false
+       },
+       "context_override": [],
+       "fallback_reason": null,
+       "slots": {},
+       "routing": "act",
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "88474de4b84407ec39872eac472c14c4b6c8edf50e34d7dab9a77f30f93b0039",
+       "event_hash": "4ccaed6ca2cb18ad325bd21819fd8e2e80c498ae7af021a59e4a73c0a7ce5a5f"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-abd3-7754-b03b-2ae74b17cc65",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:45.747Z",
+       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "turn_index": 4,
+       "trace_id": "72b8c0edecdb487f3e7320b43b954354",
+       "span_id": "a92a3d1c9f9418e2",
+       "actor": "orchestrator",
+       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "auth_level": "L1",
+       "state": "ENDED",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-ESC-06",
+        "POL-GEN-01"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "state_before": "IDLE",
+       "state_after": "ENDED",
+       "transition_id": "T-11",
+       "transitions": [
+        "T-11"
+       ],
+       "decision": "none",
+       "intent": "conversation_end",
+       "tool_call_ids": [],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "Con gusto. Hasta luego.",
+        "language": "es",
+        "templates": [],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": false,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "4ccaed6ca2cb18ad325bd21819fd8e2e80c498ae7af021a59e4a73c0a7ce5a5f",
+       "event_hash": "4ceb0747cad037315593bb3dd104fdf36685dab61c72ca6b6d415fd18cfe3a36"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "agent-login",
+   "title": "Agent signs in",
+   "request": {
+    "method": "POST",
+    "path": "/autenticacion/iniciar-sesion",
+    "query": null,
+    "auth": null,
+    "body": {
+     "correo_electronico": "agente@keyperu.example",
+     "password": "<SEED_PASSWORD>"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": "<token>"
+   }
+  },
+  {
+   "id": "agent-cases",
+   "title": "Case inbox, newest first",
+   "request": {
+    "method": "GET",
+    "path": "/casos",
+    "query": {
+     "limite": 10
+    },
+    "auth": "agente",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": [
+     {
+      "case_id": "CASE-3630960D3B49",
+      "created_at": "2026-10-05T04:35:44.858850Z",
+      "priority": "normal",
+      "reason_rule_ids": [
+       "POL-ESC-01"
+      ],
+      "language": "es",
+      "customer_id": "CLI-AYAHYQEG16BZ",
+      "auth_level": "L1"
+     }
+    ]
+   }
+  },
+  {
+   "id": "agent-case",
+   "title": "Full case file of dialogue 5",
+   "request": {
+    "method": "GET",
+    "path": "/casos/CASE-3630960D3B49",
+    "query": null,
+    "auth": "agente",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "case_id": "CASE-3630960D3B49",
+     "created_at": "2026-10-05T04:35:44.858850Z",
+     "priority": "normal",
+     "reason_rule_ids": [
+      "POL-ESC-01"
+     ],
+     "language": "es",
+     "customer_id": "CLI-AYAHYQEG16BZ",
+     "auth_level": "L1",
+     "policy_version": "cards-synthetic-0.8",
+     "conversation_ref": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "appended_messages": [
+      {
+       "text_redacted": "¿En cuánto tiempo me contactan?",
+       "received_at": "2026-10-05T04:35:44.897860+00:00"
+      }
+     ],
+     "request": {
+      "last_message_redacted": "No reconozco un cobro de Empresa Telefónica en mi tarjeta de crédito terminada en 4950. Quiero reclamarlo.",
+      "summary": "Transfer by POL-ESC-01; customer request classified as charge_dispute.",
+      "summary_generated_by": "template",
+      "top_intent": "charge_dispute",
+      "conformal_set": [
+       "charge_dispute"
+      ]
+     },
+     "verified_facts": [
+      {
+       "fact": "card",
+       "value": {
+        "last4": "4950",
+        "type": "Tarjeta Crédito",
+        "status": "Active"
+       },
+       "tool_call_id": "c2"
+      },
+      {
+       "fact": "disputed_transaction",
+       "value": {
+        "transaction_id": "TRX-KFN7RMGYX8DR5AYBQ4QL",
+        "date": "2026-06-01 04:20:42",
+        "type": "Purchase",
+        "amount": "392.25",
+        "currency": "USD",
+        "merchant": "Empresa Telefónica",
+        "status": "Approved",
+        "response_code": "00"
+       },
+       "tool_call_id": "c4"
+      }
+     ],
+     "actions_taken": [],
+     "evidence": {
+      "tool_calls": [
+       {
+        "tool_call_id": "c1",
+        "tool": "authenticate",
+        "called_at": "04:35:44",
+        "status": "ok",
+        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c1"
+       },
+       {
+        "tool_call_id": "c2",
+        "tool": "list_cards",
+        "called_at": "04:35:44",
+        "status": "ok",
+        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c2"
+       },
+       {
+        "tool_call_id": "c3",
+        "tool": "list_transactions",
+        "called_at": "04:35:44",
+        "status": "ok",
+        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c3"
+       },
+       {
+        "tool_call_id": "c4",
+        "tool": "describe_transaction",
+        "called_at": "04:35:44",
+        "status": "ok",
+        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c4"
+       }
+      ],
+      "cards": [
+       {
+        "card_id": "PRD-TGMAN4NBB814",
+        "last4": "4950"
+       }
+      ],
+      "transactions": [
+       "TRX-KFN7RMGYX8DR5AYBQ4QL"
+      ],
+      "security_events": []
+     },
+     "unresolved_questions": [
+      "Customer does not recognize transaction TRX-KFN7RMGYX8DR5AYBQ4QL (392.25 USD, Empresa Telefónica, 2026-06-01) and confirmed it at turn 2; dispute review needed.",
+      "The assistant cannot judge whether a charge is valid (POL-ANS-12).",
+      "A block of card 4950 was offered (POL-ESC-01) and declined by the customer at turn 3; the card is still Active."
+     ]
+    }
+   }
+  },
+  {
+   "id": "agent-audit",
+   "title": "Audit trail of the case's conversation (conversation_ref)",
+   "request": {
+    "method": "GET",
+    "path": "/auditoria/conversacion/conv_01a10a58-a7c8-7435-9064-02068925b196",
+    "query": null,
+    "auth": "agente",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "total": 18,
+     "cadena_valida": true,
+     "eventos": [
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a7ca-7f97-8753-f13cb6e336db",
+       "event_type": "session",
+       "occurred_at": "2026-10-05T04:35:44.714Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 0,
+       "trace_id": "782d0aa651b3089db807a1721835279c",
+       "span_id": "49bf164effbc3731",
+       "actor": "identity",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "UNAUTHENTICATED",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "session_event": "authenticated",
+       "auth_level_before": "L0",
+       "auth_level_after": "L1",
+       "expires_at": "2026-10-05T05:35:44.712Z",
+       "step_up": null,
+       "failure_count": 0,
+       "language_preference": null,
+       "customer_status": "Active",
+       "resume_intent": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": null,
+       "event_hash": "fe8c92fe8cd05201ccb7aed85e56d5585587fd1a2992e2f70c5599e9f7835453"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a7e4-7f47-9f8e-5f41e1f8b550",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:44.740Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 0,
+       "trace_id": "d3e8ab7cfabe2a8e7eb24de9f4835460",
+       "span_id": "fc38b283f786ca0b",
+       "actor": "identity",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "UNAUTHENTICATED",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01",
+        "POL-AUTH-09"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "tool_call_id": "c1",
+       "tool": "authenticate",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {},
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 0,
+       "result": {
+        "auth_level": "L1",
+        "language": null,
+        "customer_status": "Active"
+       },
+       "result_digest": "{\"auth_level\":\"L1\",\"customer_status\":\"Active\",\"language\":null}",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "fe8c92fe8cd05201ccb7aed85e56d5585587fd1a2992e2f70c5599e9f7835453",
+       "event_hash": "3dc937063f0ceeb5689c436300d5413abc056620175185fc6c72db5b2eb3f0bc"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a7e6-7ae9-816e-6e15bda15764",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:44.742Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 0,
+       "trace_id": "d3e8ab7cfabe2a8e7eb24de9f4835460",
+       "span_id": "d238c9a529f78824",
+       "actor": "orchestrator",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01",
+        "POL-GEN-03"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "state_before": "UNAUTHENTICATED",
+       "state_after": "IDLE",
+       "transition_id": "T-01",
+       "transitions": [
+        "T-01"
+       ],
+       "decision": "authenticate",
+       "intent": null,
+       "tool_call_ids": [
+        "c1"
+       ],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "Hola, ¿en qué puedo ayudarle?",
+        "language": "es",
+        "templates": [],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": false,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "3dc937063f0ceeb5689c436300d5413abc056620175185fc6c72db5b2eb3f0bc",
+       "event_hash": "ba3bdbab1474684c78dd8377d826500aee8beb4fc23fdcb9b7c731a127542008"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a7f9-7aaa-b892-37f4a7c8f47f",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:44.761Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 1,
+       "trace_id": "79e87fb188128f9176ded752420ebcf4",
+       "span_id": "eb8f27ac47be707b",
+       "actor": "customer",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "text_redacted": "No reconozco un cobro de Empresa Telefónica en mi tarjeta de crédito terminada en 4950. Quiero reclamarlo.",
+       "detected_language": "es",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "ba3bdbab1474684c78dd8377d826500aee8beb4fc23fdcb9b7c731a127542008",
+       "event_hash": "793ace1bc79abc1de2f7fcb44361b68ac57814d5046b783cd36f4fed4fba10ff"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a7fd-7237-907b-750570193771",
+       "event_type": "classification",
+       "occurred_at": "2026-10-05T04:35:44.765Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 1,
+       "trace_id": "79e87fb188128f9176ded752420ebcf4",
+       "span_id": "d3a8d0251f299040",
+       "actor": "orchestrator",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-ESC-06"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "classifier_artifact_sha256": "a03e2969febf16b860e87d4020f01b6ab0a3be99f4325191a60bb6b8d6969c82",
+       "classifier": "tfidf_word1-2_char2-5_logistic_regression",
+       "top_intent": "charge_dispute",
+       "top_score": 0.9106,
+       "conformal_set": [
+        "charge_dispute"
+       ],
+       "conformal_alpha": 0.1,
+       "conformal_threshold": 0.6683924683762994,
+       "max_set": 2,
+       "scores": {
+        "charge_dispute": 0.9106,
+        "out_of_scope": 0.0236,
+        "card_block": 0.0184,
+        "transaction_detail": 0.0095,
+        "card_status": 0.0085
+       },
+       "safety_override": [],
+       "signals": {
+        "block_or_theft": false,
+        "theft": false,
+        "dispute_or_fraud": true
+       },
+       "context_override": [],
+       "fallback_reason": null,
+       "slots": {
+        "last4": "4950",
+        "merchant": "Empresa Telefónica"
+       },
+       "routing": "act",
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "793ace1bc79abc1de2f7fcb44361b68ac57814d5046b783cd36f4fed4fba10ff",
+       "event_hash": "22485ac78bd2dfd0149fcf85138a98b768abb392963648215bcda0800b952a89"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a808-74c5-8091-286b57c2a91e",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:44.776Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 1,
+       "trace_id": "79e87fb188128f9176ded752420ebcf4",
+       "span_id": "7462a4580780012d",
+       "actor": "tool_gateway",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "tool_call_id": "c2",
+       "tool": "list_cards",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {},
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 15,
+       "result": [
+        {
+         "card_ref": "e173abf001493ae0db265fbf07db32ce",
+         "last4": "1883",
+         "type": "Tarjeta Débito",
+         "status": "Active"
+        },
+        {
+         "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639",
+         "last4": "4950",
+         "type": "Tarjeta Crédito",
+         "status": "Active"
+        }
+       ],
+       "result_digest": "bab1b258eb7469145892576c602931db6a70e67ca96acc092633002521082123",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "22485ac78bd2dfd0149fcf85138a98b768abb392963648215bcda0800b952a89",
+       "event_hash": "f6d5ca183fec3bc851a2f063be213eae0731db1ab9c4db7cfe4836e32d388f16"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a81b-7d8d-8945-e4c1c5f7d1e7",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:44.795Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 1,
+       "trace_id": "79e87fb188128f9176ded752420ebcf4",
+       "span_id": "2ac64845af053934",
+       "actor": "tool_gateway",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "ANSWERING",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "tool_call_id": "c3",
+       "tool": "list_transactions",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {
+        "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639"
+       },
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 15,
+       "result": {
+        "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639",
+        "from": "2026-05-19",
+        "to": "2026-06-18",
+        "window_capped": false,
+        "truncated": false,
+        "transactions": [
+         {
+          "transaction_ref": "5c60036d1becb474c5a22a40e8232c11",
+          "date": "2026-06-01 04:20:42",
+          "type": "Purchase",
+          "amount": "392.25",
+          "currency": "USD",
+          "merchant": "Empresa Telefónica",
+          "status": "Approved",
+          "response_code": "00"
+         }
+        ]
+       },
+       "result_digest": "328c1b5f92e2a2672ac7902db29a7664f18963419b48e06c05d84d33068e5271",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "f6d5ca183fec3bc851a2f063be213eae0731db1ab9c4db7cfe4836e32d388f16",
+       "event_hash": "0ba5908fddc310a1c04a4b29de71707c78be8ce3c920aa004396d4df97a302a7"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a828-76bc-b7fc-4e764adca6a7",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:44.808Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 1,
+       "trace_id": "79e87fb188128f9176ded752420ebcf4",
+       "span_id": "546e40f5d7f5fc23",
+       "actor": "tool_gateway",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "ANSWERING",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "tool_call_id": "c4",
+       "tool": "describe_transaction",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {
+        "transaction_ref": "5c60036d1becb474c5a22a40e8232c11"
+       },
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 15,
+       "result": {
+        "transaction_ref": "5c60036d1becb474c5a22a40e8232c11",
+        "date": "2026-06-01 04:20:42",
+        "type": "Purchase",
+        "amount": "392.25",
+        "currency": "USD",
+        "merchant": "Empresa Telefónica",
+        "status": "Approved",
+        "response_code": "00",
+        "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639",
+        "last4": "4950",
+        "templates": [
+         "POL-TXS-01",
+         "POL-DEC-92"
+        ],
+        "notices": []
+       },
+       "result_digest": "2a591fc92a79632447bb179bc19fe710080939b38cefa140a4a057d5a0368d77",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "0ba5908fddc310a1c04a4b29de71707c78be8ce3c920aa004396d4df97a302a7",
+       "event_hash": "ba9eb7ff1780c2703c2f7295cd4014a43c609d6fc44969d36ed40ac6c5dabee5"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a82a-7d43-b437-d9e703038376",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:44.810Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 1,
+       "trace_id": "79e87fb188128f9176ded752420ebcf4",
+       "span_id": "699fefb06d129d38",
+       "actor": "orchestrator",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "SELECT_TRANSACTION",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-GEN-03",
+        "POL-ESC-06",
+        "POL-ESC-01",
+        "POL-ANS-09",
+        "POL-ANS-12",
+        "POL-ANS-04",
+        "POL-TXS-01",
+        "POL-DEC-92"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "state_before": "IDLE",
+       "state_after": "SELECT_TRANSACTION",
+       "transition_id": "T-43",
+       "transitions": [
+        "T-09",
+        "T-43"
+       ],
+       "decision": "clarify",
+       "intent": "charge_dispute",
+       "tool_call_ids": [
+        "c2",
+        "c3",
+        "c4"
+       ],
+       "facts_used": [
+        {
+         "fact": "card",
+         "value": {
+          "last4": "4950",
+          "type": "Tarjeta Crédito",
+          "status": "Active"
+         },
+         "tool_call_id": "c2"
+        },
+        {
+         "fact": "transaction",
+         "value": {
+          "transaction_ref": "5c60036d1becb474c5a22a40e8232c11",
+          "date": "2026-06-01 04:20:42",
+          "type": "Purchase",
+          "amount": "392.25",
+          "currency": "USD",
+          "merchant": "Empresa Telefónica",
+          "status": "Approved",
+          "response_code": "00"
+         },
+         "tool_call_id": "c4"
+        }
+       ],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "La compra del 1 de junio de 2026 por 392.25 USD en Empresa Telefónica con la tarjeta terminada en 4950 fue aprobada. ¿Es este el cobro que no reconoce?",
+        "language": "es",
+        "templates": [
+         "POL-TXS-01"
+        ],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": true,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "ba9eb7ff1780c2703c2f7295cd4014a43c609d6fc44969d36ed40ac6c5dabee5",
+       "event_hash": "0d4011e5e680dcbd8f5de37f7a104c8d89f054801a5615537da0f79ec36a7efc"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a83b-7836-a7b4-e36444af5aec",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:44.827Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 2,
+       "trace_id": "0edcde7198d070679dca0846e82cd7f5",
+       "span_id": "e29dcdac4b1178b1",
+       "actor": "customer",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "SELECT_TRANSACTION",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "text_redacted": "Sí, ese.",
+       "detected_language": "es",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "0d4011e5e680dcbd8f5de37f7a104c8d89f054801a5615537da0f79ec36a7efc",
+       "event_hash": "07451c8c2e512b1731de3132dd6a49d8fc119f5246cc1d5012c2cc61097cd77e"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a83e-74f1-a1c0-527c998d150e",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:44.830Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 2,
+       "trace_id": "0edcde7198d070679dca0846e82cd7f5",
+       "span_id": "2d28467435658cab",
+       "actor": "orchestrator",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "OFFER_BLOCK",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-ESC-01"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "state_before": "SELECT_TRANSACTION",
+       "state_after": "OFFER_BLOCK",
+       "transition_id": "T-45",
+       "transitions": [
+        "T-45"
+       ],
+       "decision": "clarify",
+       "intent": null,
+       "tool_call_ids": [],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "Su tarjeta de crédito terminada en 4950 está activa. ¿Quiere que la bloquee antes de transferir su reclamo? Para eso le pediré un código de verificación y su confirmación.",
+        "language": "es",
+        "templates": [],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": true,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "07451c8c2e512b1731de3132dd6a49d8fc119f5246cc1d5012c2cc61097cd77e",
+       "event_hash": "6a24711f16bd16df9e9588e61a13afb90959e0a5e87b7b17192a2d7ce7388143"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a850-7037-b844-7763447a13ce",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:44.848Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 3,
+       "trace_id": "0a864a8e868036f76ceec97ad28c3636",
+       "span_id": "f7582572a0013b1d",
+       "actor": "customer",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "OFFER_BLOCK",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "text_redacted": "No, por ahora solo quiero el reclamo.",
+       "detected_language": "es",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "6a24711f16bd16df9e9588e61a13afb90959e0a5e87b7b17192a2d7ce7388143",
+       "event_hash": "7f8702639bb241903e9c995b292b6a026e82d2bbd256492ddde45519b021b0d8"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a85a-7dd5-ac1e-547bc9bd1a55",
+       "event_type": "handoff",
+       "occurred_at": "2026-10-05T04:35:44.858Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 3,
+       "trace_id": "0a864a8e868036f76ceec97ad28c3636",
+       "span_id": "8e18684b8d67913e",
+       "actor": "handoff_service",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "HANDOFF",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-HND-10",
+        "POL-HND-11",
+        "POL-HND-12",
+        "POL-HND-13",
+        "POL-HND-14",
+        "POL-HND-15"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "handoff_event": "opened",
+       "case_id": "CASE-3630960D3B49",
+       "idempotency_key": "conv_01a10a58-a7c8-7435-9064-02068925b196:t3",
+       "priority": "normal",
+       "reason_rule_ids": [
+        "POL-ESC-01"
+       ],
+       "case_file_fields_present": {
+        "request": true,
+        "verified_facts": true,
+        "actions_taken": true,
+        "evidence": true,
+        "unresolved_questions": true
+       },
+       "case_file_digest": "b62f75f577211390e1e1a7fdbeae07ae961c02618067b08be06b45b9b5ec9b43",
+       "counts": {
+        "verified_facts": 2,
+        "actions_taken": 0,
+        "evidence": 4,
+        "unresolved_questions": 3
+       },
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "7f8702639bb241903e9c995b292b6a026e82d2bbd256492ddde45519b021b0d8",
+       "event_hash": "42536548954fdb5a565035d179cc7c116b2b829c9e3364bd49ea806cdd44ef9b"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a864-76dd-8a58-f0a01d3061a3",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:44.868Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 3,
+       "trace_id": "0a864a8e868036f76ceec97ad28c3636",
+       "span_id": "de8df58659e20e31",
+       "actor": "tool_gateway",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "HANDOFF",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "tool_call_id": "c5",
+       "tool": "open_handoff",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {},
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 16,
+       "result": {
+        "case_id": "CASE-3630960D3B49"
+       },
+       "result_digest": "3ea145974322715c3995511b905a8222ad3acdfb9186a922a2922d926b425601",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "42536548954fdb5a565035d179cc7c116b2b829c9e3364bd49ea806cdd44ef9b",
+       "event_hash": "7a60389074571ae5bafd963909073eb3b3eccbd0d38c8afabba533d7ed206f54"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a866-75d1-8d67-eb97e350545c",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:44.870Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 3,
+       "trace_id": "0a864a8e868036f76ceec97ad28c3636",
+       "span_id": "0316512277d67a0a",
+       "actor": "orchestrator",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "HANDED_OFF",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-ESC-01",
+        "POL-HND-10",
+        "POL-HND-11",
+        "POL-HND-12",
+        "POL-HND-13",
+        "POL-HND-14",
+        "POL-HND-15",
+        "POL-HND-01",
+        "POL-HND-03"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "state_before": "OFFER_BLOCK",
+       "state_after": "HANDED_OFF",
+       "transition_id": "T-36",
+       "transitions": [
+        "T-49",
+        "T-36"
+       ],
+       "decision": "transfer",
+       "intent": null,
+       "tool_call_ids": [
+        "c5"
+       ],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-3630960D3B49.",
+        "language": "es",
+        "templates": [
+         "POL-HND-03"
+        ],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": true,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "7a60389074571ae5bafd963909073eb3b3eccbd0d38c8afabba533d7ed206f54",
+       "event_hash": "811fa114a76396565d15788ea2b2b56805b304cf633cabe53b761bcff3af4833"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a879-763c-b937-a6daf59345b6",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:44.889Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 4,
+       "trace_id": "058af897d5129a975d348e1760d9b5f5",
+       "span_id": "9fb44af40170816b",
+       "actor": "customer",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "HANDED_OFF",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "text_redacted": "¿En cuánto tiempo me contactan?",
+       "detected_language": "es",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "811fa114a76396565d15788ea2b2b56805b304cf633cabe53b761bcff3af4833",
+       "event_hash": "2f38b80211f47b01bf151a570a14289b5c097ce9bf6e683d186af9fed6687372"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a883-7f27-886b-91a7dca55383",
+       "event_type": "handoff",
+       "occurred_at": "2026-10-05T04:35:44.899Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 4,
+       "trace_id": "058af897d5129a975d348e1760d9b5f5",
+       "span_id": "983d8350871ea2fa",
+       "actor": "handoff_service",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "HANDED_OFF",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-HND-06"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "handoff_event": "message_appended",
+       "case_id": "CASE-3630960D3B49",
+       "idempotency_key": "conv_01a10a58-a7c8-7435-9064-02068925b196:t3",
+       "priority": "normal",
+       "reason_rule_ids": [
+        "POL-ESC-01"
+       ],
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "2f38b80211f47b01bf151a570a14289b5c097ce9bf6e683d186af9fed6687372",
+       "event_hash": "796abac0a5775222cac0d397362b51ce63ab426e705d581b5b18808a45380bc0"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-a88c-7b84-8b73-1e174e2e5163",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:44.908Z",
+       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "turn_index": 4,
+       "trace_id": "058af897d5129a975d348e1760d9b5f5",
+       "span_id": "a712855d552a9b54",
+       "actor": "orchestrator",
+       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "auth_level": "L1",
+       "state": "HANDED_OFF",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-HND-06",
+        "POL-HND-04"
+       ],
+       "session_origin": {
+        "method": "password",
+        "user_id": 5,
+        "role": "cliente"
+       },
+       "state_before": "HANDED_OFF",
+       "state_after": "HANDED_OFF",
+       "transition_id": "T-38",
+       "transitions": [
+        "T-38"
+       ],
+       "decision": "transfer",
+       "intent": null,
+       "tool_call_ids": [],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "Agregué su mensaje a su caso, referencia CASE-3630960D3B49. Un asesor lo revisará.",
+        "language": "es",
+        "templates": [
+         "POL-HND-04"
+        ],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": true,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "796abac0a5775222cac0d397362b51ce63ab426e705d581b5b18808a45380bc0",
+       "event_hash": "b4bf1f9b9e28a6e7613d511419b548609939d52e7ea98d7c184163a30de312bd"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "err-login",
+   "title": "Wrong password",
+   "request": {
+    "method": "POST",
+    "path": "/autenticacion/iniciar-sesion",
+    "query": null,
+    "auth": null,
+    "body": {
+     "correo_electronico": "agente@keyperu.example",
+     "password": "contrasena-incorrecta"
+    }
+   },
+   "response": {
+    "status": 401,
+    "body": {
+     "detail": "Email o contraseña incorrectos."
+    }
+   }
+  },
+  {
+   "id": "err-token-invalid",
+   "title": "Malformed or forged token",
+   "request": {
+    "method": "GET",
+    "path": "/autenticacion/mi-sesion",
+    "query": null,
+    "auth": "invalido",
+    "body": null
+   },
+   "response": {
+    "status": 401,
+    "body": {
+     "detail": {
+      "codigo": "TOKEN_INVALID",
+      "mensaje": "No se pudo validar las credenciales."
+     }
+    }
+   }
+  },
+  {
+   "id": "err-role-forbidden",
+   "title": "A customer calls the agent inbox",
+   "request": {
+    "method": "GET",
+    "path": "/casos",
+    "query": null,
+    "auth": "cliente:CLI-SQJOCEDJJNCZ",
+    "body": null
+   },
+   "response": {
+    "status": 403,
+    "body": {
+     "detail": {
+      "codigo": "ROLE_FORBIDDEN",
+      "mensaje": "Su rol no permite esta operación."
+     }
+    }
+   }
+  },
+  {
+   "id": "err-not-customer",
+   "title": "A jurado token cannot chat",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "jurado",
+    "body": {}
+   },
+   "response": {
+    "status": 403,
+    "body": {
+     "detail": {
+      "codigo": "NOT_A_CUSTOMER_SESSION",
+      "mensaje": "Esta sesión no corresponde a un cliente."
+     }
+    }
+   }
+  },
+  {
+   "id": "err-conversation-forbidden",
+   "title": "Another customer's conversation",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-5B9VSCP2GSML",
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "mensaje": "Hola"
+    }
+   },
+   "response": {
+    "status": 403,
+    "body": {
+     "detail": {
+      "codigo": "CONVERSATION_FORBIDDEN",
+      "mensaje": "Esta conversación no es de la sesión."
+     }
+    }
+   }
+  },
+  {
+   "id": "err-validation",
+   "title": "Both a message and a code in one turn",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-5B9VSCP2GSML",
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "mensaje": "Hola",
+     "codigo_step_up": "123456"
+    }
+   },
+   "response": {
+    "status": 422,
+    "body": {
+     "detail": [
+      {
+       "type": "value_error",
+       "loc": [
+        "body"
+       ],
+       "msg": "Value error, Envíe mensaje o codigo_step_up, uno de los dos.",
+       "input": {
+        "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+        "mensaje": "Hola",
+        "codigo_step_up": "123456"
+       },
+       "ctx": {
+        "error": {}
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "err-customer-not-found",
+   "title": "Test session for a customer not in gold",
+   "request": {
+    "method": "POST",
+    "path": "/identidad/sesion-prueba",
+    "query": null,
+    "auth": "jurado",
+    "body": {
+     "customer_id": "CLI-000000000000"
+    }
+   },
+   "response": {
+    "status": 404,
+    "body": {
+     "detail": {
+      "codigo": "CUSTOMER_NOT_FOUND",
+      "mensaje": "Cliente no encontrado."
+     }
+    }
+   }
+  },
+  {
+   "id": "ended-message",
+   "title": "Message to an ended conversation: fixed reply, nothing runs",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-1IKG56EOI0A5",
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "mensaje": "Hola de nuevo"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "reply": "Esta conversación terminó. Si necesita algo más, inicie una nueva.",
+     "state": "ENDED",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 5
+    }
+   }
+  },
+  {
+   "id": "err-conversation-closed",
+   "title": "An ended conversation cannot be resumed",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "prueba:CLI-1IKG56EOI0A5",
+    "body": {
+     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69"
+    }
+   },
+   "response": {
+    "status": 409,
+    "body": {
+     "detail": {
+      "codigo": "CONVERSATION_CLOSED",
+      "mensaje": "La conversación ya terminó."
+     }
+    }
+   }
+  },
+  {
+   "id": "err-stepup-t1",
+   "title": "Block request: step-up required",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-LD6QVNCSTR43",
+    "body": {
+     "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+     "mensaje": "Quiero bloquear mi tarjeta de débito."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+     "reply": "Su tarjeta de débito terminada en 4214 está activa. Para bloquearla necesito confirmar su identidad con un código de verificación; ingréselo en la ventana de verificación, no en el chat.",
+     "state": "STEP_UP",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "err-stepup-t2",
+   "title": "Wrong code: asked again (T-29)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-LD6QVNCSTR43",
+    "body": {
+     "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+     "codigo_step_up": "000000"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+     "reply": "El código no es válido o venció. Ingréselo de nuevo en la ventana de verificación.",
+     "state": "STEP_UP",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "err-llm-fallback",
+   "title": "LLM unreachable: same reply from the code's sentences (POL-REL-04)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+     "mensaje": "Hola, ¿cuál es mi saldo?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+     "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
+     "state": "SELECT_CARD",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "err-llm-fallback-audit",
+   "title": "Audit of the fallback turn",
+   "request": {
+    "method": "GET",
+    "path": "/auditoria/ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+    "query": null,
+    "auth": "jurado",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+     "total": 8,
+     "eventos": [
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ad44-738a-b24c-39b3c6cb29e3",
+       "event_type": "session",
+       "occurred_at": "2026-10-05T04:35:46.116Z",
+       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "turn_index": 0,
+       "trace_id": "d1183664ba654eeb63bebff12a6ab00e",
+       "span_id": "c3a376fda08a3409",
+       "actor": "identity",
+       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "auth_level": "L1",
+       "state": "UNAUTHENTICATED",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01",
+        "POL-AUTH-11"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "session_event": "authenticated",
+       "auth_level_before": "L0",
+       "auth_level_after": "L1",
+       "expires_at": "2026-10-05T05:35:46.115Z",
+       "step_up": null,
+       "failure_count": 0,
+       "language_preference": "es",
+       "customer_status": "Active",
+       "resume_intent": null,
+       "test_idp": {
+        "idp": "mock-test-idp",
+        "issued_by_user_id": 13,
+        "issued_by_role": "jurado",
+        "endpoint": "/identidad/sesion-prueba"
+       },
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": null,
+       "event_hash": "e815b05f12d7cc8f3e905694721ad1c0301ac0cdcfbf122fa852797a9d66887b"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ad5a-71ab-a255-0a95a1f0bbc2",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:46.138Z",
+       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "turn_index": 0,
+       "trace_id": "b462e028414fa17301bb36b4fdf30d7b",
+       "span_id": "38000eda8662dcee",
+       "actor": "identity",
+       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "auth_level": "L1",
+       "state": "UNAUTHENTICATED",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01",
+        "POL-AUTH-09"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "tool_call_id": "c1",
+       "tool": "authenticate",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {},
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 0,
+       "result": {
+        "auth_level": "L1",
+        "language": "es",
+        "customer_status": "Active"
+       },
+       "result_digest": "{\"auth_level\":\"L1\",\"customer_status\":\"Active\",\"language\":\"es\"}",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "e815b05f12d7cc8f3e905694721ad1c0301ac0cdcfbf122fa852797a9d66887b",
+       "event_hash": "dcaf4b4c24b2e182c77203dabcb9ccb78465ea1b3fa971730308719139e06fb0"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ad5c-7b84-96a2-852b5929a9ea",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:46.140Z",
+       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "turn_index": 0,
+       "trace_id": "b462e028414fa17301bb36b4fdf30d7b",
+       "span_id": "b36a2bf6f1286c95",
+       "actor": "orchestrator",
+       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-AUTH-01",
+        "POL-GEN-03"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "state_before": "UNAUTHENTICATED",
+       "state_after": "IDLE",
+       "transition_id": "T-01",
+       "transitions": [
+        "T-01"
+       ],
+       "decision": "authenticate",
+       "intent": null,
+       "tool_call_ids": [
+        "c1"
+       ],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": null
+       },
+       "reply": {
+        "text_redacted": "Hola, ¿en qué puedo ayudarle?",
+        "language": "es",
+        "templates": [],
+        "llm_call_ids": []
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 0,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": false,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "dcaf4b4c24b2e182c77203dabcb9ccb78465ea1b3fa971730308719139e06fb0",
+       "event_hash": "0bc7ccb1eb5087baa2e52addb933f18e83f0b87e8610ab244e2c983d59f4e4f3"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ad6e-78c8-b80c-1a95cc131815",
+       "event_type": "message_received",
+       "occurred_at": "2026-10-05T04:35:46.158Z",
+       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "turn_index": 1,
+       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
+       "span_id": "3055cfea17fe3bb4",
+       "actor": "customer",
+       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-04"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "text_redacted": "Hola, ¿cuál es mi saldo?",
+       "detected_language": "es",
+       "typed_card_numbers": [],
+       "third_party_refs": [],
+       "secrets_redacted": 0,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "0bc7ccb1eb5087baa2e52addb933f18e83f0b87e8610ab244e2c983d59f4e4f3",
+       "event_hash": "5a50fb8e2d6133ba1647bb926054028cfcb91d2bc914dafc7f52e8dfb6cf41b7"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ad73-71c1-9e7c-e2be4ff90407",
+       "event_type": "classification",
+       "occurred_at": "2026-10-05T04:35:46.163Z",
+       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "turn_index": 1,
+       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
+       "span_id": "5c0cfee5c3cc6a4d",
+       "actor": "orchestrator",
+       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-ESC-06"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "classifier_artifact_sha256": "a03e2969febf16b860e87d4020f01b6ab0a3be99f4325191a60bb6b8d6969c82",
+       "classifier": "tfidf_word1-2_char2-5_logistic_regression",
+       "top_intent": "balance_inquiry",
+       "top_score": 0.9712,
+       "conformal_set": [
+        "balance_inquiry"
+       ],
+       "conformal_alpha": 0.1,
+       "conformal_threshold": 0.6683924683762994,
+       "max_set": 2,
+       "scores": {
+        "balance_inquiry": 0.9712,
+        "out_of_scope": 0.0236,
+        "conversation_end": 0.001,
+        "transaction_detail": 0.0008,
+        "card_list": 0.0007
+       },
+       "safety_override": [],
+       "signals": {
+        "block_or_theft": false,
+        "theft": false,
+        "dispute_or_fraud": false
+       },
+       "context_override": [],
+       "fallback_reason": null,
+       "slots": {
+        "balance_item": "balance"
+       },
+       "routing": "act",
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "5a50fb8e2d6133ba1647bb926054028cfcb91d2bc914dafc7f52e8dfb6cf41b7",
+       "event_hash": "10ec1ba66312d5b4983b9864d4a092d8273f4f4c07cd2ca313cb2a3682b4149d"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-ad7d-783b-860a-390e3ed18ed1",
+       "event_type": "tool_call",
+       "occurred_at": "2026-10-05T04:35:46.173Z",
+       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "turn_index": 1,
+       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
+       "span_id": "ea25c83a06cee844",
+       "actor": "tool_gateway",
+       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "auth_level": "L1",
+       "state": "IDLE",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "tool_call_id": "c2",
+       "tool": "list_balance_products",
+       "attempt": 1,
+       "retry_of": null,
+       "allowed_in_state": true,
+       "args": {},
+       "status": "ok",
+       "error_code": null,
+       "latency_ms": 0,
+       "result": [
+        {
+         "card_ref": "0046f27b22ca90d8d5ebc8607b59de9b",
+         "kind": "credit_card",
+         "last4": "5070",
+         "status": "Active"
+        },
+        {
+         "card_ref": "e4342a6ca9f19e3bcc898eb903c4753d",
+         "kind": "savings_account",
+         "last4": "1317",
+         "status": "Active"
+        }
+       ],
+       "result_digest": "518d033634ea294491e7cbe307c4de0d6d2a85afdc7e658bbe5ecbfb83ebb71b",
+       "data_as_of": null,
+       "fixture": null,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "10ec1ba66312d5b4983b9864d4a092d8273f4f4c07cd2ca313cb2a3682b4149d",
+       "event_hash": "b98a06205fd95f1773d280e39aa3d0d7e7c518530fe54390efe460edf80873fe"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-cf95-731f-b08c-8b048def016d",
+       "event_type": "llm_call",
+       "occurred_at": "2026-10-05T04:35:54.901Z",
+       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "turn_index": 1,
+       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
+       "span_id": "d3b5fb3fb0eb146b",
+       "actor": "orchestrator",
+       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "auth_level": "L1",
+       "state": "SELECT_CARD",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-PII-02",
+        "POL-REL-04"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "llm_call_id": "llm_8f92cc87abb1",
+       "purpose": "reply_wording",
+       "provider": "openai",
+       "model_id": "gpt-4o-mini",
+       "prompt_template": "reformular-v1",
+       "temperature": 0,
+       "max_tokens": 400,
+       "input_tokens": 0,
+       "cached_input_tokens": 0,
+       "output_tokens": 0,
+       "latency_ms": 8719,
+       "status": "error",
+       "retries": 3,
+       "cost_usd": 0.0,
+       "request_pii_scan": {
+        "blocked": false,
+        "hits": 0
+       },
+       "prompt_sha256": "1c14c46fbab570255f63d1da1f79a5c6a551ba29201952df8bc5c4cee7156422",
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "b98a06205fd95f1773d280e39aa3d0d7e7c518530fe54390efe460edf80873fe",
+       "event_hash": "24ccc01aa14ade13d4ea540cf1bfbbb0806c428fcbe2461626ec5b86a8113f63"
+      },
+      {
+       "schema_version": "audit-0.2",
+       "event_id": "01a10a58-cf97-7a31-81db-32e88a07e30f",
+       "event_type": "policy_decision",
+       "occurred_at": "2026-10-05T04:35:54.903Z",
+       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "turn_index": 1,
+       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
+       "span_id": "f03be7f0145bbd4d",
+       "actor": "orchestrator",
+       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "auth_level": "L1",
+       "state": "SELECT_CARD",
+       "policy_version": "cards-synthetic-0.8",
+       "state_machine_version": "sm-0.4",
+       "rule_ids": [
+        "POL-PII-01",
+        "POL-ESC-06",
+        "POL-ANS-07",
+        "POL-ANS-17",
+        "POL-REL-04"
+       ],
+       "session_origin": {
+        "method": "test_idp",
+        "issued_by_user_id": 13
+       },
+       "state_before": "IDLE",
+       "state_after": "SELECT_CARD",
+       "transition_id": "T-05",
+       "transitions": [
+        "T-05"
+       ],
+       "decision": "clarify",
+       "intent": "balance_inquiry",
+       "tool_call_ids": [
+        "c2"
+       ],
+       "facts_used": [],
+       "grounding_check": {
+        "passed": true,
+        "unsupported_facts": 0,
+        "fallback_template": "POL-REL-04"
+       },
+       "reply": {
+        "text_redacted": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
+        "language": "es",
+        "templates": [],
+        "llm_call_ids": [
+         "llm_8f92cc87abb1"
+        ]
+       },
+       "counters": {
+        "clarify_turns": 0,
+        "card_misses": 0,
+        "stepup_fails": 0,
+        "tool_fail_rounds": 0,
+        "llm_fails": 1,
+        "injection_hits": 0,
+        "unauthorized_hits": 0
+       },
+       "then_handoff": false,
+       "dispute": false,
+       "pii_scan": {
+        "blocked": false,
+        "placeholders": {},
+        "hits": {}
+       },
+       "prev_event_hash": "24ccc01aa14ade13d4ea540cf1bfbbb0806c428fcbe2461626ec5b86a8113f63",
+       "event_hash": "8f9b70ce753cf94cc775940149bcebabef2505a251833580a30a04a172f34508"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "err-rate-limited",
+   "title": "Eleventh search in a minute",
+   "request": {
+    "method": "GET",
+    "path": "/identidad/clientes",
+    "query": null,
+    "auth": "jurado",
+    "body": null
+   },
+   "response": {
+    "status": 429,
+    "body": {
+     "detail": {
+      "codigo": "RATE_LIMITED",
+      "mensaje": "Demasiadas búsquedas. Espere un minuto."
+     }
+    }
+   }
+  },
+  {
+   "id": "register",
+   "title": "Open registration (development only): a customer user with no bank data",
+   "request": {
+    "method": "POST",
+    "path": "/autenticacion/registrar",
+    "query": null,
+    "auth": null,
+    "body": {
+     "nombre": "Usuario de prueba",
+     "correo_electronico": "nuevo@ejemplo.keyperu.example",
+     "password": "<SEED_PASSWORD>"
+    }
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "nombre": "Usuario de prueba",
+     "correo_electronico": "nuevo@ejemplo.keyperu.example",
+     "es_activo": true,
+     "id": 14,
+     "rol": "cliente",
+     "customer_id": null
+    }
+   }
+  },
+  {
+   "id": "err-no-customer",
+   "title": "A registered user without a customer cannot chat",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "cliente:nuevo",
+    "body": {}
+   },
+   "response": {
+    "status": 403,
+    "body": {
+     "detail": {
+      "codigo": "NOT_A_CUSTOMER_SESSION",
+      "mensaje": "Esta sesión no corresponde a un cliente."
+     }
+    }
+   }
+  },
+  {
+   "id": "logout",
+   "title": "Sign out",
+   "request": {
+    "method": "POST",
+    "path": "/autenticacion/cerrar-sesion",
+    "query": null,
+    "auth": "cliente:nuevo",
+    "body": null
+   },
+   "response": {
+    "status": 204,
+    "body": null
+   }
+  },
+  {
+   "id": "err-after-logout",
+   "title": "The token stops working after sign-out",
+   "request": {
+    "method": "GET",
+    "path": "/autenticacion/mi-sesion",
+    "query": null,
+    "auth": "cliente:nuevo",
+    "body": null
+   },
+   "response": {
+    "status": 401,
+    "body": {
+     "detail": {
+      "codigo": "SESSION_EXPIRED",
+      "mensaje": "La sesión expiró o se cerró. Inicie sesión de nuevo."
+     }
+    }
+   }
+  },
+  {
+   "id": "expiry-t0",
+   "title": "Open the chat (turn 0)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "prueba:CLI-SQJOCEDJJNCZ",
+    "body": {}
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "reply": "Hola, ¿en qué puedo ayudarle?",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 0
+    }
+   }
+  },
+  {
+   "id": "expiry-t1",
+   "title": "Balance: clarification",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "mensaje": "Hola, ¿cuál es mi saldo?"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
+     "state": "SELECT_CARD",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "expiry-t2",
+   "title": "Idle timeout: no data, sign in again (G-01)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "mensaje": "La tarjeta de crédito."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "reply": "Su sesión expiró. Por favor, inicie sesión de nuevo para continuar.",
+     "state": "SESSION_EXPIRED",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "expiry-session",
+   "title": "Any other endpoint answers 401",
+   "request": {
+    "method": "GET",
+    "path": "/autenticacion/mi-sesion",
+    "query": null,
+    "auth": "prueba:CLI-SQJOCEDJJNCZ",
+    "body": null
+   },
+   "response": {
+    "status": 401,
+    "body": {
+     "detail": {
+      "codigo": "SESSION_EXPIRED",
+      "mensaje": "La sesión expiró o se cerró. Inicie sesión de nuevo."
+     }
+    }
+   }
+  },
+  {
+   "id": "expiry-resume",
+   "title": "New session resumes the conversation (G-02)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/sesiones",
+    "query": null,
+    "auth": "prueba:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475"
+    }
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "reply": "Sesión iniciada. ¿Quiere retomar lo que estaba haciendo?",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 3
+    }
+   }
+  },
+  {
+   "id": "expiry-t3",
+   "title": "Customer accepts the resume question (T-50)",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "prueba:CLI-SQJOCEDJJNCZ",
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "mensaje": "Sí"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
+     "state": "SELECT_CARD",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 4
+    }
+   }
+  }
+ ]
+}
