@@ -4,8 +4,9 @@ import uuid
 
 from sqlmodel import select
 
+import gold_golden as G
 import gold_prueba as g
-from conftest import abrir_sesion_cliente
+from conftest import Chat, abrir_sesion_cliente
 from models.auditoria import EventoAuditoria
 from services import auditoria
 
@@ -45,6 +46,24 @@ def test_escaneo_pii_bloquea_ids_crudos_numeros_y_codigos(bd):
     seguridad = bd.exec(select(EventoAuditoria).where(EventoAuditoria.event_type == "security")).all()
     assert [e.cuerpo["security_event"] for e in seguridad] == ["pii_blocked"]
     assert auditoria.verificar_cadena(bd, "conv_prueba")
+
+
+def test_hechos_del_policy_decision_van_con_seudonimos(http, jurado, agente):
+    """POL-PII-05, POL-AUD-01, AL-P3, AL-P4: los hechos de una transacción o de una lista de transacciones llegan al
+    policy_decision con transaction_ref, no con el id crudo, así que AL-P7 no bloquea nada ni emite un security."""
+    chat = Chat(http, jurado, G.D1, idioma= "es")
+    chat.decir("Hola, hace unos días me rechazaron un pago en Uber con mi tarjeta terminada en 6873. ¿Qué pasó?")
+    transaccion = next(h["value"] for h in chat.decision()["facts_used"] if h["fact"] == "transaction")
+    assert transaccion["transaction_ref"] == auditoria.seudonimo("TRX-0OQVC3BDVLGG2VDSXTFM")
+    assert "transaction_id" not in transaccion and transaccion["merchant"] == "Uber" and transaccion["response_code"] == "54"
+    assert chat.eventos("security") == []
+
+    chat = Chat(http, jurado, G.D10, idioma= "es")
+    chat.decir("Muéstrame los movimientos de mi tarjeta terminada en 7042.")
+    lista = next(h["value"] for h in chat.decision()["facts_used"] if h["fact"] == "transactions")
+    assert [f["transaction_ref"] for f in lista] == [auditoria.seudonimo("TRX-FIXTUREG000000000104")]
+    assert "transaction_id" not in lista[0] and lista[0]["merchant"] == "Farmacia Salud"
+    assert chat.eventos("security") == []
 
 
 def test_ids_de_evento_uuid7_ordenados():

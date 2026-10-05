@@ -595,3 +595,31 @@ Context: the team asked for:
 - **Language:** the reply language is stored as a preference only when the customer chooses it or it is detected (POL-GEN-03). A default is never stored. An answer naming a language resolves the POL-ESC-11 question.
 - `backend/var/` (the fallback queue of POL-REL-03) is git-ignored.
 - **Requirements:** the classifier and OpenAI SDK pins are in `backend/requirements.txt`.
+
+## Product selection fixes after the CLI smoke run (2026-10-04)
+
+Context: a CLI run against the real gold (`LLM_MODE=mock` and `openai`, `RELOJ_SIMULADO=2026-06-18T10:00:00`) reproduced golden dialogues 1, 5 and 11, but two conversations got stuck in `SELECT_CARD`: a test-IdP session for CLI-87XMFI4WUOAH (two credit cards) and a Portuguese session for CLI-AN7KXGR09TB2. Files changed: `backend/services/agente/orquestador.py`, new `backend/tests/test_agente_seleccion.py`.
+
+### D-35. The selected product carries over between balance and card requests
+
+- **Finding:** after a balance answer for credit card 4876, "¿Qué movimientos tuvo esa tarjeta en el último mes?" asked again which card. The orchestrator reused `producto_sel` only within the same family (balance products or cards).
+- **Second finding, same condition:** a product picked by its last 4 alone ("La 1317", a savings account) was reused for "¿Y el saldo de mi tarjeta de crédito?", and the reply gave the savings balance again. The old guard accepted any named type when the selection had no type slot.
+- **Decision:**
+  - `selected_card_id` is reused across families when the selected product is a credit card. The card or balance product is looked up by ID in the other family's list, read fresh under POL-GEN-07. That list also carries the fields the new route needs (`type` for card replies).
+  - A savings account has no card, and a debit card has no balance, so both keep the normal route (T-05 or T-06).
+  - Reuse requires the type named in the request to fit the selected product: none, "card" for any card, or the same type.
+- **Why it does not contradict the frozen `sm-0.4`:** section 3 defines `selected_card_id` as an internal product ID, reset only by a request naming another product or by expiry. A credit card's `product_id` equals its `card_id` (`gold-0.2`, `balance_products`). This was true for 100,102 of 100,102 credit cards in the real gold. No state or transition changes.
+
+### D-36. A closing or a new request in `SELECT_CARD` leaves the selection
+
+- **Finding:** "Gracias, eso es todo." or "Obrigado, era isso." in `SELECT_CARD` repeated the card question. With `MAX_CLARIFY_TURNS` = 2, the next such message would have transferred to an agent. `sm-0.4` defines no way out of `SELECT_CARD` other than a selection, a miss or a handoff.
+- **Decision:** a message with no last 4, no product type and no typed number is classified. If the set is a single intent that differs from the pending one and is a read, action, transfer or `conversation_end` intent, T-31 runs: the candidates and pending intent are cleared, and the message is routed from `IDLE` in the same turn. A closing then ends with T-11, and a new request is served. Any other message repeats the question with the existing limit (POL-ESC-06).
+- **Why T-31:** the code already used T-31 for a cancellation in `SELECT_CARD`. Its `sm-0.4` meaning ("customer cancels or changes the subject" → `IDLE`, new request re-routed in the same turn) is the behavior wanted here; the contract lists only `STEP_UP` as its source.
+- **Audit:** the classification is recorded in both cases. When the message leaves, it is recorded after T-31 in `IDLE` with routing `act`, `clarify` or `transfer` as usual. When it stays, the event is recorded in `SELECT_CARD` with routing `clarify`. The audit contract lists only `IDLE` and `CLARIFY_INTENT` for this event, so the `SELECT_CARD` case is additive.
+- **For the contract owners:** the next state machine version could list `SELECT_CARD` as a source of T-31, and the audit contract could list it for `classification`.
+
+### D-37. Verified facts in `policy_decision` use pseudonyms
+
+- **Finding:** every turn that read transactions wrote a `security` event `pii_blocked` (POL-PII-05). `policy_decision.facts_used` held the raw `transaction_id` of `transaction` and `transactions` facts. The AL-P7 scan replaced it with `[BLOCKED_PII]`, which lost the reference and counted a false security event on each transaction answer. It happened before D-35 and D-36, in dialogues 1 and 5 on the real gold.
+- **Decision:** `facts_used` goes through `gateway.seudonimizar_ids`. It uses the same ID map as the tool results (`transaction_id` → `transaction_ref`, `card_id` and `product_id` → `card_ref`) and leaves every other field as it is. `resumen_auditable` is not reused because it drops scalar facts (`customer_status`, `requested_card_in_session`) and fields outside its allowlist (`bound_card_last4`).
+- **Scope:** only the audit event changes. The case file keeps the internal IDs, which POL-PII-05 allows and golden dialogue 5's `verified_facts` shows. Files changed: `backend/services/agente/gateway.py`, `backend/services/agente/orquestador.py`, `backend/tests/test_auditoria.py`.

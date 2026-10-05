@@ -29,7 +29,7 @@ from models.chat import Conversacion, MensajeChat
 from models.identidad import SesionIdentidad
 from services import auditoria, banco, identidad
 from services.agente import clasificador, cola_respaldo, seguridad, textos
-from services.agente.gateway import Gateway, Llamada, NoPermitidaEnEstado, SesionVencida
+from services.agente.gateway import Gateway, Llamada, NoPermitidaEnEstado, SesionVencida, seudonimizar_ids
 from services.agente.llm import cliente_llm, respaldada
 from services.identidad import ErrorSesion
 
@@ -47,6 +47,8 @@ LLM_FAIL_MAX = 2
 
 LECTURA = {"balance_inquiry", "card_list", "card_status", "transaction_list", "transaction_detail"}
 TRANSFERENCIA = {"charge_dispute", "block_reason", "card_unblock", "human_request"}
+# Intenciones que, dichas en SELECT_CARD en lugar del producto, dejan la selección (T-31, D-36).
+CAMBIAN_DE_PEDIDO = LECTURA | TRANSFERENCIA | {"card_block", "conversation_end"}
 TIPOS_TARJETA = {"credit_card": "Tarjeta Crédito", "debit_card": "Tarjeta Débito"}
 # Tipos de producto que sirve cada intención (docs/intents.md sección 2; si no, POL-ANS-14 por T-10).
 SIRVE = {
@@ -249,7 +251,8 @@ class Turno:
                 "state_before": self.estado_antes, "state_after": self.estado,
                 "transition_id": self.transiciones[-1] if self.transiciones else None, "transitions": self.transiciones,
                 "decision": self.decision, "intent": self.intencion, "tool_call_ids": self.gw.llamadas_turno,
-                "facts_used": [h for h in self.ctx["hechos_verificados"] if h["tool_call_id"] in self.gw.llamadas_turno],
+                # El expediente guarda los ids internos (POL-PII-05); el audit log, sus seudónimos (AL-P3).
+                "facts_used": [seudonimizar_ids(h) for h in self.ctx["hechos_verificados"] if h["tool_call_id"] in self.gw.llamadas_turno],
                 "grounding_check": self.ctx.pop("_grounding", {"passed": True, "unsupported_facts": 0, "fallback_template": None}),
                 "reply": {"text_redacted": seguridad.redactar(respuesta).texto, "language": self.idioma,
                           "templates": plantillas, "llm_call_ids": self.llm_ids},
@@ -678,8 +681,8 @@ def _idle(t: Turno, texto: str) -> None:
     _clasificar_y_rutear(t, texto)
 
 
-def _clasificar_y_rutear(t: Turno, texto: str) -> None:
-    resultado = clasificador.clasificar(texto, t.idioma)
+def _clasificar_y_rutear(t: Turno, texto: str, resultado: Optional[Dict[str, Any]] = None) -> None:
+    resultado = resultado or clasificador.clasificar(texto, t.idioma)
     contexto = clasificador.seguimiento_eliptico(resultado, texto, t.ctx.get("ultima_lectura"), seguridad.es_continuacion(texto))
     if contexto:
         # POL-ESC-14: seguimiento elíptico de la intención de lectura anterior.
@@ -840,10 +843,10 @@ def _resolver_producto(t: Turno, intencion: str, slots: Dict[str, str]) -> None:
     tipo = slots.get("product_kind")
     ultimos4 = slots.get("last4")
     seleccionado = t.ctx.get("producto_sel")
+    # Producto ya identificado en el contexto (selected_card_id), si el pedido no nombra otro ni otro tipo.
+    reusable = not ultimos4 and seleccionado and _tipo_compatible(seleccionado, tipo)
 
-    # Producto ya identificado en el contexto (selected_card_id), si el pedido no nombra otro.
-    if not ultimos4 and seleccionado and seleccionado.get("familia") == familia and (
-            tipo in (None, "card") or seleccionado.get("tipo_slot") in (None, tipo) or seleccionado.get("kind_tipo") == tipo):
+    if reusable and seleccionado.get("familia") == familia:
         _producto_resuelto(t, intencion, seleccionado, nombrar= False)
         return
 
@@ -853,6 +856,15 @@ def _resolver_producto(t: Turno, intencion: str, slots: Dict[str, str]) -> None:
         return
     clave = "productos_saldo" if familia == "saldo" else "tarjetas"
     origen = t.id_hecho(clave)
+
+    if reusable and seleccionado.get("kind_tipo") == "credit_card":
+        # D-35: selected_card_id es un id de producto (sm-0.4 sección 3) y el product_id de una tarjeta de crédito es
+        # su card_id (gold-0.2), así que la tarjeta elegida para el saldo sirve para movimientos o estado, y al revés.
+        # Se toma de la lista recién leída de la otra familia (POL-GEN-07), que trae los campos que esa ruta usa.
+        mismo = next((p for p in productos if _id_producto(p) == seleccionado["id"]), None)
+        if mismo:
+            _producto_resuelto(t, intencion, _seleccion(mismo, familia, tipo, origen), nombrar= False)
+            return
 
     if ultimos4:
         coinciden = [p for p in _filtrar_tipo(productos, tipo, familia) if p["last4"] == ultimos4]
@@ -901,6 +913,16 @@ def _resolver_producto(t: Turno, intencion: str, slots: Dict[str, str]) -> None:
                 else "De qual deles quer consultar o saldo? Informe os últimos 4 dígitos.", "POL-ANS-07")
     else:
         t.libre("¿Cuál quiere consultar?" if t.idioma == "es" else "Qual quer consultar?", "POL-ANS-07")
+
+
+def _tipo_compatible(seleccionado: Dict[str, Any], tipo: Optional[str]) -> bool:
+    """El tipo que nombra el pedido admite el producto seleccionado: ninguno, "tarjeta" para cualquier tarjeta, o el
+    mismo tipo. Una cuenta de ahorros elegida por sus últimos 4 no responde por "mi tarjeta de crédito" (D-35)."""
+    if tipo is None:
+        return True
+    if tipo == "card":
+        return seleccionado.get("kind_tipo") in TIPOS_TARJETA
+    return seleccionado.get("kind_tipo") == tipo
 
 
 def _elegibles(intencion: str, productos: List[Dict[str, Any]], tipo: Optional[str], familia: str) -> List[Dict[str, Any]]:
@@ -1013,7 +1035,16 @@ def _seleccionar_tarjeta(t: Turno, texto: str) -> None:
         t.transicion("T-40", "SELECT_CARD", "POL-ANS-18")
         _respuesta_falla_tarjeta(t, candidatos)
         return
-    # Ni últimos 4 ni tipo: se repite la pregunta, con el límite de aclaraciones (POL-ESC-06).
+    # Ni últimos 4 ni tipo. Un cierre u otro pedido deja la selección y se rutea desde IDLE en el mismo turno, como
+    # T-31 en STEP_UP (D-36); cualquier otro mensaje repite la pregunta, con el límite de aclaraciones (POL-ESC-06).
+    resultado = clasificador.clasificar(texto, t.idioma)
+    conjunto = resultado["intent_set"]
+    if len(conjunto) == 1 and conjunto[0] != intencion and conjunto[0] in CAMBIAN_DE_PEDIDO:
+        t.transicion("T-31", "IDLE", "POL-ACT-03")
+        t.ctx.update(candidatos= [], tipo_candidatos= None, pendiente= None)
+        _clasificar_y_rutear(t, texto, resultado)
+        return
+    _auditar_clasificacion(t, texto, resultado, "clarify")
     if t.contador("clarify_turns") >= MAX_CLARIFY_TURNS:
         t.transicion("T-14", "HANDOFF", "POL-ESC-06")
         _transferir(t, ["POL-ESC-06"], ["The customer did not identify the product after repeated questions."])
