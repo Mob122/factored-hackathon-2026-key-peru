@@ -103,6 +103,23 @@ def resumen_auditable(valor: Any) -> Any:
     return None
 
 
+def seudonimizar_ids(valor: Any) -> Any:
+    """Copia con los ids reemplazados por sus seudónimos (AL-P3) y el resto igual. Para los hechos verificados del
+    policy_decision, que ya traen solo campos de AL-P4 pero pueden ser escalares, que resumen_auditable descarta."""
+    if isinstance(valor, list):
+        return [seudonimizar_ids(v) for v in valor]
+    if isinstance(valor, dict):
+        limpio = {}
+        for clave, contenido in valor.items():
+            if clave in _IDS and isinstance(contenido, str):
+                ref = _IDS[clave]
+                limpio[ref] = contenido if ref in ("case_id", "step_up_id") else auditoria.seudonimo(contenido)
+            else:
+                limpio[clave] = seudonimizar_ids(contenido)
+        return limpio
+    return valor
+
+
 class Gateway:
     def __init__(self, bd: Session, conversacion, registro, contexto: Dict[str, Any], estado: Callable[[], str],
                  dormir: Callable[[float], None] = time.sleep):

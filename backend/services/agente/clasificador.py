@@ -21,6 +21,12 @@ import sys
 
 logger = logging.getLogger(__name__)
 
+# Se predice un mensaje a la vez: los hilos de BLAS no aportan nada y OpenBLAS reserva memoria por
+# hilo al cargar numpy. Con muchos núcleos y poca memoria libre esa reserva falla y tumba el proceso
+# ("OpenBLAS error: Memory allocation still failed"). Debe fijarse antes del primer import de numpy.
+for _variable in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_variable, "1")
+
 RAIZ_REPO = Path(__file__).resolve().parents[3]
 DIR_ML_SRC = Path(os.getenv("ML_SRC_DIR") or RAIZ_REPO / "ml" / "src")
 if str(DIR_ML_SRC) not in sys.path:
