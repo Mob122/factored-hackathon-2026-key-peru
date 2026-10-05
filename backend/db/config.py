@@ -28,21 +28,36 @@ motor = create_engine(DATABASE_URL, **engine_args) # Para SQLite, permite conexi
 def run_migraciones():
     """Migraciones idempotentes para bases existentes (create_all no altera tablas).
 
-    Postgres soporta ADD COLUMN IF NOT EXISTS, por lo que es seguro ejecutarlo
-    en cada arranque.
+    Las columnas nuevas se agregan solo si faltan (se revisan con el inspector), así que es
+    seguro ejecutarlo en cada arranque, en SQLite y en Postgres.
     """
-    if es_sqlite:
-        return
-    
-    from sqlalchemy import text
+    from sqlalchemy import inspect, text
+
+    # (tabla, columna, tipo SQL) agregadas a tablas que ya existían.
+    columnas_nuevas = [
+        ("usuarios", "customer_id", "VARCHAR(16)"),
+        ("audit_events", "session_id", "VARCHAR(64)"),
+        ("audit_events", "trace_id", "VARCHAR(32)"),
+        ("audit_events", "turn_index", "INTEGER"),
+    ]
 
     declaraciones = [
+        # Roles anteriores ("usuario", "admin") pasan a "cliente", el rol con menos permisos (POL-AUTH-10).
+        "UPDATE usuarios SET rol = 'cliente' WHERE rol NOT IN ('cliente', 'agente', 'jurado')",
         # "ALTER TABLE invoices ADD COLUMN IF NOT EXISTS discount_type VARCHAR(10)",
         # "ALTER TABLE invoices ADD COLUMN IF NOT EXISTS discount_value NUMERIC(12,2) DEFAULT 0",
         # "ALTER TABLE invoices ADD COLUMN IF NOT EXISTS discount_amount NUMERIC(14,2) DEFAULT 0",
         # "ALTER TABLE services_products ADD COLUMN IF NOT EXISTS url VARCHAR(255) DEFAULT NULL",
     ]
+
+    inspector = inspect(motor)
+    tablas = set(inspector.get_table_names())
+
     with motor.begin() as conexion:
+        for tabla, columna, tipo in columnas_nuevas:
+            if tabla in tablas and columna not in {c["name"] for c in inspector.get_columns(tabla)}:
+                conexion.execute(text(f"ALTER TABLE {tabla} ADD COLUMN {columna} {tipo}"))
+
         for statement in declaraciones:
             conexion.execute(text(statement))
 
