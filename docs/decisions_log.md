@@ -254,3 +254,235 @@ The classifier was retrained on unchanged data so `eval_results.json` would carr
 three-configuration override report. Predictions and every non-override metric are identical
 to card 0.2. The model file differs again in bytes (D-10), and the new SHA-256 is in
 `metadata.json`.
+
+## Policy tiers, test IdP and mock bank in the backend (2026-10-04)
+
+Context: the team asked for (0) a Tier column on every policy rule, (1) roles, a mock identity
+service labeled as a test IdP, session expiry and step-up in `backend/`, (2) the mock bank tools in
+`backend/services/banco.py` over gold, and (3) tests for every T1 rule this layer enforces.
+
+### D-17. Tier column: how each rule's tier was derived (policy 0.7)
+
+- **Decision:** every rule table has a last column **Tier**. It is derived mechanically from the
+  "Enforced in" cell, as the request said:
+  - T1 if the cell names a service, gateway, orchestrator or tool layer. The components counted
+    as such are listed in section 0, including grounding check, redaction layer, tool registry,
+    audit log, case store, tracing and backend roles, because each is code in the pipeline;
+  - T2 if it names only templates or the LLM prompt;
+  - T3 otherwise (documentation, operations procedure, review).
+- **Mixed cells** (code and a template, for example POL-GEN-03) are T1, because the code part needs
+  a test.
+- **Rules without an "Enforced in" cell:**
+  - answer rules (section 3) take it from the "Tool" column: a tool is T1, static text (POL-ANS-05)
+    is T2;
+  - "not answered" rules (POL-ANS-10 to 14) are T1: the tool layer never returns the field, and
+    every "Goes to" route is an orchestrator rule;
+  - rules in template tables (BAL, ACT, TXS, DEC and HND templates) are T2;
+  - section 7 (POL-HND-01, 02, 06) had no enforcement column, so one was added: HND-01 T2,
+    HND-02 and HND-06 T1 (transitions T-37 and T-38).
+- **Section 8:** its "Source rule" column already held component names, so it is renamed "Enforced
+  in".
+- **POL-ACT-12 changes from T2 (0.6, D-13) to T1.** Its cell names the orchestrator, which decides
+  when the offer is made (after a verified block, once, only with theft or fraud signals). Its
+  wording stays the T2 template POL-ACT-13. This is the one place where the new derivation rule
+  overrides an earlier explicit label; revert it if the team prefers the 0.6 label.
+- **Result:** 111 rules: T1 79, T2 28, T3 4 (POL-AUTH-13, POL-PII-06, 08, 09). The counts are in
+  the policy header.
+- **Checker:** `tools/check_docs.py` now fails if a rule has no tier or the header counts disagree
+  with the column. It lists, for review only, the T1 rules that no test in `backend/tests` or
+  `ml/tests` cites yet.
+- **Also fixed:** the 0.6 tier bullet in section 0 had been inserted in the middle of another
+  bullet's sentence.
+
+### D-18. Roles and registration
+
+- **Roles:** `cliente`, `agente`, `jurado`. The old `usuario` and `admin` values are migrated to
+  `cliente`, the least privileged role, by an idempotent statement in `run_migraciones()`.
+  Mapping `admin` to `jurado` would have granted impersonation to accounts nobody reviewed.
+- **Registration:**
+  - open only when `ENV` is exactly `development`. If `ENV` is missing it is closed: a security
+    control fails closed, even though `main.py` treats a missing `ENV` as development for table
+    creation;
+  - it ignores any `rol` or `customer_id` in the body and creates a `cliente` with no customer,
+    which no data tool accepts. Otherwise anyone could register as `jurado`, or claim a customer
+    by typing its number.
+- **Seeded users:** only `backend/scripts/sembrar_usuarios.py` creates users with a customer or a
+  privileged role:
+  - one `cliente` per session customer of the 12 golden dialogues (11 customers; CLI-AN7KXGR09TB2
+    is in dialogues 6 and 12), with `<customer_id>@clientes.keyperu.example`;
+  - `agente@keyperu.example` and `jurado@keyperu.example`.
+
+  `.example` is a reserved domain that email validation accepts. The script is idempotent and
+  needs `SEED_PASSWORD` of at least 12 characters. A test checks its list against the dialogue
+  overview.
+- **`agente`** has no endpoint yet; it is reserved for the case inbox.
+
+### D-19. Sessions, secrets and the existing auth code
+
+- **Session record:** every sign-in creates a row in `sesiones_identidad`, and the JWT only names
+  it (`sid`).
+  - Idle (15 min) and absolute (60 min) expiry, sign-out and step-up failures live in that row.
+    The JWT's `exp` is the absolute expiry, as a second check.
+  - Old tokens without `sid` stop working after this change; users sign in again.
+- **Response shapes:**
+  - `POST /autenticacion/iniciar-sesion` still returns the raw token string, so the frontend
+    proxy keeps working;
+  - session details are in the new `GET /autenticacion/mi-sesion`, which leaves out
+    `customer_status` (INV-14);
+  - `mi-perfil` answers 403 for a test-IdP session, which has no registered user behind it.
+- **Step-up:** `POST /autenticacion/step-up` takes the one-time code, a card and the action, the
+  inputs of the frozen `step_up` contract. It does not check card ownership. A step-up for a card
+  that is not the customer's leads to the same "not found" in `block_card`, so it reveals nothing.
+- **Secrets:** `SECRET_KEY`, `CARD_HASH_KEY` and `AUDIT_KEY` have no default in code, and the
+  backend does not import without them. `ALGORITHM` defaults to HS256 and must be HS256, HS384 or
+  HS512.
+- **`AUDIT_KEY`:** `docs/operations.md` 2.3 already listed it, but `backend/.env` did not have
+  it. A random value was generated and appended to the local `backend/.env`, never printed. It is
+  a new key, not one shared with `ml/`, so nothing else has to match it.
+- **Datetimes:** SQLModel 0.0.47 rejects naive datetimes, so the new tables store UTC-aware
+  values, as `Usuario` already did. Only the overlay's `hora_evento` is naive, because it is on the
+  bank clock of the gold data.
+
+### D-20. Test IdP: what the evaluator can do
+
+- **Codes for any live customer session:** `POST /identidad/otp-prueba` issues a code for any live
+  customer session, not only the ones the same jurado opened.
+  - Seeded `cliente` users sign in with a password and still need a code to block a card; there is
+    no other channel to deliver one.
+  - The code is useless without that session's token. A jurado can already open a session for any
+    customer, so this adds no access.
+  - Each code is audited with the jurado's ID.
+- **Search without a masked name.** The request asked for a masked name. Gold `customers` has no
+  names, and `gold-0.2` says every column not listed is unavailable to the backend
+  (`docs/contracts/gold_tables.md` section 2). Reading names from `02_intermediate` would break
+  that frozen contract. The search therefore returns `customer_id`, country and segment, and this
+  is flagged to the team. Adding a masked name needs a new column in the next gold contract version (for example initials
+  only), decided by the contract owners.
+- **Search limits:** prefix match on `customer_id`, filters by country, segment and status, at
+  most 20 per page, ordered by `customer_id`, and 10 searches a minute per jurado (HTTP 429).
+  - The page has `hay_mas` but no total count.
+  - The limiter lives in process memory (POL-AUTH-13); a shared store is remaining work.
+- **No bulk export:** a test asserts that `/identidad` exposes exactly the three endpoints.
+
+### D-21. Impersonation in the audit log
+
+- **Decision:** an impersonation is a `session` event (`authenticated`, actor `identity`), as
+  `audit-0.2` section 4.1 defines.
+  - The customer is recorded as `customer_ref`, the keyed pseudonym of AL-P3, and the time is
+    `occurred_at`. The request said "customer id"; the frozen contract only allows the pseudonym,
+    which the security role can re-identify.
+  - The jurado and the endpoint go in an **additive** field
+    `test_idp = {idp, issued_by_user_id, issued_by_role, endpoint}`, because the contract has no
+    field for the person who opened a session. The jurado ID is a staff user ID, not customer
+    data, so it is stored in clear.
+  - No existing field changes meaning. The field should be added in the next audit contract version by the contract
+    owners.
+- **Codes issued:** a `step_up_requested` event with the same field. The code itself is never
+  stored (AL-P2).
+- **Until the orchestrator exists:** the events written by the test IdP and the tools use
+  `turn_index` 0, a state chosen per event (`UNAUTHENTICATED`, `STEP_UP`, `EXECUTING`,
+  `HANDOFF`) and generated `trace_id` and `span_id`.
+  - The hash chain, UUIDv7 IDs and the AL-P7 scan are implemented. The scan also blocks raw
+    `CLI-`, `PRD-` and `TRX-` IDs, to enforce AL-P3.
+  - `tool_call` events are left to the tool gateway.
+
+### D-22. Mock bank reader and tools
+
+- **Read-only by construction:** gold is copied into an in-memory DuckDB, with only the columns
+  the tools use. Then `enable_external_access = false` and `lock_configuration = true` are set,
+  so the connection can neither read nor write files nor turn that back on. `opening_date`,
+  `expiration_date` and `last_updated` are not loaded at all (POL-ANS-13).
+  - Loading the real gold takes about 3 s.
+  - The reader reloads when `_load_log.parquet` changes (a new published load).
+- **`GOLD_DIR`:** it may point at the gold folder or at its parent. The local `.env` points at
+  `03_primary`, which holds `gold/`, so both work and nobody has to edit `.env`. `.env.example`
+  now points at the gold folder.
+- **Overlay rule:** `freshness_policy.md` section 5, with the delivery date of each gold row taken
+  from the `process_date` of its `source_file` in the published load log. If that date is
+  missing, the overlay wins, which is the conservative choice for a block.
+- **Bank clock:** optional `RELOJ_SIMULADO` (for example `2026-06-18T10:00:00`, the clock of the
+  golden dialogues). It sets "today" for transaction windows and the business day of overlay
+  events. Without it, the bank uses real UTC time, and the last-30-days window over the 2026-06
+  data is empty.
+- **Additive outputs beyond `docs/proposal.md` section 8:**
+  - `list_transactions`: the window used, `window_capped` and `truncated`;
+  - `describe_transaction`: card `last4` (the TXS subject needs it) and `notices` (POL-ESC-05 for
+    an unknown status or code);
+  - `get_balance`: `templates` (POL-BAL-01, 02, 03, 04, 06).
+
+  No contracted field was removed or renamed.
+- **Confirmation tokens:** the frozen `block_card` input includes a confirmation token, so
+  `emitir_token_confirmacion` issues one. It is bound to (session, card, `block_card`), lasts
+  120 s, is single use and needs a valid step-up for that card. A new token replaces the
+  previous one.
+- **Order of checks in `block_card`:**
+  1. step-up, consumed whatever the result (POL-AUTH-04);
+  2. ownership, with the same error as a missing card;
+  3. confirmation token, consumed atomically;
+  4. current status.
+
+  Each refusal writes `action_result` with `executed: false` and its error code. Single use is
+  enforced with `UPDATE … WHERE usado_en IS NULL` and a row-count check, so two concurrent calls
+  cannot both pass.
+- **No HTTP routes for the tools:** they are called in process by the orchestrator, which owns
+  the state checks (`state_machine.md` section 2). Exposing `block_card` over HTTP would bypass
+  INV-02 and INV-03.
+- **Ownership check:** `comprobar_numero_tarjeta` uses the HMAC exactly as
+  `docs/findings/gold_run.md` (deviation 9) specifies. It returns `propia`, `ajena` or
+  `no_encontrada`, with no data of another customer's card, and refuses anything shorter than 13
+  digits. The tests compare it with an independent implementation of the same formula.
+  - It was not checked against the real gold with the real key, because that would mean loading
+    `backend/.env` into a process.
+  - Running `banco.hmac_numero_tarjeta(<a product_number>)` once with the real key, against that
+    card's `card_number_hmac`, would close this.
+- **Case store:** `open_handoff` writes the `casos` table with the field names of policy section
+  8, which are a contract, so they stay in English.
+  - The server sets `customer_id`, `auth_level`, `conversation_ref`, `created_at` and
+    `policy_version`. A different `customer_id` in the case file is rejected.
+  - The idempotency key returns the same case on retry (POL-REL-02).
+  - It also runs for `Suspended` or `Closed` customers (POL-AUTH-09).
+
+### D-23. Smoke run on the real gold
+
+With a scratch database, dummy secrets and the real `GOLD_DIR`, the tools reproduce three golden
+dialogues:
+- dialogue 2: card 8407 Active, then step-up, token and block, then the verification read gives
+  `Blocked`;
+- dialogue 1: `TRX-0OQVC3BDVLGG2VDSXTFM` (127.37 USD, Uber, Declined, 54), with templates
+  POL-TXS-02 and POL-DEC-54, as in the dialogue;
+- dialogue 11: the credit card 5070 and savings account 1317 balances, with POL-BAL-01 and
+  POL-BAL-02.
+
+The audit hash chains verified. The local development database was not touched.
+
+### D-24. Tests: which T1 rules this layer covers
+
+`backend/tests` has 80 tests, all passing; every test's docstring cites the rules it covers.
+- `test_cobertura_reglas.py` lists the 44 T1 rules this layer enforces and checks two things:
+  - each one is cited by a test;
+  - each one is still T1 in the policy.
+- **Requested cases:**
+  - another customer's card gets the same refusal as a missing card, in every tool;
+  - a customer number alone authenticates nothing;
+  - only `jurado` reaches `/identidad/*`;
+  - expired sessions are refused (idle, absolute, tampered or expired JWT, sign-out);
+  - a block without step-up is refused;
+  - `block_card` leaves the Parquet files byte-identical, with the same modification time.
+- **Also covered:** FX-6 and FX-7 of `freshness_policy.md` 6.4, which `docs/findings/gold_run.md`
+  assigned to the backend.
+- **Not covered here:** T1 rules of the orchestrator, redaction layer, grounding check and policy
+  engine (for example POL-ESC-06, POL-PII-01). They wait for those components; `check_docs.py`
+  lists them.
+- **Isolation:** the tests never read `backend/.env` (`load_dotenv` is stubbed in `conftest.py`)
+  and use a labeled gold test fixture (`backend/tests/gold_prueba.py`), so they run on a clean
+  clone.
+
+### D-25. Smaller items
+
+- `backend/.env.example` held a pasted shell heredoc (`cat > … << 'EOF'`). It is now a plain
+  template with every required key.
+- `backend/requirements.txt` lists what the code imports (sqlmodel, PyJWT, pwdlib with argon2,
+  python-dotenv, email-validator, duckdb). pytest and httpx are in `requirements.dev.txt`.
+- `backend/models/__init__.py` imports every model, so `create_all` sees the new tables.
+- `run_migraciones()` now also runs on SQLite. It adds missing columns after checking them with
+  the inspector.

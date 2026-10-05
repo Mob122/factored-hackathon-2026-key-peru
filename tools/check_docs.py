@@ -4,8 +4,10 @@ Usage: python tools/check_docs.py  (from any directory)
 
 Checks that every cited ID (policy rules, transitions, invariants, gold checks, fixture and
 audit tests, hard negatives, golden flags, monitoring signals, matrix rows and gaps), every
-backticked repo path and every "`docs/x.md` section N" reference resolves. Exits 1 if any
-of those is broken. Version strings that are not current are reported for review only and do
+backticked repo path and every "`docs/x.md` section N" reference resolves, that every policy
+rule has a Tier (T1, T2 or T3) and that the "Rules by tier" counts in the policy header match
+the Tier column. Exits 1 if any of those is broken. Version strings that are not current, and T1
+rules that no test in backend/tests or ml/tests cites yet, are reported for review only and do
 not affect the exit code.
 """
 
@@ -28,7 +30,7 @@ NOT_YET = {
 
 # Current contract and document versions.
 CURRENT = {
-    "cards-synthetic": "0.6",
+    "cards-synthetic": "0.7",
     "sm": "0.4",
     "gold": "0.2",
     "fresh": "0.2",
@@ -37,7 +39,7 @@ CURRENT = {
     "eval-plan": "0.3",
     "golden": "0.5",
     "intents": "1.0",
-    "ops": "0.1",
+    "ops": "0.2",
 }
 # Lines that legitimately cite older versions (change logs, history notes).
 HISTORY = re.compile(
@@ -98,6 +100,31 @@ def main():
         f"AT {len(at)}, AL-P {len(alp)}, HN {len(hn)}, M {len(mon)}, gaps {len(gaps)}, "
         f"flags {len(flags)}, matrix rows {len(matrix_rows)}"
     )
+
+    # --- tiers: every rule row ends with T1/T2/T3, and the header counts match ---------------------
+    policy = text["docs/policy_cards.md"]
+    tiers = {}
+    for line in policy.splitlines():
+        m = re.match(r"^\| (POL-[A-Z]+-\d{2}) \|", line)
+        if m:
+            tier = line.rstrip().rstrip("|").rsplit("|", 1)[1].strip()
+            if tier not in ("T1", "T2", "T3"):
+                problems.append(f"docs/policy_cards.md: {m.group(1)} has no Tier (last cell {tier[:30]!r})")
+            tiers[m.group(1)] = tier
+    counts = {t: sum(1 for v in tiers.values() if v == t) for t in ("T1", "T2", "T3")}
+    stated = re.search(
+        r"^\| Rules by tier \| T1[^*]*\*\*(\d+)\*\*[^*]*T2[^*]*\*\*(\d+)\*\*[^*]*T3[^*]*\*\*(\d+)\*\*[^*]*total \*\*(\d+)\*\*",
+        policy,
+        flags=re.M,
+    )
+    if not stated:
+        problems.append("docs/policy_cards.md: no 'Rules by tier' row in the header")
+    elif tuple(map(int, stated.groups())) != (counts["T1"], counts["T2"], counts["T3"], len(tiers)):
+        problems.append(
+            f"docs/policy_cards.md: 'Rules by tier' says {'/'.join(stated.groups())} (T1/T2/T3/total), "
+            f"the Tier column gives {counts['T1']}/{counts['T2']}/{counts['T3']}/{len(tiers)}"
+        )
+    print(f"tiers: T1 {counts['T1']}, T2 {counts['T2']}, T3 {counts['T3']}")
 
     # --- rule IDs, with short forms ("POL-ANS-01 to 18", "POL-ACT-01, 02 and 06", "POL-DEC-90/91")
     seq = re.compile(r"POL-([A-Z]+)-(\d{2})((?:(?:\s*,\s*|\s+and\s+|\s+to\s+|/)\d{2}\b)*)")
@@ -192,12 +219,22 @@ def main():
                     if m.group(1) != cur and not HISTORY.search(line):
                         stale.append(f"{doc}:{i}: {name}-{m.group(1)} (current {cur}): {line.strip()[:110]}")
 
+    # --- T1 rules that no test cites yet (review only) ---------------------------
+    test_text = ""
+    for path in glob.glob("backend/tests/**/*.py", recursive=True) + glob.glob("ml/tests/**/*.py", recursive=True):
+        with open(path, encoding="utf-8") as f:
+            test_text += f.read()
+    untested = sorted(r for r, t in tiers.items() if t == "T1" and not re.search(re.escape(r) + r"\b", test_text))
+
     print(f"\nproblems: {len(problems)}")
     for p in problems:
         print("  " + p)
     print(f"\nversion strings that are not current (review; history lines excluded): {len(stale)}")
     for p in stale:
         print("  " + p)
+    print(f"\nT1 rules not cited by any test in backend/tests or ml/tests (review): {len(untested)} of {counts['T1']}")
+    for i in range(0, len(untested), 8):
+        print("  " + ", ".join(untested[i : i + 8]))
     return 1 if problems else 0
 
 

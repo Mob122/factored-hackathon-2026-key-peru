@@ -2,11 +2,12 @@
 
 | Field | Value |
 |---|---|
-| Version | `ops-0.1`, 2026-09-29, **draft skeleton** |
+| Version | `ops-0.2`, 2026-10-04, **draft** |
 | Status | Sections 2 to 5 are drafted from the written policy and contracts (Aldair). Section 1 (capacity and load test) and the trace sample in section 3.3 are placeholders for Martín, Day 7. Both review the whole document before feature freeze. |
 | Owners | Aldair (draft, sections 2 to 5) · Martín (section 1, section 3.3, implementation of the deletion job and health checks) |
-| Sources | `docs/policy_cards.md` `cards-synthetic-0.4` (SYNTHETIC), `docs/contracts/state_machine.md` `sm-0.3`, `docs/contracts/audit_log.md` `audit-0.2`, `docs/contracts/gold_tables.md` `gold-0.2`, `docs/contracts/freshness_policy.md` `fresh-0.2`, `docs/eval_plan.md` `eval-plan-0.2` |
+| Sources | `docs/policy_cards.md` `cards-synthetic-0.7` (SYNTHETIC), `docs/contracts/state_machine.md` `sm-0.4`, `docs/contracts/audit_log.md` `audit-0.2`, `docs/contracts/gold_tables.md` `gold-0.2`, `docs/contracts/freshness_policy.md` `fresh-0.2`, `docs/eval_plan.md` `eval-plan-0.3` |
 | Requirements | `docs/requirements_matrix.md` S-2, S-3, I-9, D6-1, D6-5 to D6-9 (gaps G-3, G-4) |
+| Changes in 0.2 | The mock identity is built as a labeled test IdP (POL-AUTH-10 to 13): roles `cliente`, `agente` and `jurado` in sections 2.1 and 2.2, `SEED_PASSWORD` and required secrets in 2.3, identity records in 4.1, and a real identity provider as remaining work in section 5. |
 
 Everything here describes a **prototype on synthetic data**. Values marked *prototype* are
 design choices, not measurements or bank requirements. Nothing in this document has been run
@@ -46,11 +47,12 @@ From POL-PII-07, POL-AUTH-01 to 09 and `docs/contracts/audit_log.md` section 6.
 
 | Role | Can see | Cannot see | Enforced in |
 |---|---|---|---|
-| Customer | Their own session: replies built from their own products (POL-AUTH-05) | Other customers' data, whether another customer's card exists (POL-ANS-18, INV-10), the audit log, traces | Mock identity (session bound to one `customer_id`), tool gateway |
+| Customer (`cliente`) | Their own session: replies built from their own products (POL-AUTH-05) | Other customers' data, whether another customer's card exists (POL-ANS-18, INV-10), the audit log, traces | Mock identity (session bound to one `customer_id`), tool gateway |
 | Customer with `customer_status` `Suspended` or `Closed` | Nothing but the handoff reply (POL-AUTH-09, T-51, INV-14) | Any product, balance, transaction or their own status | Orchestrator, tool gateway |
-| Human agent | Case files: the session customer's `customer_id` and internal product and transaction IDs (POL-PII-05) | Raw third-party identifiers (redacted in the case file), raw credentials | Case inbox (backend role) |
+| Human agent (`agente`) | Case files: the session customer's `customer_id` and internal product and transaction IDs (POL-PII-05) | Raw third-party identifiers (redacted in the case file), raw credentials | Case inbox (backend role) |
 | Operator | Traces and the audit log, with keyed pseudonyms (AL-P3) | Re-identification of pseudonyms and hashes, raw credentials | Backend role |
 | Security | Traces and the audit log; can re-identify pseudonyms and match keyed hashes through the backend (AL-P3, AL-P5) | Raw credentials, one-time codes | Backend role |
+| Evaluator (`jurado`) | Through the test IdP only (POL-AUTH-11): a customer search with `customer_id`, country and segment (20 per page, 10 searches a minute), a test session for one customer at a time, and one-time step-up codes for live customer sessions. Inside a test session the evaluator sees what that customer would see. | Customer names (gold has none), bulk lists of customers, the audit log, case files. Every session opened and every code issued is in the audit log with the evaluator's user ID. | Test IdP (`backend/routers/identidad.py`), audit log |
 | LLM provider | Redacted, allowlisted fields only (POL-PII-01 to 03, INV-09) | Everything in POL-PII-02 | Redaction layer, tool gateway |
 
 ### 2.2 Checks in the service layer, not in model text
@@ -58,23 +60,26 @@ From POL-PII-07, POL-AUTH-01 to 09 and `docs/contracts/audit_log.md` section 6.
 | Check | Rule | Where |
 |---|---|---|
 | Every tool call filtered by the session's customer | POL-AUTH-05, INV-07 | Tool gateway, mock bank |
-| Tools allowed per state; anything else returns `TOOL_NOT_ALLOWED_IN_STATE` | `sm-0.3` section 2 | Tool gateway |
+| Tools allowed per state; anything else returns `TOOL_NOT_ALLOWED_IN_STATE` | `sm-0.4` section 2 | Tool gateway |
 | Step-up (L2) bound to one card and one action, single use | POL-AUTH-04, INV-02 | Mock identity, action gateway |
 | Confirmation token bound to (session, card, action), from a later turn | POL-ACT-02, INV-03 | Action gateway |
-| Session expiry: idle 15 min, absolute 60 min (*prototype*) | POL-AUTH-03, INV-01 | Mock identity |
+| Session expiry: idle 15 min, absolute 60 min (*prototype*), checked on the server-side session record at every request and tool call | POL-AUTH-03, POL-AUTH-12, INV-01 | Mock identity (`backend/services/identidad.py`) |
 | Customer status check at every sign-in | POL-AUTH-09 | Orchestrator |
-| Identifiers typed in chat never authenticate | POL-AUTH-02, B-8 | Mock identity |
+| Identifiers typed in chat never authenticate; no data tool has a `customer_id` parameter | POL-AUTH-02, POL-AUTH-12, B-8 | Mock identity, tool layer (`backend/services/banco.py`) |
+| Only `jurado` calls `/identidad/*`; the customer search is paginated, rate-limited and has no bulk export | POL-AUTH-11 | Test IdP |
+| Open registration only with `ENV=development`; it creates a `cliente` with no customer and no privileged role | POL-AUTH-10 | Test IdP |
 | Ownership check on a typed full card number; result only to the security counter | POL-ESC-10, POL-AUTH-05 | Tool gateway |
 
 ### 2.3 Secrets
 
 | Secret | Used for | Where it lives in the prototype | Never |
 |---|---|---|---|
-| `SECRET_KEY`, `ALGORITHM` | Signing the backend's session JWT | `backend/.env` (git-ignored) | In the repository, logs or traces |
+| `SECRET_KEY`, `ALGORITHM` | Signing the backend's session JWT. The backend does not start without `SECRET_KEY` (POL-AUTH-10) | `backend/.env` (git-ignored) | In the repository, logs or traces |
 | `CARD_HASH_KEY` | `card_number_hmac` in gold and the ownership check (`gold_tables.md` section 3) | `ml/conf/local/credentials.yml` and `backend/.env` (both git-ignored) | Same |
-| `AUDIT_KEY` | Keyed pseudonyms and hashes in the audit log (AL-P3, AL-P5) | `backend/.env` | Same; operators have no access to it |
+| `AUDIT_KEY` | Keyed pseudonyms and hashes in the audit log (AL-P3, AL-P5) | `backend/.env`; required at startup | Same; operators have no access to it |
+| `SEED_PASSWORD` | Password of the seeded test users (`backend/scripts/sembrar_usuarios.py`, POL-AUTH-10) | `backend/.env` | Same; it protects every seeded user, so it must not be reused anywhere else |
 | LLM provider API key | LLM calls | `backend/.env` | Same; never sent to the browser |
-| Test credentials and one-time codes | Mock identity | Mock identity store | In the chat (POL-AUTH-08), the audit log (AL-P2) |
+| Test credentials and one-time codes | Test IdP | Password hashes (Argon2) in `usuarios`; one-time codes only as an HMAC in `codigos_otp_prueba`; the code is shown once to the evaluator | In the chat (POL-AUTH-08), the audit log (AL-P2) |
 
 Rotation, a secrets manager and per-environment keys are not implemented (section 5).
 
@@ -128,6 +133,7 @@ Values from policy section 11 (*prototype*, synthetic data).
 | Audit log | Append-only events, pseudonymized | 90 days (`RETAIN_CASE_DAYS`) | `occurred_at` | Audit log section 6 |
 | Handoff fallback queue | Case files waiting for replay | Until replayed, then as case files | Replay | POL-REL-03 |
 | Mock bank overlay | Status events written by `block_card` | Reset between evaluation runs (flag F-04, open); in production this is the core banking system | Reset procedure (open) | `freshness_policy.md` section 5 |
+| Identity records | Server-side sessions, step-ups and hashed one-time codes of the test IdP | Not in the deletion job yet (open); expired sessions grant nothing | — | POL-AUTH-03, POL-AUTH-12 |
 | Gold tables | Synthetic customers, cards, transactions, balance products | Life of the prototype; never committed (POL-PII-08) | — | `gold_tables.md` |
 | Never stored | Credentials, one-time codes, raw third-party identifiers, POL-PII-02 fields | — | — | AL-P2, POL-PII-04, 05 |
 
@@ -158,7 +164,7 @@ What the prototype does not have and a real deployment would need. None of it is
 
 | Area | Prototype today | Needed before deployment |
 |---|---|---|
-| Identity | Mock identity with test credentials and a mock one-time code (B-7) | Integration with the bank's identity provider and its step-up (OTP or app push); session management reviewed by security |
+| Identity | Test IdP (POL-AUTH-10 to 13): seeded users with one shared password, evaluator impersonation, the step-up code shown to the evaluator, an in-process search rate limit, no MFA and no lockout after wrong passwords | A real identity provider: the bank's IdP (OIDC or SAML) for sign-in, with MFA and account lockout and recovery; step-up delivered to the customer's own device (OTP or app push) and bound to the action; sessions managed and reviewed by security; rate limits in a shared store. `/identidad/*`, open registration and the seeded users are removed from any deployed environment |
 | Core banking | Gold tables built from a static synthetic dump; blocks written to a mock overlay | Read APIs of the core system for cards, balances and transactions; `block_card` against the real card-management system, with its own idempotency and status read |
 | Data | Synthetic data; no balance timestamp; random decline codes; no status history (`gold_tables.md` section 6) | Real data with real timestamps, block history and decline causes; re-evaluation of every policy rule that exists only because of the synthetic data (POL-ANS-10, 11, 13, 15) |
 | Language | Portuguese and regional variants written by the team; no Brazilian customers | Messages from real Portuguese- and Spanish-speaking customers, labeled by the bank's agents; re-calibration of the conformal sets per language |

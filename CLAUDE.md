@@ -76,8 +76,10 @@ uvicorn main:app --reload --port 8000
 
 - Layering: `routers/` (HTTP, APIRouter) → `services/` (business logic, DB queries) → `models/` (SQLModel tables) with `schemas/` holding Pydantic request/response models. Each package's `__init__.py` re-exports what others import.
 - DB session is injected via `SesionDependencia` ([db/config.py](backend/db/config.py)). `DATABASE_URL` is read from `backend/.env` (git-ignored) and is required; SQLite and Postgres/MySQL are both handled. In `ENV=development` (the default) tables are created on startup via `SQLModel.metadata.create_all`; schema changes to existing tables must be added as idempotent SQL in `run_migraciones()`. New model modules must be imported by the `models` package so `create_all` sees them.
-- Auth: JWT via PyJWT + pwdlib ([security/config.py](backend/security/config.py)), `SECRET_KEY`/`ALGORITHM` from env. Endpoints under `/autenticacion`: `registrar`, `iniciar-sesion` (returns the raw token string), `mi-perfil`.
-- `requirements.txt` does not yet list `sqlmodel`, `pyjwt`, `pwdlib`, `python-dotenv`, or `email-validator`, which the code imports; install them manually or add them.
+- Auth: JWT via PyJWT + pwdlib ([security/config.py](backend/security/config.py)). The JWT only names a server-side session (`sesiones_identidad`) with 15 min idle / 60 min absolute expiry. `SECRET_KEY`, `CARD_HASH_KEY` and `AUDIT_KEY` are required (no defaults; startup fails without them). Endpoints under `/autenticacion`: `registrar` (only with `ENV=development`; always creates a `cliente` with no customer), `iniciar-sesion` (returns the raw token string), `mi-perfil`, `mi-sesion`, `step-up` (L2, 5 min, bound to a card and `block_card`), `cerrar-sesion`.
+- Roles `cliente`, `agente`, `jurado`. `/identidad/*` is the labeled test IdP, `jurado` only ([services/identidad.py](backend/services/identidad.py), POL-AUTH-10 to 13). Seed test users with `python -m scripts.sembrar_usuarios` (needs `SEED_PASSWORD`).
+- Mock bank tools in [services/banco.py](backend/services/banco.py): read-only in-memory DuckDB over the gold Parquet in `GOLD_DIR`; `block_card` writes only to the overlay table; every tool takes a verified `SesionCliente`, never a `customer_id`. Optional `RELOJ_SIMULADO` (e.g. `2026-06-18T10:00:00`) sets the bank clock.
+- Tests: `python -m pytest` from `backend/` (config in `pytest.ini`). They never read `backend/.env` and use the gold test fixture in `tests/gold_prueba.py`.
 
 ## frontend/ (SvelteKit)
 

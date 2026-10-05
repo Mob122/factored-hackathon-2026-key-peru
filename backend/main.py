@@ -1,5 +1,6 @@
 from db import crear_db_y_tablas
 from routers import (
+    identidad_router,
     usuarios_router
 )
 
@@ -44,6 +45,7 @@ app.add_middleware(
 )
 
 app.include_router(usuarios_router) # Agrega el enrutador de usuarios a la aplicación FastAPI.
+app.include_router(identidad_router) # IdP de prueba (simulado): solo el rol jurado (POL-AUTH-11).
 
 
 @app.get("/")
