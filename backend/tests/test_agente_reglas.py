@@ -471,6 +471,23 @@ def test_modo_mock_nunca_llama_a_la_api(http, jurado, agente, monkeypatch):
     assert falso.pedidos == [] and chat.eventos("llm_call") == []
 
 
+def test_clasificador_limita_los_hilos_de_blas_antes_de_numpy(tmp_path):
+    """POL-ESC-06: el clasificador carga en el proceso del backend sin que OpenBLAS reserve un búfer por núcleo
+    (con 16 núcleos y el gold real en memoria, esa reserva tumbó el servidor). La variable se fija antes de numpy."""
+    import subprocess
+    import sys
+    from conftest import RAIZ_BACKEND
+
+    codigo = ("import os, sys; import main; from services.agente import clasificador; "
+              "assert 'numpy' not in sys.modules or os.environ['OPENBLAS_NUM_THREADS'] == '1'; "
+              "clasificador.clasificar('Hola'); print(os.environ['OPENBLAS_NUM_THREADS'])")
+    variables = {k: v for k, v in os.environ.items() if k not in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS")}
+    variables["PYTHONPATH"] = str(RAIZ_BACKEND)
+    resultado = subprocess.run([sys.executable, "-c", codigo], cwd= tmp_path, env= variables, capture_output= True, text= True)
+    assert resultado.returncode == 0, resultado.stderr
+    assert resultado.stdout.strip() == "1"
+
+
 @pytest.mark.parametrize("entorno, mensaje", [
     ({"LLM_MODEL": "gpt-5-turbo"}, "LLM_ALLOWED_MODELS"),
     ({"LLM_MODE": "openai"}, "OPENAI_API_KEY"),
