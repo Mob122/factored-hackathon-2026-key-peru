@@ -8,7 +8,7 @@ from db import SesionDependencia
 from models.identidad import SesionIdentidad
 from security.config import esquema_oauth2
 from services import identidad
-from services.identidad import ErrorSesion
+from services.identidad import ErrorSesion, SesionCliente
 
 ESTADOS_HTTP = {
     "TOKEN_INVALID": 401,
@@ -20,8 +20,11 @@ ESTADOS_HTTP = {
     "CUSTOMER_STATUS_REVIEW": 403,
     "STEP_UP_LOCKED": 403,
     "ROLE_FORBIDDEN": 403,
+    "DEMO_OTP_DISABLED": 403,
     "SESSION_NOT_FOUND": 404,
     "CUSTOMER_NOT_FOUND": 404,
+    "NOT_FOUND": 404,
+    "NOT_IN_STEP_UP": 409,
     "RATE_LIMITED": 429,
     "GOLD_UNAVAILABLE": 503,
 }
@@ -53,3 +56,14 @@ def requiere_rol(*roles: str) -> Callable[..., SesionIdentidad]:
 
 
 JuradoDependencia = Annotated[SesionIdentidad, Depends(requiere_rol("jurado"))]
+
+
+def get_sesion_cliente(registro: SesionActualDependencia) -> SesionCliente:
+    """Solo una sesión de cliente con customer_id; las tools toman el cliente de aquí (POL-AUTH-12)."""
+    try:
+        return identidad.sesion_cliente_desde(registro)
+    except ErrorSesion as error:
+        raise a_http(error)
+
+
+ClienteDependencia = Annotated[SesionCliente, Depends(get_sesion_cliente)]

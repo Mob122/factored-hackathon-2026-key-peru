@@ -1,12 +1,12 @@
 from typing import Annotated
 
 from db import SesionDependencia
-from schemas.identidad import LecturaSesion, RespuestaStepUp, SolicitudStepUp
+from schemas.identidad import LecturaSesion, RespuestaOTPDemo, RespuestaStepUp, SolicitudStepUp
 from schemas.usuarios import CrearUsuario, IniciarSesionUsuario, LecturaUsuario
 from security import esquema_oauth2
 from security.dependencias import SesionActualDependencia, a_http
 from services import identidad
-from services.identidad import ErrorSesion
+from services.identidad import AVISO_SMS_SIMULADO, ErrorSesion
 from services.usuarios import iniciar_sesion_usuario, registrar_usuario, get_actual_usuario
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -73,6 +73,16 @@ async def step_up(sesion: SesionDependencia, registro: SesionActualDependencia, 
         accion= paso.accion,
         expira_en= paso.expira_en,
     )
+
+@router.post("/otp-demo", status_code= 201, response_model= RespuestaOTPDemo)
+async def otp_demo(sesion: SesionDependencia, registro: SesionActualDependencia):
+    # SMS simulado (POL-AUTH-14): solo con ENV=development y mientras la conversación de la sesión está en STEP_UP.
+    try:
+        codigo, emitido = identidad.emitir_otp_demo(sesion, registro)
+    except ErrorSesion as error:
+        raise a_http(error)
+
+    return RespuestaOTPDemo(codigo= codigo, expira_en= emitido.expira_en, aviso= AVISO_SMS_SIMULADO)
 
 @router.post("/cerrar-sesion", status_code= 204)
 async def cerrar_sesion(sesion: SesionDependencia, registro: SesionActualDependencia):

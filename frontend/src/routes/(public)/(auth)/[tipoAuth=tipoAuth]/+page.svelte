@@ -49,7 +49,9 @@
             const body = await response.json();
 
             if (!response.ok) {
-                error = body.detail ??  body.error ?? 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
+                // detail es un texto o {codigo, mensaje} (contrato chat_api.md, sección 9).
+                const detalle = typeof body.detail === 'string' ? body.detail : body.detail?.mensaje;
+                error = detalle ?? body.error ?? 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
                 return;
             }
 
@@ -60,7 +62,9 @@
                     localStorage.removeItem('correo_electronico');
                 }            
     
-                goto('/app',{
+                // Después de una sesión expirada se vuelve a la página donde estaba (por ejemplo, el chat para retomarlo).
+                const volver = page.url.searchParams.get('volver');
+                goto(volver?.startsWith('/app') ? volver : '/app',{
                     invalidateAll: true
                 });
             } else if ( page.params.tipoAuth === 'registrarse' ) {
@@ -71,8 +75,6 @@
         } catch (err) {
             error = 'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.';
         } finally {
-            console.log(error);
-            
             cargando = false;
         }        
     };

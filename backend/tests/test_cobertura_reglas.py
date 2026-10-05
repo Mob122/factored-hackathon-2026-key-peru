@@ -37,7 +37,7 @@ def reglas_probadas() -> dict:
 
 
 def test_cada_regla_t1_de_la_politica_tiene_una_prueba():
-    """Todas las reglas T1 de la política (hoy 80 de 112) están citadas en el docstring de al menos una prueba."""
+    """Todas las reglas T1 de la política (hoy 82 de 114) están citadas en el docstring de al menos una prueba."""
     niveles = niveles_en_la_politica()
     t1 = sorted(r for r, nivel in niveles.items() if nivel == "T1")
     citas = reglas_probadas()

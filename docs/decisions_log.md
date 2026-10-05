@@ -623,3 +623,161 @@ Context: a CLI run against the real gold (`LLM_MODE=mock` and `openai`, `RELOJ_S
 - **Finding:** every turn that read transactions wrote a `security` event `pii_blocked` (POL-PII-05). `policy_decision.facts_used` held the raw `transaction_id` of `transaction` and `transactions` facts. The AL-P7 scan replaced it with `[BLOCKED_PII]`, which lost the reference and counted a false security event on each transaction answer. It happened before D-35 and D-36, in dialogues 1 and 5 on the real gold.
 - **Decision:** `facts_used` goes through `gateway.seudonimizar_ids`. It uses the same ID map as the tool results (`transaction_id` → `transaction_ref`, `card_id` and `product_id` → `card_ref`) and leaves every other field as it is. `resumen_auditable` is not reused because it drops scalar facts (`customer_status`, `requested_card_in_session`) and fields outside its allowlist (`bound_card_last4`).
 - **Scope:** only the audit event changes. The case file keeps the internal IDs, which POL-PII-05 allows and golden dialogue 5's `verified_facts` shows. Files changed: `backend/services/agente/gateway.py`, `backend/services/agente/orquestador.py`, `backend/tests/test_auditoria.py`.
+
+## Frontend handoff: API contract, demo gold and local run (2026-10-04)
+
+Context: the team asked for:
+- (1) `docs/contracts/chat_api.md` and `openapi.json` from the implemented backend, with examples from real calls;
+- (2) a demo gold;
+- (3) the NLU artifact in git if it is under 10 MB;
+- (4) a README section to run the agent locally, tested from a clean copy.
+
+### D-38. Demo gold
+
+- **Selection:**
+  - Every customer ID in `docs/golden_conversations.md` (the 11 personas).
+  - 200 others drawn at random, stratified by country and segment: proportional allocation with largest
+    remainders over the 12 strata, seed `20261004`, all customer statuses included.
+- **Tables:** `customers`, `cards`, `card_transactions` and `balance_products` are filtered by `customer_id`. The schema is the same as in gold-0.2; the script compares it table by table and checks that no transaction lacks its card.
+- **`_load_log.parquet`:** copied unchanged. The backend uses it to recognize a gold folder and to read each source file's delivery date (freshness section 4). Its row counts describe the full load, which nothing reads at serve time.
+- **Output:** `ml/data/demo_gold/` and `ml/data/demo_gold.zip`, both under the gitignored `ml/data/`. The zip is flat, so it unzips straight into any `GOLD_DIR`.
+- **Size:** 211 customers, 192 cards, 2,087 transactions and 296 balance products. That is 0.16 MB (0.15 MB zipped), against 82.19 MB for the full gold.
+- **Checked:**
+  - The seed script finds all 11 personas in the demo gold.
+  - The test IdP searches it and opens sessions for non-persona customers.
+  - Golden dialogues 1, 2, 5, 11 and 12 replay on it (D-39).
+- Files: `ml/scripts/make_demo_gold.py`.
+
+### D-39. API contract examples come from the app run in-process
+
+- **Decision:** `backend/scripts/capturar_contrato_api.py` runs the whole app with FastAPI's `TestClient` on the demo gold: routes, validation, sessions, orchestrator, real classifier and tools.
+  - It uses the golden clock, `LLM_MODE=mock`, a temporary SQLite database and secrets generated per run.
+  - It never reads `backend/.env`.
+  - It writes `docs/contracts/chat_api_examples.json` (68 calls), the example blocks of `chat_api.md` (between `<!-- example -->` markers) and `docs/contracts/openapi.json`.
+  - It fails if a call returns another HTTP status or chat state than expected, so the contract cannot drift silently.
+- **Why not a separate uvicorn:**
+  - The expired session needs the identity clock moved 16 minutes, which only works in-process.
+  - The run is reproducible from one command.
+  - No developer `.env` or database is involved.
+- **Forced conditions:** only two examples force one.
+  - The expired session: the clock moves forward.
+  - The LLM fallback: the real OpenAI SDK is pointed at a closed local port, so no API call is made.
+- **Dialogues:** golden dialogues 1, 5 and 11 are in Spanish only, so the Portuguese examples are dialogues 12 (balance) and 2. Dialogue 2 was added because it is the only golden step-up flow the frontend must build (`STEP_UP`, test one-time code, `AWAIT_CONFIRMATION`). It had no replay test; it runs end to end on the demo gold.
+- **Test-IdP customer:** chosen by a fixed rule, so the run stays deterministic: the first non-persona Active customer with 2+ balance products and an Active credit card with transactions in the golden 30-day window.
+- **Redaction:** tokens and the seed password are replaced by placeholders.
+- **Found while capturing:**
+  - A message to an `ENDED` conversation answers `200` with a fixed reply.
+  - `409 CONVERSATION_CLOSED` only comes from resuming an ended conversation.
+  - The contract says both.
+
+### D-40. Audit trail by conversation for the agent inbox
+
+- **Gap:** a case file names its conversation (`conversation_ref`, `evidence.tool_calls[].result_ref` = `audit://<conversation>/cN`), but the API could only read the audit log by `session_id`, which the case file does not carry.
+- **Decision:** new `GET /auditoria/conversacion/{conversation_id}`, for the same roles as the session read (`agente`, `jurado`, D-32). It returns every event of the conversation across its sessions, plus `cadena_valida` from the existing hash-chain check (AT-3).
+  - It grants no new access and changes no contract field.
+  - `audit_log.md` section 6 leaves the read API open.
+- Files: `backend/routers/auditoria.py`, `backend/schemas/chat.py`, test in `backend/tests/test_auditoria.py`.
+
+### D-41. Frontend reads `BACKEND_URL`
+
+- The backend URL was hard-coded in `hooks.server.ts` and `routes/api/auth/+server.ts`.
+- It now comes from `$lib/server/backend` (`$env/dynamic/private`, server-only, default `http://localhost:8000`). `frontend/.env.example` documents it.
+- Not run here: this machine has Node 14 and no pnpm, while Vite 8 needs Node `^20.19` or `>=22.12`. The change only replaces the URL string in the two server files.
+
+### D-42. NLU artifact
+
+- `ml/artifacts/nlu/model.joblib` is 1.46 MB, under the 10 MB limit, and was already committed with `conformal.json` and `metadata.json`.
+- Its SHA-256 matches `metadata.json` (`a03e2969…`). Nothing changed.
+
+### D-43. Local run instructions, tested from a clean copy
+
+- **`backend/.env.example` defaults** are now the local demo: `GOLD_DIR=../ml/data/demo_gold` and `RELOJ_SIMULADO=2026-06-18T10:00:00`. Without the golden clock, the gold has no recent transactions. Existing `.env` files are not affected.
+- **`CARD_HASH_KEY`:** a team secret. The README says that any value works locally, except the ownership check of a full card number typed in the chat (golden dialogue 7).
+- **How it was tested:**
+  - The clean copy held exactly the files this commit contains, plus `demo_gold.zip`.
+  - It used a fresh Python 3.11.0 venv.
+  - Every README step was followed: install, `.env`, unzip, seed, uvicorn with `--reload`, sign-in as customer, agent and jurado, test session, and both CLI commands.
+  - The only change was the port: 8000 belonged to another local app.
+  - The backend suite passed there: 138 tests.
+- **Fix found by the test:** the pip bundled with Python 3.11.0 (22.3) rejects scikit-learn 1.9.1's metadata ("invalid metadata entry 'name'"), and the install fails. The README now upgrades pip first.
+- **Not a repository problem:** installing into a very deep Windows path exceeds the 260-character limit inside scikit-learn's test data. A normal clone path stays well under it.
+- **Not tested:** the frontend step (Node 14 here, see D-41).
+
+## Frontend integration: chat, customer portal and agent inbox (2026-10-05)
+
+Context: `dev-frontend` (PR #11) brought the app screens with hard-coded data. The chat page had a `TODO`
+where the API call goes. The team asked for the integration to be testable end to end in the web, with
+real gold data in the customer pages and an agent inbox.
+
+### D-44. Simulated SMS for the step-up in the web (POL-AUTH-14)
+
+- **Gap:** a customer in the web had no way to get a step-up code. Only the jurado could issue one, with
+  `POST /identidad/otp-prueba` from the CLI.
+- **Decision:** `POST /autenticacion/otp-demo` gives a customer session its own code. It works only with
+  `ENV=development`, and only while a conversation of the session is in `STEP_UP`.
+  - It shares `_emitir_codigo` with `otp-prueba`: same TTL, single use, replacement of earlier codes, lock and
+    review checks.
+  - The audit event is `step_up_requested`, with `test_idp.channel` set to `simulated_sms` (additive to the
+    D-21 extension).
+- **Policy 0.9:** new POL-AUTH-14 (T1); POL-AUTH-13 names it.
+- **Tests and contract:** 3 tests in `backend/tests/test_autenticacion.py`, one of them parametrized. Contract
+  section 4.3 has the `sms-*` examples.
+
+### D-45. Customer portal endpoints (POL-PII-10)
+
+- **Gap:** a golden persona saw fake cards (4821, 9137…) next to a chat about their real card.
+- **Decision:** four read-only endpoints, `/cliente/tarjetas`, `/cliente/transacciones?dias=`,
+  `/cliente/conversaciones` and `/cliente/casos`. Cards and transactions go through `list_cards` and
+  `list_transactions`, with the same checks as in the chat (session, customer, POL-AUTH-09, window, row cap).
+- **Left out on purpose:**
+  - Internal IDs: a card is `t1`, `t2`… in `card_id` order, which no tool accepts.
+  - Response codes: they are random in the data (POL-ANS-10), and the assistant states them with its caveat.
+  - Balances: only the assistant states them, read in the turn with `as_of` (POL-GEN-07).
+  - The case file: it stays with agents.
+- **Not audited:** portal reads are not chat turns. Auditing them is remaining work.
+- **Policy 0.9:** new POL-PII-10 (T1).
+- **Files:** `backend/routers/cliente.py`, `backend/services/portal.py`, `backend/schemas/cliente.py`,
+  `ClienteDependencia` in `backend/security/dependencias.py`, and 5 tests in `backend/tests/test_portal.py`.
+
+### D-46. Frontend wired to the API
+
+- **Chat** (`/app/consultas`, through `src/routes/api/chat/[accion]/+server.ts`):
+  - Every state of contract section 4.2 has a panel.
+  - `STEP_UP` shows a code widget with the simulated SMS button. `AWAIT_CONFIRMATION` shows the card and a
+    countdown.
+  - Quick replies: the last 4 digits named in a `SELECT_CARD` reply, and "Sí"/"No" ("Sim"/"Não" in Portuguese).
+  - The transcript lives in the tab's `sessionStorage`. In the same session the chat just continues. After
+    signing in again it resumes with `POST /chat/sesiones` and the old `conversation_id` (G-02).
+- **Portal pages:** they read `/cliente/*`. "Bloquear tarjeta" and the transaction buttons open the chat with
+  a prefilled message, so a block still needs the step-up and an explicit yes.
+- **Agent inbox:** `/app/bandeja` sorts cases by priority (POL-HND-15). Each case shows its file and the
+  audit trail grouped by turn, with `cadena_valida`.
+- **Roles:** `hooks.server.ts` sends the agent to the inbox. The jurado and a registered user without a
+  customer see a notice on `/app`.
+- **Authentication:**
+  - The login route no longer returns the token to the browser.
+  - The cookie lasts 60 minutes (was 7 days).
+  - `secure` keeps SvelteKit's default, which is off only on `http://localhost`.
+  - New `/logout`, and `?volver=` returns to the page after signing in.
+- **Found while testing:**
+  - The chat page had a `<main>` inside the layout's `<main>`.
+  - The unlayered `section p` rule of `layout.css` overrides Tailwind color utilities, so text on colored
+    backgrounds uses `!`.
+  - The root layout linked a missing `/favicon.ico`, which gave a 404 on every page.
+
+### D-47. How the integration was tested
+
+- **Backend:** 147 tests (138 plus 9 new). The contract was captured again (77 examples), and
+  `tools/check_docs.py` passes.
+- **Frontend:** `svelte-check` reports 0 errors and 0 warnings. This machine has Node 14, so it ran with a
+  portable Node 22.
+- **End to end:** an isolated backend (temporary SQLite, generated secrets, demo gold, `LLM_MODE=mock`) and
+  the Vite dev server.
+  - 57 curl checks through the SvelteKit routes passed: sign-in, portal, block with the simulated SMS,
+    dispute handoff, resume after signing in again, logout, agent inbox and jurado.
+  - A headless Edge run of the UI passed: block from the card page, restore, Portuguese with a quick reply,
+    resume after signing in again, and the agent's case page. There were no console errors.
+- **Harness notes, not app issues:**
+  - Git Bash mangles non-ASCII characters in `curl.exe` arguments, so bodies go through
+    `--data-binary @file`.
+  - curl 7.75 drops `Secure` cookies on `http://localhost`.

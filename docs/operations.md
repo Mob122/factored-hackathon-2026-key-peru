@@ -5,7 +5,7 @@
 | Version | `ops-0.3`, 2026-10-04, **draft** |
 | Status | Sections 2 to 5 are drafted from the written policy and contracts (Aldair). Section 1 (capacity and load test) and the trace sample in section 3.3 are placeholders for Martín, Day 7. Both review the whole document before feature freeze. |
 | Owners | Aldair (draft, sections 2 to 5) · Martín (section 1, section 3.3, implementation of the deletion job and health checks) |
-| Sources | `docs/policy_cards.md` `cards-synthetic-0.8` (SYNTHETIC), `docs/contracts/state_machine.md` `sm-0.4`, `docs/contracts/audit_log.md` `audit-0.2`, `docs/contracts/gold_tables.md` `gold-0.2`, `docs/contracts/freshness_policy.md` `fresh-0.2`, `docs/eval_plan.md` `eval-plan-0.3` |
+| Sources | `docs/policy_cards.md` `cards-synthetic-0.9` (SYNTHETIC), `docs/contracts/state_machine.md` `sm-0.4`, `docs/contracts/audit_log.md` `audit-0.2`, `docs/contracts/gold_tables.md` `gold-0.2`, `docs/contracts/freshness_policy.md` `fresh-0.2`, `docs/eval_plan.md` `eval-plan-0.3` |
 | Requirements | `docs/requirements_matrix.md` S-2, S-3, I-9, D6-1, D6-5 to D6-9 (gaps G-3, G-4) |
 | Changes in 0.2 | The mock identity is built as a labeled test IdP (POL-AUTH-10 to 13): roles `cliente`, `agente` and `jurado` in sections 2.1 and 2.2, `SEED_PASSWORD` and required secrets in 2.3, identity records in 4.1, and a real identity provider as remaining work in section 5. |
 | Changes in 0.3 | The agent runs in the backend (`backend/services/agente/`): LLM settings and their startup checks in 2.3, the fallback queue's location in 4.1, and the agent's remaining work in section 5. |

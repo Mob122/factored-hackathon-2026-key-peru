@@ -1,17 +1,18 @@
-import { env } from '$env/dynamic/private';
 import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { BACKEND_URL, COOKIE_TOKEN, OPCIONES_COOKIE } from '$lib/server/backend';
 
-export const POST: RequestHandler = async ({request, cookies, url}) => {    
+export const POST: RequestHandler = async ({request, cookies, url}) => {
     try {
         const urlParams = new URLSearchParams(url.search);
         const tipoAuth = urlParams.get('tipoAuth');
-                
+
         const data = await request.json();
         let cuerpo: string | Record<string, any> = '';
 
         if (tipoAuth === 'registrarse') {
             const { correo_electronico, password, nombre } = data;
-            const respuesta = await fetch(`${env.API_BCKD_8}/autenticacion/registrar`, {
+            const respuesta = await fetch(`${BACKEND_URL}/autenticacion/registrar`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -26,18 +27,13 @@ export const POST: RequestHandler = async ({request, cookies, url}) => {
             cuerpo = await respuesta.json();
 
             if (!respuesta.ok) {
-                return new Response(JSON.stringify(cuerpo), {
-                    status: respuesta.status,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                return json(cuerpo, { status: respuesta.status });
             }
 
-        } else if (tipoAuth === 'login') {            
+        } else if (tipoAuth === 'login') {
             const { correo_electronico, password } = data;
 
-            const respuesta = await fetch(`${env.API_BCKD_8}/autenticacion/iniciar-sesion`, {
+            const respuesta = await fetch(`${BACKEND_URL}/autenticacion/iniciar-sesion`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -48,42 +44,22 @@ export const POST: RequestHandler = async ({request, cookies, url}) => {
                 })
             });
 
-            cuerpo = await respuesta.json();                        
+            cuerpo = await respuesta.json();
 
             if (!respuesta.ok) {
-                return new Response(JSON.stringify(cuerpo), {
-                    status: respuesta.status,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-            }      
-            
-            if (cuerpo) {
-                cookies.set('token', cuerpo as string, {
-                    path: '/', // La cookie estará disponible en todas las rutas.
-                    httpOnly: true, // Invisible para JavaScript del lado del cliente.
-                    secure: true, // Incluye la cookie solo en solicitudes HTTPS.
-                    sameSite: 'strict', // Previene el envío de la cookie en solicitudes de sitios cruzados.
-                    maxAge: 60 * 60 * 24 * 7 // La cookie expira en 7 días.
-                })
+                return json(cuerpo, { status: respuesta.status });
             }
-        }
-        
-        
 
-        return new Response(JSON.stringify(cuerpo), {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/json'
+            if (cuerpo) {
+                // El token nunca llega al navegador: la cookie es httpOnly y vive lo que la sesión del backend (60 min).
+                cookies.set(COOKIE_TOKEN, cuerpo as string, OPCIONES_COOKIE);
             }
-        });
+            // El token no se devuelve al navegador.
+            cuerpo = { ok: true };
+        }
+
+        return json(cuerpo, { status: 200 });
     } catch (error) {
-        return new Response(JSON.stringify({ error: 'Error en el servidor' }), {
-            status: 500,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    }    
+        return json({ error: 'No se pudo conectar con el servidor del banco.' }, { status: 502 });
+    }
 };

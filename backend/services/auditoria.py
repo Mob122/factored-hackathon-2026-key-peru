@@ -27,7 +27,7 @@ import time
 import uuid
 
 SCHEMA_VERSION = "audit-0.2"
-POLICY_VERSION = "cards-synthetic-0.8"
+POLICY_VERSION = "cards-synthetic-0.9"
 STATE_MACHINE_VERSION = "sm-0.4"
 
 # AL-P7: secuencias de 13 a 19 dígitos que no forman parte de un token alfanumérico (un hash hex no cuenta).

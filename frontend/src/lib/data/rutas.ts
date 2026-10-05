@@ -8,7 +8,9 @@ import Seguridad from '$lib/assets/icons/Seguridad.svelte';
 
 import type { Component } from 'svelte';
 
-export const RUTAS: Record<string, { texto: string; enlace: string, icono?: Component<{ _class: string | string[] }> }[]> = {
+export type Rutas = Record<string, { texto: string; enlace: string, icono?: Component<{ _class: string | string[] }> }[]>;
+
+export const RUTAS: Rutas = {
     RutasPrincipales: [
         { enlace: '/app', texto: 'Resumen', icono: Menu },
         { enlace: '/app/consultas', texto: 'Consultas', icono: Consulta },
@@ -22,4 +24,24 @@ export const RUTAS: Record<string, { texto: string; enlace: string, icono?: Comp
     RutasSeguridad: [
         { enlace: '/app/actividad', texto: 'Actividad y seguridad', icono: Seguridad },
     ]
-};    
+};
+
+// Agente humano: solo la bandeja de casos (contrato chat_api.md, sección 5).
+export const RUTAS_AGENTE: Rutas = {
+    RutasPrincipales: [
+        { enlace: '/app/bandeja', texto: 'Bandeja de casos', icono: Caso },
+    ],
+    RutasAtencion: [],
+    RutasSeguridad: []
+};
+
+// Jurado o usuario registrado sin cliente: un aviso en /app.
+export const RUTAS_SIN_CLIENTE: Rutas = {
+    RutasPrincipales: [
+        { enlace: '/app', texto: 'Inicio', icono: Menu },
+    ],
+    RutasAtencion: [
+        { enlace: '/app/ayuda', texto: 'Ayuda', icono: Ayuda }
+    ],
+    RutasSeguridad: []
+};

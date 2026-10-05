@@ -1,140 +1,72 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import Lupa from '$lib/assets/icons/Lupa.svelte';
 	import Transaccion from '$lib/assets/icons/Transaccion.svelte';
+	import {
+		ESTADOS_TRANSACCION, TIPOS_TRANSACCION, fechaLarga, formatearFechaBanco, formatearMonto, tipoCorto
+	} from '$lib/utils/formato';
+	import type { Tarjeta, Transaccion as TipoTransaccion } from '$lib/types';
     import type { PageProps } from './$types';
 
     let { data }: PageProps = $props();
 
+    type Fila = TipoTransaccion & { tarjeta: Tarjeta };
+
     let filtro = $state('');
-    let tarjetaSeleccionada = $state('Todas');
-    let periodoSeleccionado = $state('Últimos 30 días');
+    let transaccionSeleccionada = $state<Fila | null>(null);
 
-    const tarjetas = [
-        {
-            id: 'card-001',
-            numero: '•••• 4821',
-            tipo: 'Visa',
-            categoria: 'Crédito'
-        },
-        {
-            id: 'card-002',
-            numero: '•••• 9137',
-            tipo: 'Mastercard',
-            categoria: 'Débito'
-        },
-        {
-            id: 'card-003',
-            numero: '•••• 1054',
-            tipo: 'Visa',
-            categoria: 'Crédito'
-        }
-    ];
+    const ARTICULOS: Record<string, string> = { Purchase: 'la compra', Withdrawal: 'el retiro', Payment: 'el pago' };
 
-    const transacciones = [
-        {
-            id: 'tx-001',
-            comercio: 'Plaza Vea',
-            descripcion: 'Compra presencial',
-            fecha: '30 sep 2026, 18:42',
-            monto: -125.90,
-            moneda: 'PEN',
-            tarjeta: '•••• 4821',
-            estado: 'Completada',
-            categoria: 'Compras',
-            codigo: 'TX-847291'
-        },
-        {
-            id: 'tx-002',
-            comercio: 'Netflix',
-            descripcion: 'Suscripción mensual',
-            fecha: '29 sep 2026, 09:15',
-            monto: -44.90,
-            moneda: 'PEN',
-            tarjeta: '•••• 4821',
-            estado: 'Completada',
-            categoria: 'Entretenimiento',
-            codigo: 'TX-847102'
-        },
-        {
-            id: 'tx-003',
-            comercio: 'Uber',
-            descripcion: 'Servicio de transporte',
-            fecha: '28 sep 2026, 21:30',
-            monto: -18.50,
-            moneda: 'PEN',
-            tarjeta: '•••• 9137',
-            estado: 'Completada',
-            categoria: 'Transporte',
-            codigo: 'TX-846921'
-        },
-        {
-            id: 'tx-004',
-            comercio: 'Rappi',
-            descripcion: 'Compra en aplicación',
-            fecha: '27 sep 2026, 20:18',
-            monto: -67.40,
-            moneda: 'PEN',
-            tarjeta: '•••• 4821',
-            estado: 'Completada',
-            categoria: 'Alimentos',
-            codigo: 'TX-846731'
-        },
-        {
-            id: 'tx-005',
-            comercio: 'Transferencia recibida',
-            descripcion: 'Abono a cuenta',
-            fecha: '26 sep 2026, 14:05',
-            monto: 850.00,
-            moneda: 'PEN',
-            tarjeta: '•••• 9137',
-            estado: 'Completada',
-            categoria: 'Ingresos',
-            codigo: 'TX-846512'
-        },
-        {
-            id: 'tx-006',
-            comercio: 'Spotify',
-            descripcion: 'Suscripción mensual',
-            fecha: '24 sep 2026, 08:30',
-            monto: -23.90,
-            moneda: 'PEN',
-            tarjeta: '•••• 1054',
-            estado: 'Completada',
-            categoria: 'Entretenimiento',
-            codigo: 'TX-846102'
-        }
-    ];
-
-    let transaccionSeleccionada = $state<(typeof transacciones)[number] | null>(null);
+    // Todas las transacciones del periodo, de la más reciente a la más antigua, con su tarjeta.
+    const filas = $derived(
+        (data.transacciones?.tarjetas ?? [])
+            .flatMap((tarjeta) => tarjeta.transacciones.map((tx) => ({ ...tx, tarjeta })))
+            .sort((a, b) => b.fecha.localeCompare(a.fecha))
+    );
 
     let transaccionesFiltradas = $derived(
-        transacciones.filter((transaccion) => {
-            const coincideTarjeta =
-                tarjetaSeleccionada === 'Todas' ||
-                transaccion.tarjeta === tarjetaSeleccionada;
-
-            const texto = `${transaccion.comercio} ${transaccion.descripcion} ${transaccion.codigo}`.toLowerCase();
-
-            const coincideBusqueda =
-                filtro.trim() === '' ||
-                texto.includes(filtro.toLowerCase());
+        filas.filter((fila) => {
+            const coincideTarjeta = data.tarjeta === 'Todas' || fila.tarjeta.ref === data.tarjeta;
+            const texto = `${fila.comercio ?? ''} ${TIPOS_TRANSACCION[fila.tipo] ?? fila.tipo} ${ESTADOS_TRANSACCION[fila.estado]?.texto ?? fila.estado} ${fila.monto} ${fila.moneda}`.toLowerCase();
+            const coincideBusqueda = filtro.trim() === '' || texto.includes(filtro.toLowerCase());
 
             return coincideTarjeta && coincideBusqueda;
         })
     );
 
-    function seleccionarTransaccion(transaccion: (typeof transacciones)[number]) {
-        transaccionSeleccionada = transaccion;
+    const rechazadas = $derived(transaccionesFiltradas.filter((fila) => fila.estado === 'Declined').length);
+    const tarjetasConMovimientos = $derived(new Set(transaccionesFiltradas.map((fila) => fila.tarjeta.ref)).size);
+    const truncadas = $derived(
+        (data.transacciones?.tarjetas ?? []).filter((tarjeta) => tarjeta.truncada && (data.tarjeta === 'Todas' || tarjeta.ref === data.tarjeta))
+    );
+
+    // Tarjeta y periodo van en la URL: el periodo vuelve a leer la API (de 1 a 90 días, POL-ANS-03).
+    function cambiar(parametro: 'tarjeta' | 'dias', valor: string) {
+        const url = new URL(page.url);
+        url.searchParams.set(parametro, valor);
+        goto(url, { keepFocus: true, noScroll: true, replaceState: true });
+    }
+
+    function seleccionarTransaccion(fila: Fila) {
+        transaccionSeleccionada = fila;
     }
 
     function cerrarDetalle() {
         transaccionSeleccionada = null;
     }
 
-    function formatearMonto(monto: number) {
-        const signo = monto >= 0 ? '+' : '-';
-
-        return `${signo} S/ ${Math.abs(monto).toFixed(2)}`;
+    // Abre el chat con el pedido escrito; el cliente lo revisa y lo envía.
+    function preguntar(fila: Fila, desconoce: boolean) {
+        const articulo = ARTICULOS[fila.tipo] ?? 'la transacción';
+        const deComercio = fila.comercio ? ` de ${fila.comercio}` : '';
+        const detalle = `${deComercio} del ${fechaLarga(fila.fecha)} por ${fila.monto} ${fila.moneda} en mi tarjeta de ${tipoCorto(fila.tarjeta.tipo)} terminada en ${fila.tarjeta.last4}`;
+        const mensaje = desconoce
+            ? `No reconozco ${articulo}${detalle}.`
+            : fila.estado === 'Declined'
+              ? `¿Por qué rechazaron ${articulo}${detalle}?`
+              : `¿Qué es ${articulo}${detalle}?`;
+        goto(`/app/consultas?mensaje=${encodeURIComponent(mensaje)}`);
     }
 </script>
 
@@ -147,7 +79,13 @@
     <section>
         <div class="flex items-center justify-between">
             <div class="space-y-4">
-                <span class="block font-light">Información verificada</span>
+                <span class="block font-light">
+                    {#if data.transacciones}
+                        Del {formatearFechaBanco(data.transacciones.desde, false)} al {formatearFechaBanco(data.transacciones.hasta, false)} · reloj del banco
+                    {:else}
+                        Información verificada
+                    {/if}
+                </span>
                 <h1>Mis transacciones</h1>
             </div>
             <a
@@ -159,6 +97,14 @@
             </a>
         </div>
     </section>
+
+    {#if data.enRevision}
+        <section>
+            <div class="bg-amber-50 p-4 rounded-xl text-amber-800">
+                Su cuenta está en revisión: un asesor atenderá su caso. Mientras tanto no podemos mostrar sus movimientos.
+            </div>
+        </section>
+    {:else}
     <section>
          <div class="gap-4 grid mb-6 sm:grid-cols-3">
            <article class="bg-white p-2 rounded-xl space-y-5">
@@ -173,10 +119,10 @@
             <article class="bg-white p-2 rounded-xl space-y-5">
                 <div class="flex gap-2 items-center">
                     <Transaccion _class="fill-red-500 h-6 w-6" />
-                    <span class="text-red-500">Gastos Recientes</span>
+                    <span class="text-red-500">Rechazadas</span>
                 </div>
-                <h3 class="font-bold">S/ 280.60</h3>
-                <h4 class="separar-letras">Compras y suscripciones</h4>
+                <h3 class="font-bold">{rechazadas}</h3>
+                <h4 class="separar-letras">Puedes preguntar por qué</h4>
             </article>
 
             <article class="bg-white p-2 rounded-xl space-y-5">
@@ -184,56 +130,56 @@
                     <Transaccion _class="fill-gris-secundario/62 h-6 w-6" />
                     <span>Tarjetas Utilizadas</span>
                 </div>
-                <h3 class="font-bold">3</h3>
-                <h4 class="separar-letras">Con movimientos recientes</h4>
-            </article>                        
+                <h3 class="font-bold">{tarjetasConMovimientos}</h3>
+                <h4 class="separar-letras">Con movimientos en el periodo</h4>
+            </article>
         </div>
     </section>
     <section >
-        <div>            
+        <div>
             <div class="grid gap-4 md:grid-cols-[1fr_200px_180px]">
                 <!-- Buscar -->
                 <div class="bg-white p-4 rounded-xl">
                     <label for="buscar" class="block font-semibold mb-2 text-xs">
                         Buscar transacción
                     </label>
-    
+
                     <div class="relative">
                         <Lupa _class="absolute h-4 left-3  stroke-gris-secundario/62 top-1/2 -translate-y-1/2 w-4" />
-    
-                        <input id="buscar" type="text" bind:value={filtro} placeholder="Comercio, descripción o código..." class="bg-slate-50 focus:bg-white focus:ring-2 focus:ring-red-100 outline-none placeholder:text-slate-400 pl-9 pr-3 py-2.5 rounded-xl text-sm transition-all w-full"
+
+                        <input id="buscar" type="text" bind:value={filtro} placeholder="Comercio, tipo, estado o monto..." class="bg-slate-50 focus:bg-white focus:ring-2 focus:ring-red-100 outline-none placeholder:text-slate-400 pl-9 pr-3 py-2.5 rounded-xl text-sm transition-all w-full"
                         />
                     </div>
                 </div>
-    
+
                 <!-- Tarjeta -->
                 <div class="bg-white p-4 rounded-xl">
                     <label for="tarjeta" class="block font-semibold mb-2 text-xs">
                         Tarjeta
                     </label>
-    
-                    <select id="tarjeta" bind:value={tarjetaSeleccionada} class="bg-slate-50 focus:ring-2 focus:ring-red-100 px-3 py-2.5 rounded-xl text-sm outline-none  w-full"
+
+                    <select id="tarjeta" value={data.tarjeta} onchange={(event) => cambiar('tarjeta', event.currentTarget.value)} class="bg-slate-50 focus:ring-2 focus:ring-red-100 px-3 py-2.5 rounded-xl text-sm outline-none  w-full"
                     >
                         <option value="Todas">Todas las tarjetas</option>
-    
-                        {#each tarjetas as tarjeta}
-                            <option value={tarjeta.numero}>
-                                {tarjeta.tipo} {tarjeta.numero}
+
+                        {#each data.transacciones?.tarjetas ?? [] as tarjeta (tarjeta.ref)}
+                            <option value={tarjeta.ref}>
+                                {tipoCorto(tarjeta.tipo) === 'débito' ? 'Débito' : 'Crédito'} •••• {tarjeta.last4}
                             </option>
                         {/each}
                     </select>
                 </div>
-    
+
                 <!-- Periodo -->
                 <div class="bg-white p-4 rounded-xl">
                     <label for="periodo" class="block font-semibold mb-2 text-xs">
                         Periodo
                     </label>
-    
-                    <select id="periodo" bind:value={periodoSeleccionado} class="bg-slate-50 focus:ring-2 focus:ring-red-100 px-3 py-2.5 rounded-xl text-sm outline-none w-full">
-                        <option>Últimos 30 días</option>
-                        <option>Últimos 7 días</option>
-                        <option>Últimos 3 meses</option>
+
+                    <select id="periodo" value={String(data.dias)} onchange={(event) => cambiar('dias', event.currentTarget.value)} class="bg-slate-50 focus:ring-2 focus:ring-red-100 px-3 py-2.5 rounded-xl text-sm outline-none w-full">
+                        <option value="7">Últimos 7 días</option>
+                        <option value="30">Últimos 30 días</option>
+                        <option value="90">Últimos 90 días</option>
                     </select>
                 </div>
             </div>
@@ -248,91 +194,61 @@
                             <h2 class="font-semibold">
                                 Movimientos recientes
                             </h2>
-        
+
                             <p class="mt-1">
                                 Selecciona una transacción para consultar sus detalles.
                             </p>
                         </div>
-        
+
                         <span class="bg-slate-100 font-medium px-3 py-1 rounded-full text-xs">
                             {transaccionesFiltradas.length} resultados
                         </span>
                     </div>
+                    {#each truncadas as tarjeta (tarjeta.ref)}
+                        <p class="mt-2 text-xs!">La tarjeta •••• {tarjeta.last4} tiene más movimientos en el periodo: se muestran los 20 más recientes. Pide más detalle al asistente.</p>
+                    {/each}
                 </div>
-        
+
                 {#if transaccionesFiltradas.length > 0}
                     <div class="divide-y divide-slate-100">
                         {#each transaccionesFiltradas as transaccion}
-                            <button type="button" onclick={() => seleccionarTransaccion(transaccion)} class="cursor-pointer duration-300 flex flex-wrap gap-4 group hover:bg-slate-50 items-center px-5 py-4 text-left transition-all w-full"> 
+                            {@const estado = ESTADOS_TRANSACCION[transaccion.estado] ?? { texto: transaccion.estado, clase: 'text-slate-500' }}
+                            <button type="button" onclick={() => seleccionarTransaccion(transaccion)} class="cursor-pointer duration-300 flex flex-wrap gap-4 group hover:bg-slate-50 items-center px-5 py-4 text-left transition-all w-full">
                                 <!-- Icono -->
-                                <div class={`flex h-8 items-center justify-center rounded-xl shrink-0 w-8 ${transaccion.monto >= 0 ? 'bg-green-50 text-green-600' : 'bg-slate-100'}`}>
-                                    {#if transaccion.monto >= 0}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            class="h-5 w-5"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M12 4v16m8-8H4"
-                                            />
-                                        </svg>
-                                    {:else}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            class="h-5 w-5"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M20 12H4"
-                                            />
-                                        </svg>
-                                    {/if}
+                                <div class={`flex h-8 items-center justify-center rounded-xl shrink-0 w-8 ${transaccion.estado === 'Declined' ? 'bg-red-50 text-red-600' : 'bg-slate-100'}`}>
+                                    <Transaccion _class="fill-gris-secundario/62 h-4 w-4" />
                                 </div>
-        
+
                                 <!-- Información -->
                                 <div class="flex-1 min-w-0">
                                     <div class="flex gap-2 items-center">
                                         <p class="font-semibold truncate text-sm">
-                                            {transaccion.comercio}
+                                            {transaccion.comercio ?? TIPOS_TRANSACCION[transaccion.tipo] ?? transaccion.tipo}
                                         </p>
-        
+
                                         <span class="bg-slate-100 font-medium hidden px-2 py-0.5 rounded-md text-[10px] text-slate-500 sm:inline">
-                                            {transaccion.categoria}
+                                            {TIPOS_TRANSACCION[transaccion.tipo] ?? transaccion.tipo}
                                         </span>
                                     </div>
-        
-                                    <p class="mt-1 text-xs truncate">
-                                        {transaccion.descripcion}
-                                    </p>
-        
+
                                     <div class="flex gap-2 items-center mt-1 text-[11px] text-slate-400">
-                                        <span>{transaccion.fecha}</span>
+                                        <span>{formatearFechaBanco(transaccion.fecha)}</span>
                                         <span>•</span>
-                                        <span>{transaccion.tarjeta}</span>
+                                        <span>{tipoCorto(transaccion.tarjeta.tipo) === 'débito' ? 'Débito' : 'Crédito'} •••• {transaccion.tarjeta.last4}</span>
                                     </div>
                                 </div>
-        
+
                                 <!-- Monto -->
                                 <div class="text-right">
-                                    <p class={`font-bold text-sm ${transaccion.monto >= 0 ? 'text-green-600' : 'text-slate-800' }`}>
-                                        {formatearMonto(transaccion.monto)}
+                                    <p class="font-bold text-slate-800 text-sm">
+                                        {formatearMonto(transaccion.monto, transaccion.moneda)}
                                     </p>
-        
-                                    <p class="mt-1 text-[11px]! text-slate-400">
-                                        {transaccion.estado}
+
+                                    <p class={`mt-1 text-[11px]! ${estado.clase}`}>
+                                        {estado.texto}
                                     </p>
                                 </div>
-        
+
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     class="h-4 w-4 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-red-400"
@@ -349,32 +265,34 @@
                                 </svg>
                             </button>
                         {/each}
-        
+
                     </div>
                 {:else}
                     <div class="px-6 py-16 text-center">
                         <div class="bg-slate-100 flex h-12 items-center justify-center mx-auto rounded-full w-12">
                             <Lupa _class="h-6 stroke-slate-400 w-6" />
                         </div>
-        
+
                         <p class="font-semibold mt-4">
                             No encontramos transacciones
                         </p>
-        
+
                         <p class="mt-1">
-                            Prueba cambiando los filtros de búsqueda.
+                            Prueba con otra tarjeta, otro periodo u otra búsqueda.
                         </p>
                     </div>
                 {/if}
             </div>
         </div>
     </section>
-</div>        
+    {/if}
+</div>
 
 <!-- Modal detalle -->
 {#if transaccionSeleccionada}
+    {@const estado = ESTADOS_TRANSACCION[transaccionSeleccionada.estado] ?? { texto: transaccionSeleccionada.estado, clase: 'text-slate-500' }}
     <div class="backdrop-blur-sm bg-slate-900/40 flex fixed inset-0 items-center justify-center px-4 z-50" role="presentation" onclick={(event) => { if (event.target === event.currentTarget) cerrarDetalle();}}>
-        <div class="bg-white max-w-md rounded-2xl">
+        <div class="bg-white max-w-md rounded-2xl w-full">
             <!-- Header -->
             <div class="flex items-start justify-between p-5">
                 <div>
@@ -383,7 +301,7 @@
                     </p>
 
                     <h2 class="font-bold mt-1 text-lg">
-                        {transaccionSeleccionada.comercio}
+                        {transaccionSeleccionada.comercio ?? TIPOS_TRANSACCION[transaccionSeleccionada.tipo] ?? transaccionSeleccionada.tipo}
                     </h2>
                 </div>
 
@@ -413,51 +331,46 @@
             <!-- Monto -->
             <div class="px-5 pt-6 text-center">
                 <p class={`text-3xl font-bold `}>
-                    {formatearMonto(transaccionSeleccionada.monto)}
+                    {formatearMonto(transaccionSeleccionada.monto, transaccionSeleccionada.moneda)}
                 </p>
 
-                <span class="font-semibold inline-flex mt-2 px-3 py-1 rounded-full text-xs text-green-700">
-                    {transaccionSeleccionada.estado}
+                <span class={`font-semibold inline-flex mt-2 px-3 py-1 rounded-full text-xs ${estado.clase}`}>
+                    {estado.texto}
                 </span>
             </div>
 
             <!-- Datos -->
             <div class="p-5 space-y-4 ">
                 <div class="border-b border-slate-100 flex items-center justify-between pb-3">
-                    <span class="text-sm">Descripción</span>
+                    <span class="text-sm">Tipo</span>
                     <span class="font-medium text-right text-sm">
-                        {transaccionSeleccionada.descripcion}
+                        {TIPOS_TRANSACCION[transaccionSeleccionada.tipo] ?? transaccionSeleccionada.tipo}
                     </span>
                 </div>
 
                 <div class="border-b border-slate-100 flex items-center justify-between pb-3">
                     <span class="text-sm">Fecha</span>
                     <span class="font-medium text-right text-sm">
-                        {transaccionSeleccionada.fecha}
-                    </span>
-                </div>
-
-                <div class="border-b border-slate-100 flex items-center justify-between pb-3">
-                    <span class="text-sm">Tarjeta</span>
-                    <span class="font-medium text-right text-sm">
-                        {transaccionSeleccionada.tarjeta}
+                        {formatearFechaBanco(transaccionSeleccionada.fecha)}
                     </span>
                 </div>
 
                 <div class="flex items-center justify-between">
-                    <span class="text-sm">Código</span>
-                    <span class="bg-slate-100 font-bold font-mono px-2 py-1 rounded-md text-xs">
-                        {transaccionSeleccionada.codigo}
+                    <span class="text-sm">Tarjeta</span>
+                    <span class="font-medium text-right text-sm">
+                        {transaccionSeleccionada.tarjeta.tipo} •••• {transaccionSeleccionada.tarjeta.last4}
                     </span>
                 </div>
-
             </div>
 
             <!-- Acción -->
-            <div class="p-5">
-                <a href="/app/consultas" class="bg-red-500 flex font-semibold gap-2 hover:bg-red-400 items-center justify-center rounded-xl px-4 py-3 text-sm text-white transition-all w-full">
-                    Consultar esta transacción
-                </a>
+            <div class="p-5 space-y-2">
+                <button type="button" onclick={() => transaccionSeleccionada && preguntar(transaccionSeleccionada, false)} class="bg-red-500 cursor-pointer flex font-semibold gap-2 hover:bg-red-400 items-center justify-center rounded-xl px-4 py-3 text-sm text-white transition-all w-full">
+                    {transaccionSeleccionada.estado === 'Declined' ? '¿Por qué fue rechazada?' : 'Consultar esta transacción'}
+                </button>
+                <button type="button" onclick={() => transaccionSeleccionada && preguntar(transaccionSeleccionada, true)} class="border border-slate-200 cursor-pointer font-semibold hover:bg-slate-50 px-4 py-3 rounded-xl text-sm transition w-full">
+                    No reconozco este cargo
+                </button>
 
                 <p class="leading-4 mt-2 text-center text-[11px]">
                     El asistente solo proporcionará información que pueda verificar con los datos de tu cuenta.

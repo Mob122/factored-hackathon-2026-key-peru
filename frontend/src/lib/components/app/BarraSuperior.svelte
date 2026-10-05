@@ -3,7 +3,7 @@
 
     let { abrir = $bindable() }: {abrir: boolean} = $props();
 
-    let usuario = page.data.usuario;    
+    const usuario = $derived(page.data.usuario);
 </script>
 
 <header> 
@@ -43,16 +43,16 @@
                 </div>
                 <div class="bg-white flex gap-3 items-center px-3 py-1 rounded-3xl md:px-4">
                     <div class="bg-red-500 flex font-bold h-9 items-center justify-center rounded-full shrink-0 text-sm text-white w-9">
-                        {usuario.nombre.charAt(0)?.toUpperCase() ?? 'U'}
+                        {usuario?.nombre?.charAt(0)?.toUpperCase() ?? 'U'}
                     </div>
     
                     <div class="min-w-0 space-x-2">
                         <p class="font-semibold text-sm text-slate-800 truncate">
-                            {usuario.nombre ?? 'Usuario'}
+                            {usuario?.nombre ?? 'Usuario'}
                         </p>
     
                         <p class="text-slate-500 text-xs">
-                            {usuario.correo_electronico}
+                            {usuario?.correo_electronico}
                         </p>
                     </div>            
                 </div>

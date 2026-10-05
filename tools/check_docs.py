@@ -33,7 +33,7 @@ NOT_YET = {
 
 # Current contract and document versions.
 CURRENT = {
-    "cards-synthetic": "0.8",
+    "cards-synthetic": "0.9",
     "sm": "0.4",
     "gold": "0.2",
     "fresh": "0.2",

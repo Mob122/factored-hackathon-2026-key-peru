@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 import inspect
 import os
+import re
 import subprocess
 import sys
 
@@ -12,11 +13,11 @@ import pytest
 from sqlmodel import select
 
 from conftest import (
-    CLAVE, RAIZ_BACKEND, abrir_sesion_cliente, cabeceras, crear_usuario, iniciar_sesion, sesion_cliente, subir_a_l2,
+    CLAVE, RAIZ_BACKEND, Chat, abrir_sesion_cliente, cabeceras, crear_usuario, iniciar_sesion, sesion_cliente, subir_a_l2,
 )
 from gold_prueba import CLIENTE_FX, CLIENTE_SUSPENDIDO, OTRO_CLIENTE, TARJETA_7921, TARJETA_9205, TARJETA_SUSPENDIDO
 from models.auditoria import EventoAuditoria
-from services import banco, identidad
+from services import auditoria, banco, identidad
 from services.identidad import ErrorSesion, SesionCliente
 
 
@@ -292,3 +293,60 @@ def test_cliente_suspendido_solo_recibe_transferencia(http, bd, jurado):
         "reason_rule_ids": ["POL-AUTH-09"], "priority": "normal", "language": "es",
     }, idempotency_key= f"{sesion_id}:t51")
     assert caso["case_id"].startswith("CASE-")
+
+
+# --- SMS simulado (POL-AUTH-14) ------------------------------------------------------------------
+
+def _chat_con_contrasena(http, jurado):
+    """Cliente sembrado que entra con contraseña, como en la web, y abre el chat."""
+    crear_usuario("cliente", "cliente@pruebas.keyperu.example", CLIENTE_FX)
+    token = iniciar_sesion(http, "cliente@pruebas.keyperu.example")
+    return Chat(http, jurado, CLIENTE_FX, token= token)
+
+
+def test_sms_simulado_da_el_codigo_de_la_sesion_solo_en_step_up(http, bd, jurado):
+    """POL-AUTH-14, POL-AUTH-04: con ENV=development el cliente recibe en la web el código de su propia sesión, solo
+    mientras su conversación está en STEP_UP. El código pasa el step-up desde la ventana de verificación, se audita
+    como SMS simulado y no se guarda."""
+    chat = _chat_con_contrasena(http, jurado)
+    fuera = http.post("/autenticacion/otp-demo", headers= cabeceras(chat.token))
+    assert fuera.status_code == 409 and fuera.json()["detail"]["codigo"] == "NOT_IN_STEP_UP"
+
+    assert chat.decir("Quiero bloquear mi tarjeta terminada en 9205.")["state"] == "STEP_UP"
+    sms = http.post("/autenticacion/otp-demo", headers= cabeceras(chat.token))
+    assert sms.status_code == 201
+    datos = sms.json()
+    assert re.fullmatch(r"\d{6}", datos["codigo"]) and datos["canal"] == "sms_simulado" and "POL-AUTH-14" in datos["aviso"]
+
+    assert chat.codigo(datos["codigo"])["state"] == "AWAIT_CONFIRMATION"
+
+    eventos = [e.cuerpo for e in bd.exec(select(EventoAuditoria).where(EventoAuditoria.session_id == chat.sesion_id)).all()
+               if e.cuerpo.get("session_event") == "step_up_requested"]
+    assert len(eventos) == 1
+    assert eventos[0]["test_idp"]["channel"] == "simulated_sms" and "POL-AUTH-14" in eventos[0]["rule_ids"]
+    assert datos["codigo"] not in auditoria.json_canonico(eventos[0])
+
+
+@pytest.mark.parametrize("entorno", ["production", None])
+def test_sms_simulado_cerrado_fuera_de_development(http, jurado, monkeypatch, entorno):
+    """POL-AUTH-14: fuera de ENV=development el SMS simulado responde DEMO_OTP_DISABLED, aunque la conversación esté en STEP_UP."""
+    chat = _chat_con_contrasena(http, jurado)
+    assert chat.decir("Quiero bloquear mi tarjeta terminada en 9205.")["state"] == "STEP_UP"
+    if entorno is None:
+        monkeypatch.delenv("ENV", raising= False)
+    else:
+        monkeypatch.setenv("ENV", entorno)
+
+    respuesta = http.post("/autenticacion/otp-demo", headers= cabeceras(chat.token))
+
+    assert respuesta.status_code == 403 and respuesta.json()["detail"]["codigo"] == "DEMO_OTP_DISABLED"
+
+
+def test_sms_simulado_solo_para_sesiones_de_cliente(http, jurado):
+    """POL-AUTH-14, POL-AUTH-11: un agente o un jurado no reciben códigos por el SMS simulado."""
+    crear_usuario("agente", "agente@pruebas.keyperu.example")
+    agente = cabeceras(iniciar_sesion(http, "agente@pruebas.keyperu.example"))
+
+    for encabezado in (agente, jurado):
+        respuesta = http.post("/autenticacion/otp-demo", headers= encabezado)
+        assert respuesta.status_code == 403 and respuesta.json()["detail"]["codigo"] == "NOT_A_CUSTOMER_SESSION"
