@@ -2,15 +2,15 @@
 
 | Field | Value |
 |---|---|
-| Contract version | `chat-api-0.1` |
-| Date | 2026-10-04 |
+| Contract version | `chat-api-0.2` (0.2 adds the simulated SMS of 4.3 and the customer portal of 4.7) |
+| Date | 2026-10-05 |
 | Implementation | `backend/` (FastAPI): `routers/`, `schemas/`, `services/agente/` |
 | Machine-readable spec | `docs/contracts/openapi.json` (OpenAPI 3.1, exported from the app) |
 | Captured examples | `docs/contracts/chat_api_examples.json` (every call shown here, plus full audit trails) |
-| Related contracts | `state_machine.md` (`sm-0.4`), `audit_log.md` (`audit-0.2`), `docs/policy_cards.md` (`cards-synthetic-0.8`) |
+| Related contracts | `state_machine.md` (`sm-0.4`), `audit_log.md` (`audit-0.2`), `docs/policy_cards.md` (`cards-synthetic-0.9`) |
 
-This is the backend API that three screens use: the **customer chat**, the **human agent inbox** and the
-**jurado test console**. It describes the API as implemented. Every example below was captured from a
+This is the backend API that four screens use: the **customer chat**, the **customer portal**, the **human agent
+inbox** and the **jurado test console**. It describes the API as implemented. Every example below was captured from a
 real call to the running app (section 12), so the JSON is what the backend returns today.
 
 Field names are in Spanish (`correo_electronico`, `codigo_step_up`), as in the backend. The values of
@@ -40,22 +40,30 @@ cookie, so client-side JavaScript never sees a token. This is how `frontend/` wo
 
 1. The login form posts to the SvelteKit route `POST /api/auth?tipoAuth=login`.
 2. That route calls `POST {BACKEND_URL}/autenticacion/iniciar-sesion`. The backend answers with the token
-   as a JSON string.
-3. The route stores it in the cookie `token` (`httpOnly`, `secure`, `sameSite=strict`, `path=/`).
+   as a JSON string. The route answers the browser `{"ok": true}`, never the token.
+3. The route stores the token in the cookie `token` (`httpOnly`, `sameSite=strict`, `path=/`, `maxAge` 60
+   minutes). `secure` keeps SvelteKit's default: on, except on `http://localhost`.
 4. On every request, `src/hooks.server.ts` calls `GET /autenticacion/mi-perfil` with the cookie's token and
    puts the user (`rol`, `customer_id`) in `event.locals.usuario`. If that call fails, it deletes the cookie,
-   and `/app*` redirects to `/login`.
+   and `/app*` redirects to `/login?volver=<page>`, which returns there after signing in.
+5. `POST /logout` closes the backend session (`/autenticacion/cerrar-sesion`) and deletes the cookie.
 
-For the new screens, add SvelteKit server routes (for example `src/routes/api/chat/+server.ts`) that read
-the cookie and forward the call with the `Authorization` header. Read the backend URL from
-`$lib/server/backend` (`BACKEND_URL`; see `frontend/.env.example`). The backend's CORS is open (`*`), but that
-is for local tools such as the CLI; the browser should still go through the server routes.
+The other screens call the backend from SvelteKit server code with the cookie's token
+(`$lib/server/backend`, which reads `BACKEND_URL`; see `frontend/.env.example`):
+
+- **Page loads** (`+page.server.ts`) read the portal (`/cliente/*`), the inbox (`/casos`) and the audit trail.
+- **The chat** posts from the browser to `src/routes/api/chat/[accion]/+server.ts`. It forwards `sesiones`
+  to `POST /chat/sesiones`, `mensaje` to `POST /chat/mensaje` (135 s timeout) and `codigo` to
+  `POST /autenticacion/otp-demo`.
+
+The backend's CORS is open (`*`), but that is for local tools such as the CLI; the browser always goes
+through the server routes.
 
 **Roles.** `rol` comes from `mi-perfil` and decides the screen:
 
 | `rol` | Screen | Endpoints |
 |---|---|---|
-| `cliente` with a `customer_id` | customer chat | `/chat/*`, `/autenticacion/*` |
+| `cliente` with a `customer_id` | customer chat and portal | `/chat/*`, `/cliente/*`, `/autenticacion/*` |
 | `agente` | case inbox | `/casos`, `/casos/{case_id}`, `/auditoria/*` |
 | `jurado` | test console | `/identidad/*`, `/auditoria/*`, and the chat with a test session token |
 
@@ -65,9 +73,11 @@ session for the chosen customer (`metodo: idp_prueba`). Keep it in its own httpO
 `/identidad/*` and `/auditoria/*`, and the test token for `/chat/*`. Always show the `aviso` text that comes
 with it: the test IdP is simulated and must be labeled as such (POL-AUTH-13).
 
-**Lifetimes.** The frontend currently gives the cookie a 7-day `maxAge`, but the backend session lasts at
-most 60 minutes. Treat any `401` as "sign in again": delete the cookie and go to the login page. In the chat,
-keep the `conversation_id` so the customer can resume after signing in (section 4.6).
+**Lifetimes.** The cookie lasts 60 minutes, the backend session's maximum; the session can end earlier
+(15 minutes idle, or sign-out). Treat any `401` as "sign in again": delete the cookie and go to the login
+page. The chat keeps the `conversation_id` and the transcript in the tab's `sessionStorage`. After signing in
+again, it resumes with `POST /chat/sesiones` and that `conversation_id` (section 4.6). If the tab is still in
+the same session, it just continues the conversation.
 
 **Language.** A customer can choose `es` or `pt` at sign-in (`idioma` in the login body), when the chat
 starts, or in any turn (POL-GEN-03). Without a choice, the first message decides it.
@@ -121,14 +131,14 @@ Authorization: Bearer <customer token>
 
 HTTP 200
 {
-  "sesion_id": "ses_a0JcZJZe2Dfq5qvDaQ8Rqe3bk1gCRJQJ",
+  "sesion_id": "ses_X7XzBe1pqqerQ8bWKxWI4Pw0j_3sqhUc",
   "rol": "cliente",
   "nivel": "L1",
   "metodo": "contrasena",
   "customer_id": "CLI-SQJOCEDJJNCZ",
   "idioma": null,
-  "expira_inactividad_en": "2026-10-05T04:50:43.017994Z",
-  "expira_absoluta_en": "2026-10-05T05:35:42.988737Z"
+  "expira_inactividad_en": "2026-10-05T08:44:22.718579Z",
+  "expira_absoluta_en": "2026-10-05T09:29:22.672336Z"
 }
 ```
 <!-- /example -->
@@ -171,8 +181,13 @@ HTTP 401
 | `POST /autenticacion/cerrar-sesion` | any session | Sign out; the token stops working | `204` |
 | `POST /autenticacion/registrar` | anyone, `ENV=development` only | Customer user with no bank data | `201` |
 | `POST /autenticacion/step-up` | customer session | Direct step-up for a card (`codigo`, `card_id`, `accion: block_card`). **Not used by the chat UI**: the chat takes the code in `codigo_step_up` (section 4.3). | `201` |
+| `POST /autenticacion/otp-demo` | customer session, `ENV=development` only | Simulated SMS: the session's own step-up code, only while its conversation is in `STEP_UP` (4.3, POL-AUTH-14) | `201` |
 | `POST /chat/sesiones` | customer session | Start a conversation (turn 0), or resume one after re-authentication with `conversation_id` | `201` |
 | `POST /chat/mensaje` | customer session | One turn: `mensaje` **or** `codigo_step_up`, optional `idioma` | `200` |
+| `GET /cliente/tarjetas` | customer session | The customer's cards: `ref`, `last4`, `tipo`, `estado` (4.7) | `200` |
+| `GET /cliente/transacciones?dias=` | customer session | Card transactions of the last `dias` days (1 to 90, default 30), per card | `200` |
+| `GET /cliente/conversaciones` | customer session | The customer's conversations, newest first (at most 50) | `200` |
+| `GET /cliente/casos` | customer session | The customer's cases: reference, date, priority, intent, card last 4 | `200` |
 | `GET /casos?limite=&desplazamiento=` | `agente` | Case summaries, newest first (`limite` 1 to 200, default 50) | `200` |
 | `GET /casos/{case_id}` | `agente` | Full case file (section 10) | `200` |
 | `GET /auditoria/conversacion/{conversation_id}?limite=` | `agente`, `jurado` | Audit trail of one conversation, all its sessions, with `cadena_valida` | `200` |
@@ -213,7 +228,7 @@ Authorization: Bearer <customer token>
 
 HTTP 201
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "Hola, ¿en qué puedo ayudarle?",
   "state": "IDLE",
   "language": "es",
@@ -232,13 +247,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "mensaje": "Hola, ¿cuál es mi saldo?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
   "state": "SELECT_CARD",
   "language": "es",
@@ -257,13 +272,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "mensaje": "La tarjeta de crédito."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "El saldo actual de su tarjeta de crédito terminada en 5070 es de 8.741.863,41 COP y su límite de crédito es de 84.596.594,05 COP, según los datos del 3 de octubre de 2026 a las 23:34.",
   "state": "IDLE",
   "language": "es",
@@ -299,8 +314,13 @@ A customer whose status is `Suspended` or `Closed` gets `HANDED_OFF` with a `cas
 
 1. The customer asks to block a card. The reply asks for a code and the state is `STEP_UP`.
 2. The code is typed in a **separate widget**, never in the chat text, and sent as `codigo_step_up`
-   (POL-AUTH-08). A code typed in the chat text is redacted and ignored. In the demo there is no SMS: the
-   jurado console issues the code with `POST /identidad/otp-prueba` for that session (section 8).
+   (POL-AUTH-08). A code typed in the chat text is redacted and ignored. In the demo there is no real SMS.
+   The code comes from one of two places. The jurado console issues it with `POST /identidad/otp-prueba`
+   for that session (section 8). With `ENV=development`, the customer's own page can ask for it as a
+   **simulated SMS** with `POST /autenticacion/otp-demo` (POL-AUTH-14). That call only works while a
+   conversation of the session is in `STEP_UP` (`409 NOT_IN_STEP_UP` otherwise). Outside development it
+   answers `403 DEMO_OTP_DISABLED`. Show the code labeled with its `aviso`, and let the customer type it in
+   the widget.
 3. A valid code moves to `AWAIT_CONFIRMATION` with `pending_confirmation`. The confirmation expires 120 s
    after the prompt (POL-ACT-02).
 4. A clear yes in a later message runs the block. The reply says the card is blocked only after the bank
@@ -319,13 +339,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "mensaje": "Oi, perdi meu cartão de crédito. Quero bloquear agora."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "reply": "O seu cartão de crédito final 8407 está ativo. Para bloquear, preciso confirmar sua identidade com um código de verificação; digite-o na janela de verificação, não aqui no chat.",
   "state": "STEP_UP",
   "language": "pt",
@@ -344,14 +364,14 @@ POST /identidad/otp-prueba
 Authorization: Bearer <jurado token>
 
 {
-  "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o"
+  "sesion_id": "ses_Mm8_hHJ6tan9U7nFAKN-updtq84U4mjC"
 }
 
 HTTP 201
 {
-  "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o",
-  "codigo": "960532",
-  "expira_en": "2026-10-05T04:40:45.363831Z",
+  "sesion_id": "ses_Mm8_hHJ6tan9U7nFAKN-updtq84U4mjC",
+  "codigo": "451615",
+  "expira_en": "2026-10-05T08:34:27.312929Z",
   "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
 }
 ```
@@ -365,20 +385,20 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
-  "codigo_step_up": "960532"
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
+  "codigo_step_up": "451615"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "reply": "Identidade confirmada. Vou bloquear o seu cartão de crédito final 8407. Depois do bloqueio ele deixa de funcionar e eu não consigo desbloqueá-lo; só um atendente pode fazer isso. Confirma o bloqueio do cartão final 8407? Responda sim ou não.",
   "state": "AWAIT_CONFIRMATION",
   "language": "pt",
   "pending_confirmation": {
     "card_last4": "8407",
     "card_type": "Tarjeta Crédito",
-    "expires_at": "2026-10-05T04:37:45.413791+00:00"
+    "expires_at": "2026-10-05T08:31:27.380801+00:00"
   },
   "case_id": null,
   "turn": 2
@@ -394,13 +414,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "mensaje": "Sim, pode bloquear."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "reply": "Pronto: o seu cartão de crédito final 8407 está bloqueado. Para desbloquear ou pedir um cartão novo, é preciso falar com um atendente; posso transferir você, se quiser.",
   "state": "IDLE",
   "language": "pt",
@@ -419,19 +439,117 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+  "conversation_id": "conv_01a10b2e-a428-75c4-a3e9-25f3cee7f974",
   "codigo_step_up": "000000"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+  "conversation_id": "conv_01a10b2e-a428-75c4-a3e9-25f3cee7f974",
   "reply": "El código no es válido o venció. Ingréselo de nuevo en la ventana de verificación.",
   "state": "STEP_UP",
   "language": "es",
   "pending_confirmation": null,
   "case_id": null,
   "turn": 2
+}
+```
+<!-- /example -->
+
+The same block with the simulated SMS, for a customer signed in with a password:
+
+<!-- example: sms-t1 -->
+`sms-t1` · Block request: step-up required
+
+```http
+POST /chat/mensaje
+Authorization: Bearer <customer token>
+
+{
+  "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+  "mensaje": "Quiero bloquear mi tarjeta de débito."
+}
+
+HTTP 200
+{
+  "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+  "reply": "Su tarjeta de débito terminada en 4214 está activa. Para bloquearla necesito confirmar su identidad con un código de verificación; ingréselo en la ventana de verificación, no en el chat.",
+  "state": "STEP_UP",
+  "language": "es",
+  "pending_confirmation": null,
+  "case_id": null,
+  "turn": 1
+}
+```
+<!-- /example -->
+
+<!-- example: sms-otp -->
+`sms-otp` · Simulated SMS: the customer's own code (development only)
+
+```http
+POST /autenticacion/otp-demo
+Authorization: Bearer <customer token>
+
+HTTP 201
+{
+  "codigo": "724979",
+  "expira_en": "2026-10-05T08:34:29.081970Z",
+  "canal": "sms_simulado",
+  "aviso": "SMS simulado del IdP de prueba: un banco real enviaría este código a su teléfono (POL-AUTH-14)."
+}
+```
+<!-- /example -->
+
+<!-- example: sms-t2 -->
+`sms-t2` · Code typed in the verification widget: confirmation prompt
+
+```http
+POST /chat/mensaje
+Authorization: Bearer <customer token>
+
+{
+  "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+  "codigo_step_up": "724979"
+}
+
+HTTP 200
+{
+  "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+  "reply": "Identidad confirmada. Voy a bloquear su tarjeta de débito terminada en 4214. Después del bloqueo la tarjeta deja de funcionar y yo no puedo desbloquearla; eso solo lo hace un asesor. ¿Confirma el bloqueo de la tarjeta terminada en 4214? Responda sí o no.",
+  "state": "AWAIT_CONFIRMATION",
+  "language": "es",
+  "pending_confirmation": {
+    "card_last4": "4214",
+    "card_type": "Tarjeta Débito",
+    "expires_at": "2026-10-05T08:31:29.172944+00:00"
+  },
+  "case_id": null,
+  "turn": 2
+}
+```
+<!-- /example -->
+
+<!-- example: sms-t3 -->
+`sms-t3` · A no cancels the block; nothing runs
+
+```http
+POST /chat/mensaje
+Authorization: Bearer <customer token>
+
+{
+  "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+  "mensaje": "No, mejor no."
+}
+
+HTTP 200
+{
+  "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+  "reply": "Entendido, no bloqueé la tarjeta.",
+  "state": "IDLE",
+  "language": "es",
+  "pending_confirmation": null,
+  "case_id": null,
+  "turn": 3
 }
 ```
 <!-- /example -->
@@ -446,18 +564,18 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "mensaje": "No, por ahora solo quiero el reclamo."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-  "reply": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-3630960D3B49.",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+  "reply": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-ED908D0D6BC0.",
   "state": "HANDED_OFF",
   "language": "es",
   "pending_confirmation": null,
-  "case_id": "CASE-3630960D3B49",
+  "case_id": "CASE-ED908D0D6BC0",
   "turn": 3
 }
 ```
@@ -471,18 +589,18 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "mensaje": "¿En cuánto tiempo me contactan?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-  "reply": "Agregué su mensaje a su caso, referencia CASE-3630960D3B49. Un asesor lo revisará.",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+  "reply": "Agregué su mensaje a su caso, referencia CASE-ED908D0D6BC0. Un asesor lo revisará.",
   "state": "HANDED_OFF",
   "language": "es",
   "pending_confirmation": null,
-  "case_id": "CASE-3630960D3B49",
+  "case_id": "CASE-ED908D0D6BC0",
   "turn": 4
 }
 ```
@@ -498,13 +616,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "mensaje": "Hola de nuevo"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "reply": "Esta conversación terminó. Si necesita algo más, inicie una nueva.",
   "state": "ENDED",
   "language": "es",
@@ -537,13 +655,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+  "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
   "mensaje": "La tarjeta de crédito."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+  "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
   "reply": "Su sesión expiró. Por favor, inicie sesión de nuevo para continuar.",
   "state": "SESSION_EXPIRED",
   "language": "es",
@@ -579,12 +697,12 @@ POST /chat/sesiones
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475"
+  "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a"
 }
 
 HTTP 201
 {
-  "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+  "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
   "reply": "Sesión iniciada. ¿Quiere retomar lo que estaba haciendo?",
   "state": "IDLE",
   "language": "es",
@@ -603,13 +721,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+  "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
   "mensaje": "Sí"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+  "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
   "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
   "state": "SELECT_CARD",
   "language": "es",
@@ -617,6 +735,160 @@ HTTP 200
   "case_id": null,
   "turn": 4
 }
+```
+<!-- /example -->
+
+### 4.7 Customer portal
+
+Besides the chat, a customer session can read its own data for the portal screens (POL-PII-10):
+
+- **Calls and checks.** All four calls are `GET` with the customer's token. Cards and transactions come
+  from the same tools as the assistant, with the same checks. A customer whose status is `Suspended` or
+  `Closed` gets `403 CUSTOMER_STATUS_REVIEW` for them (POL-AUTH-09), and still sees their case reference.
+- **No internal IDs.** Responses never hold `card_id`, `transaction_id` or the `customer_id`. A card is
+  named by `ref` (`t1`, `t2`, … in a stable order), which only groups rows on screen. To ask about a card or
+  a transaction, open the chat with a message that names its type and last 4.
+- **Transactions.** They come per card, at most 20 per card (the most recent; `truncada` says there were
+  more), over the last `dias` days of the bank clock (`desde`, `hasta`).
+- **Amounts.** `monto` is a decimal string in the transaction's currency. It is always positive; `tipo`
+  (`Purchase`, `Withdrawal`, `Payment`) says what it is. Never add up amounts of different currencies.
+- **Cases.** A case shows its reference and context, never the case file: that stays with agents.
+  `motivo` is the request's intent (`docs/intents.md`), null for a handoff at sign-in.
+- **No balances.** Only the assistant states them, read in the turn with their `as_of`.
+- **Not audited.** These reads are not chat turns and do not write to the audit log.
+
+<!-- example: portal-cards -->
+`portal-cards` · The customer's cards, no internal IDs
+
+```http
+GET /cliente/tarjetas
+Authorization: Bearer <customer token>
+
+HTTP 200
+[
+  {
+    "ref": "t1",
+    "last4": "6898",
+    "tipo": "Tarjeta Débito",
+    "estado": "Active"
+  },
+  {
+    "ref": "t2",
+    "last4": "6873",
+    "tipo": "Tarjeta Crédito",
+    "estado": "Active"
+  },
+  {
+    "ref": "t3",
+    "last4": "0727",
+    "tipo": "Tarjeta Crédito",
+    "estado": "Blocked"
+  }
+]
+```
+<!-- /example -->
+
+<!-- example: portal-transactions -->
+`portal-transactions` · Card transactions of the last 30 days of the bank clock
+
+```http
+GET /cliente/transacciones?dias=30
+Authorization: Bearer <customer token>
+
+HTTP 200
+{
+  "desde": "2026-05-19",
+  "hasta": "2026-06-18",
+  "tarjetas": [
+    {
+      "ref": "t1",
+      "last4": "6898",
+      "tipo": "Tarjeta Débito",
+      "estado": "Active",
+      "truncada": false,
+      "transacciones": []
+    },
+    {
+      "ref": "t2",
+      "last4": "6873",
+      "tipo": "Tarjeta Crédito",
+      "estado": "Active",
+      "truncada": false,
+      "transacciones": [
+        {
+          "fecha": "2026-06-06T19:43:19",
+          "tipo": "Purchase",
+          "monto": "127.37",
+          "moneda": "USD",
+          "comercio": "Uber",
+          "estado": "Declined"
+        },
+        {
+          "fecha": "2026-05-26T02:17:17",
+          "tipo": "Purchase",
+          "monto": "259.15",
+          "moneda": "USD",
+          "comercio": "Cine Premium",
+          "estado": "Approved"
+        }
+      ]
+    },
+    {
+      "ref": "t3",
+      "last4": "0727",
+      "tipo": "Tarjeta Crédito",
+      "estado": "Blocked",
+      "truncada": false,
+      "transacciones": []
+    }
+  ]
+}
+```
+<!-- /example -->
+
+<!-- example: portal-conversations -->
+`portal-conversations` · The customer's conversations, newest first
+
+```http
+GET /cliente/conversaciones
+Authorization: Bearer <customer token>
+
+HTTP 200
+[
+  {
+    "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+    "estado": "HANDED_OFF",
+    "turnos": 4,
+    "idioma": "es",
+    "case_id": "CASE-ED908D0D6BC0",
+    "creada_en": "2026-10-05T08:29:25.562850Z",
+    "actualizada_en": "2026-10-05T08:29:25.993312Z"
+  }
+]
+```
+<!-- /example -->
+
+<!-- example: portal-cases -->
+`portal-cases` · The customer's cases: reference and context, never the case file
+
+```http
+GET /cliente/casos
+Authorization: Bearer <customer token>
+
+HTTP 200
+[
+  {
+    "case_id": "CASE-ED908D0D6BC0",
+    "creado_en": "2026-10-05T08:29:25.871796Z",
+    "prioridad": "normal",
+    "motivo": "charge_dispute",
+    "tarjetas_last4": [
+      "4950"
+    ],
+    "mensajes_agregados": 1,
+    "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7"
+  }
+]
 ```
 <!-- /example -->
 
@@ -643,8 +915,8 @@ Authorization: Bearer <agent token>
 HTTP 200
 [
   {
-    "case_id": "CASE-3630960D3B49",
-    "created_at": "2026-10-05T04:35:44.858850Z",
+    "case_id": "CASE-ED908D0D6BC0",
+    "created_at": "2026-10-05T08:29:25.871796Z",
     "priority": "normal",
     "reason_rule_ids": [
       "POL-ESC-01"
@@ -661,30 +933,30 @@ HTTP 200
 `agent-audit` · Audit trail of the case's conversation (conversation_ref)
 
 ```http
-GET /auditoria/conversacion/conv_01a10a58-a7c8-7435-9064-02068925b196
+GET /auditoria/conversacion/conv_01a10b2e-9891-724a-9051-4550c8121ac7
 Authorization: Bearer <agent token>
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "total": 18,
   "cadena_valida": true,
   "eventos": [
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-a7f9-7aaa-b892-37f4a7c8f47f",
+      "event_id": "01a10b2e-98e4-78e8-ad52-7c0045bb86e8",
       "event_type": "message_received",
-      "occurred_at": "2026-10-05T04:35:44.761Z",
-      "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-      "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+      "occurred_at": "2026-10-05T08:29:25.604Z",
+      "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+      "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
       "turn_index": 1,
-      "trace_id": "79e87fb188128f9176ded752420ebcf4",
-      "span_id": "eb8f27ac47be707b",
+      "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+      "span_id": "cbb927834effce50",
       "actor": "customer",
-      "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+      "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
       "auth_level": "L1",
       "state": "IDLE",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [
         "POL-PII-01",
@@ -705,24 +977,24 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "ba3bdbab1474684c78dd8377d826500aee8beb4fc23fdcb9b7c731a127542008",
-      "event_hash": "793ace1bc79abc1de2f7fcb44361b68ac57814d5046b783cd36f4fed4fba10ff"
+      "prev_event_hash": "2d8eae38f69425029c034ceafe578dad98eca9efd972e06fc505014041a9b7c8",
+      "event_hash": "55ad09ce0c61972c72d901af295e11a38d4de4e5316bb47fc9218b35fdd69455"
     },
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-a7fd-7237-907b-750570193771",
+      "event_id": "01a10b2e-98f0-7002-89a7-451ced224828",
       "event_type": "classification",
-      "occurred_at": "2026-10-05T04:35:44.765Z",
-      "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-      "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+      "occurred_at": "2026-10-05T08:29:25.616Z",
+      "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+      "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
       "turn_index": 1,
-      "trace_id": "79e87fb188128f9176ded752420ebcf4",
-      "span_id": "d3a8d0251f299040",
+      "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+      "span_id": "64e4f781210aae85",
       "actor": "orchestrator",
-      "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+      "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
       "auth_level": "L1",
       "state": "IDLE",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [
         "POL-ESC-06"
@@ -767,24 +1039,24 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "793ace1bc79abc1de2f7fcb44361b68ac57814d5046b783cd36f4fed4fba10ff",
-      "event_hash": "22485ac78bd2dfd0149fcf85138a98b768abb392963648215bcda0800b952a89"
+      "prev_event_hash": "55ad09ce0c61972c72d901af295e11a38d4de4e5316bb47fc9218b35fdd69455",
+      "event_hash": "304ff7108cb6b4b6bed663ccdb5954b153ab463f08fd26abd1852b828d3b8d23"
     },
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-a808-74c5-8091-286b57c2a91e",
+      "event_id": "01a10b2e-9905-771a-b991-2d49e28ea21d",
       "event_type": "tool_call",
-      "occurred_at": "2026-10-05T04:35:44.776Z",
-      "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-      "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+      "occurred_at": "2026-10-05T08:29:25.637Z",
+      "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+      "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
       "turn_index": 1,
-      "trace_id": "79e87fb188128f9176ded752420ebcf4",
-      "span_id": "7462a4580780012d",
+      "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+      "span_id": "659f0caf5ebce25f",
       "actor": "tool_gateway",
-      "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+      "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
       "auth_level": "L1",
       "state": "IDLE",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [],
       "session_origin": {
@@ -803,13 +1075,13 @@ HTTP 200
       "latency_ms": 15,
       "result": [
         {
-          "card_ref": "e173abf001493ae0db265fbf07db32ce",
+          "card_ref": "c46ed1104e1f61ecc907d6746fbf5011",
           "last4": "1883",
           "type": "Tarjeta Débito",
           "status": "Active"
         },
         {
-          "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639",
+          "card_ref": "6708cb472dfac582a72f09688ff54ea4",
           "last4": "4950",
           "type": "Tarjeta Crédito",
           "status": "Active"
@@ -823,24 +1095,24 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "22485ac78bd2dfd0149fcf85138a98b768abb392963648215bcda0800b952a89",
-      "event_hash": "f6d5ca183fec3bc851a2f063be213eae0731db1ab9c4db7cfe4836e32d388f16"
+      "prev_event_hash": "304ff7108cb6b4b6bed663ccdb5954b153ab463f08fd26abd1852b828d3b8d23",
+      "event_hash": "8ebe14db839965ae83f0866f378b5f27d1e1f40b9b77eafa3926e81b36e33800"
     },
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-a82a-7d43-b437-d9e703038376",
+      "event_id": "01a10b2e-9963-772d-bd24-c8d531c155bd",
       "event_type": "policy_decision",
-      "occurred_at": "2026-10-05T04:35:44.810Z",
-      "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-      "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+      "occurred_at": "2026-10-05T08:29:25.731Z",
+      "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+      "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
       "turn_index": 1,
-      "trace_id": "79e87fb188128f9176ded752420ebcf4",
-      "span_id": "699fefb06d129d38",
+      "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+      "span_id": "5d73783427483d57",
       "actor": "orchestrator",
-      "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+      "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
       "auth_level": "L1",
       "state": "SELECT_TRANSACTION",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [
         "POL-PII-01",
@@ -885,7 +1157,7 @@ HTTP 200
         {
           "fact": "transaction",
           "value": {
-            "transaction_ref": "5c60036d1becb474c5a22a40e8232c11",
+            "transaction_ref": "5282a27a8deaed8865792a3c76a8cdcf",
             "date": "2026-06-01 04:20:42",
             "type": "Purchase",
             "amount": "392.25",
@@ -926,8 +1198,8 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "ba9eb7ff1780c2703c2f7295cd4014a43c609d6fc44969d36ed40ac6c5dabee5",
-      "event_hash": "0d4011e5e680dcbd8f5de37f7a104c8d89f054801a5615537da0f79ec36a7efc"
+      "prev_event_hash": "4eb5247a56f847ece59468fb717efff9555cea9c8e45407819045d49fecdae63",
+      "event_hash": "184441b697e2a51d0ac0bf2798de033fe92f530270cc184558cf18f94ce84d9c"
     }
   ],
   "_excerpt": "4 of 18 events; the full trail is in chat_api_examples.json"
@@ -956,13 +1228,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+  "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
   "mensaje": "Hola, ¿cuál es mi saldo?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+  "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
   "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
   "state": "SELECT_CARD",
   "language": "es",
@@ -977,29 +1249,29 @@ HTTP 200
 `err-llm-fallback-audit` · Audit of the fallback turn
 
 ```http
-GET /auditoria/ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t
+GET /auditoria/ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy
 Authorization: Bearer <jurado token>
 
 HTTP 200
 {
-  "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+  "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
   "total": 8,
   "eventos": [
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-cf95-731f-b08c-8b048def016d",
+      "event_id": "01a10b2e-cbbc-7ab2-9cb4-a1a2ce89d236",
       "event_type": "llm_call",
-      "occurred_at": "2026-10-05T04:35:54.901Z",
-      "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-      "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+      "occurred_at": "2026-10-05T08:29:38.620Z",
+      "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+      "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
       "turn_index": 1,
-      "trace_id": "a150659386a2b7c3c137b67be1e2accd",
-      "span_id": "d3b5fb3fb0eb146b",
+      "trace_id": "3024bc00a2588aeca952e419d8e95046",
+      "span_id": "2a71cf1a3ceef72e",
       "actor": "orchestrator",
-      "customer_ref": "23ff291e775e70afec32d927897b27a7",
+      "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
       "auth_level": "L1",
       "state": "SELECT_CARD",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [
         "POL-PII-01",
@@ -1010,7 +1282,7 @@ HTTP 200
         "method": "test_idp",
         "issued_by_user_id": 13
       },
-      "llm_call_id": "llm_8f92cc87abb1",
+      "llm_call_id": "llm_3f9f0943553d",
       "purpose": "reply_wording",
       "provider": "openai",
       "model_id": "gpt-4o-mini",
@@ -1020,7 +1292,7 @@ HTTP 200
       "input_tokens": 0,
       "cached_input_tokens": 0,
       "output_tokens": 0,
-      "latency_ms": 8719,
+      "latency_ms": 9234,
       "status": "error",
       "retries": 3,
       "cost_usd": 0.0,
@@ -1034,24 +1306,24 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "b98a06205fd95f1773d280e39aa3d0d7e7c518530fe54390efe460edf80873fe",
-      "event_hash": "24ccc01aa14ade13d4ea540cf1bfbbb0806c428fcbe2461626ec5b86a8113f63"
+      "prev_event_hash": "ec49193532064c83baef44278ee9ff56b090666433bf2ce70162664f2ca863cb",
+      "event_hash": "d418ef28c1fc62244cdb9378ef87f11cace7260ed334b2b40416a5fa09a9da60"
     },
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-cf97-7a31-81db-32e88a07e30f",
+      "event_id": "01a10b2e-cbc2-71ff-8093-b5a57bcc6950",
       "event_type": "policy_decision",
-      "occurred_at": "2026-10-05T04:35:54.903Z",
-      "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-      "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+      "occurred_at": "2026-10-05T08:29:38.626Z",
+      "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+      "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
       "turn_index": 1,
-      "trace_id": "a150659386a2b7c3c137b67be1e2accd",
-      "span_id": "f03be7f0145bbd4d",
+      "trace_id": "3024bc00a2588aeca952e419d8e95046",
+      "span_id": "e6125173100089b8",
       "actor": "orchestrator",
-      "customer_ref": "23ff291e775e70afec32d927897b27a7",
+      "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
       "auth_level": "L1",
       "state": "SELECT_CARD",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [
         "POL-PII-01",
@@ -1086,7 +1358,7 @@ HTTP 200
         "language": "es",
         "templates": [],
         "llm_call_ids": [
-          "llm_8f92cc87abb1"
+          "llm_3f9f0943553d"
         ]
       },
       "counters": {
@@ -1105,8 +1377,8 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "24ccc01aa14ade13d4ea540cf1bfbbb0806c428fcbe2461626ec5b86a8113f63",
-      "event_hash": "8f9b70ce753cf94cc775940149bcebabef2505a251833580a30a04a172f34508"
+      "prev_event_hash": "d418ef28c1fc62244cdb9378ef87f11cace7260ed334b2b40416a5fa09a9da60",
+      "event_hash": "148abb13d4d950ddc13a2e36f7ddc2978bc97ab56e4fa21f85830164d7fc174e"
     }
   ],
   "_excerpt": "2 of 8 events; the full trail is in chat_api_examples.json"
@@ -1208,13 +1480,13 @@ HTTP 201
 {
   "token": "<token>",
   "tipo_token": "bearer",
-  "sesion_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+  "sesion_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
   "customer_id": "CLI-1IKG56EOI0A5",
   "customer_status": "Active",
   "nivel": "L1",
   "idioma": "es",
-  "expira_inactividad_en": "2026-10-05T04:50:45.558314Z",
-  "expira_absoluta_en": "2026-10-05T05:35:45.558314Z",
+  "expira_inactividad_en": "2026-10-05T08:44:27.635170Z",
+  "expira_absoluta_en": "2026-10-05T09:29:27.635170Z",
   "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
 }
 ```
@@ -1224,29 +1496,29 @@ HTTP 201
 `idp-audit` · Audit trail of the test session
 
 ```http
-GET /auditoria/ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ
+GET /auditoria/ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS
 Authorization: Bearer <jurado token>
 
 HTTP 200
 {
-  "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+  "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
   "total": 18,
   "eventos": [
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-ab97-7c53-9bf1-31a24f7c8e8e",
+      "event_id": "01a10b2e-a1bb-74df-b9f1-0020412ecd7f",
       "event_type": "message_received",
-      "occurred_at": "2026-10-05T04:35:45.687Z",
-      "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-      "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+      "occurred_at": "2026-10-05T08:29:27.867Z",
+      "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+      "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
       "turn_index": 3,
-      "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-      "span_id": "c9e3d8368a0f5f05",
+      "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+      "span_id": "4b647c1b5403d213",
       "actor": "customer",
-      "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+      "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
       "auth_level": "L1",
       "state": "IDLE",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [
         "POL-PII-01",
@@ -1266,24 +1538,24 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "ab105d70b0c23252786e710071f7f50b8dd81b3b4d31ce5f2eaf5b70d09c5118",
-      "event_hash": "6d980aae1611aa40936757848de403a75277c9938f80a0280ad93ca68baebc80"
+      "prev_event_hash": "03772bf7891f78eee3d572d93f81de6e55e84e36ca9aa31c63ef5a8bd230676f",
+      "event_hash": "b499f65d11fc789d3975bd669f7ffb93edfa2c93f0aea06d9668ecfbe2314a6e"
     },
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-ab9c-77e6-a930-7a95ba3f3732",
+      "event_id": "01a10b2e-a1c2-7963-8802-1632c2840459",
       "event_type": "classification",
-      "occurred_at": "2026-10-05T04:35:45.692Z",
-      "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-      "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+      "occurred_at": "2026-10-05T08:29:27.874Z",
+      "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+      "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
       "turn_index": 3,
-      "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-      "span_id": "0e56228b5ab3144a",
+      "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+      "span_id": "1bbf679c3a13b89b",
       "actor": "orchestrator",
-      "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+      "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
       "auth_level": "L1",
       "state": "IDLE",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [
         "POL-ESC-06"
@@ -1327,24 +1599,24 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "6d980aae1611aa40936757848de403a75277c9938f80a0280ad93ca68baebc80",
-      "event_hash": "152b462bbd272ad3e8d29abbd3b66e850fc834ba762ce1e86cbdccc0e76378a3"
+      "prev_event_hash": "b499f65d11fc789d3975bd669f7ffb93edfa2c93f0aea06d9668ecfbe2314a6e",
+      "event_hash": "27bd456303974fa71279bf26b1e66b46e0dbd46eb56d9d148d2c69bd7bcf0141"
     },
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-aba6-742f-9541-cbe9afd23c4d",
+      "event_id": "01a10b2e-a1d2-7854-b3ac-238e2837beb8",
       "event_type": "tool_call",
-      "occurred_at": "2026-10-05T04:35:45.702Z",
-      "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-      "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+      "occurred_at": "2026-10-05T08:29:27.890Z",
+      "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+      "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
       "turn_index": 3,
-      "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-      "span_id": "56028e8ed416aec0",
+      "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+      "span_id": "6b62404f010573b0",
       "actor": "tool_gateway",
-      "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+      "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
       "auth_level": "L1",
       "state": "IDLE",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [],
       "session_origin": {
@@ -1359,10 +1631,10 @@ HTTP 200
       "args": {},
       "status": "ok",
       "error_code": null,
-      "latency_ms": 0,
+      "latency_ms": 15,
       "result": [
         {
-          "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+          "card_ref": "9014f7fb37ed6e95a1d53e8849c69212",
           "last4": "0990",
           "type": "Tarjeta Crédito",
           "status": "Active"
@@ -1376,24 +1648,24 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "152b462bbd272ad3e8d29abbd3b66e850fc834ba762ce1e86cbdccc0e76378a3",
-      "event_hash": "c16b6a24def32ec791b9b089654eaa842151ad04409370dc9f4f6d9254ba4e9c"
+      "prev_event_hash": "27bd456303974fa71279bf26b1e66b46e0dbd46eb56d9d148d2c69bd7bcf0141",
+      "event_hash": "73eb3b573db1757fb434eae2555207e637d2a230f62e45a4bd0ae19a1eebe36b"
     },
     {
       "schema_version": "audit-0.2",
-      "event_id": "01a10a58-abbb-7d92-81ce-b52b389e244f",
+      "event_id": "01a10b2e-a1ef-7e73-8e7a-c53ea9465953",
       "event_type": "policy_decision",
-      "occurred_at": "2026-10-05T04:35:45.723Z",
-      "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-      "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+      "occurred_at": "2026-10-05T08:29:27.919Z",
+      "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+      "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
       "turn_index": 3,
-      "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-      "span_id": "50f8e58820a81ef5",
+      "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+      "span_id": "9658baf64f40e9ed",
       "actor": "orchestrator",
-      "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+      "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
       "auth_level": "L1",
       "state": "IDLE",
-      "policy_version": "cards-synthetic-0.8",
+      "policy_version": "cards-synthetic-0.9",
       "state_machine_version": "sm-0.4",
       "rule_ids": [
         "POL-PII-01",
@@ -1425,7 +1697,7 @@ HTTP 200
           "fact": "transactions",
           "value": [
             {
-              "transaction_ref": "39bda70613f1788363779a5af42df097",
+              "transaction_ref": "75cbc34ea435b132547d503c22a32883",
               "date": "2026-05-24 05:28:38",
               "amount": "214.92",
               "currency": "USD",
@@ -1463,8 +1735,8 @@ HTTP 200
         "placeholders": {},
         "hits": {}
       },
-      "prev_event_hash": "1a02f56e79823870b5270d3501b7f474b4c057fd80b9276fcae6bb06c175735f",
-      "event_hash": "f6b38e714138b4cb365b4236aaf96ff27c11b95764720902a8b656fc69cb6f50"
+      "prev_event_hash": "f2911ac2f924c052ea0e439bb94fc9b13b642c318c872e4a8ce8f1219c6ef25d",
+      "event_hash": "893ce4e61a4f2173b7359c1e1b5d6b86b2f1a61dff94754a84dd6e0dc008a477"
     }
   ],
   "_excerpt": "4 of 18 events; the full trail is in chat_api_examples.json"
@@ -1486,11 +1758,12 @@ HTTP 200
 | 400 | `STEP_UP_FAILED`, `ACTION_INVALID` | `/autenticacion/step-up` | Wrong or expired code; unknown action | The chat UI does not call this endpoint |
 | 400 | `"El correo ya está registrado."` (text) | `registrar` | Email taken | Show the message |
 | 403 | `ROLE_FORBIDDEN` | `/casos`, `/auditoria/*`, `/identidad/*` | The role cannot use this endpoint | Hide the screen for this role |
-| 403 | `NOT_A_CUSTOMER_SESSION` | `/chat/*` | The token is an agent's or a jurado's, or a registered user with no customer | Use a customer session |
+| 403 | `NOT_A_CUSTOMER_SESSION` | `/chat/*`, `/cliente/*`, `otp-demo` | The token is an agent's or a jurado's, or a registered user with no customer | Use a customer session |
 | 403 | `CONVERSATION_FORBIDDEN` | `/chat/mensaje` | The conversation belongs to another customer | Start a new conversation |
-| 403 | `CUSTOMER_STATUS_REVIEW` | `step-up`, `otp-prueba` | The customer is `Suspended` or `Closed` | Nothing to retry; the chat already handed off |
-| 403 | `STEP_UP_LOCKED` | `step-up`, `otp-prueba` | 3 wrong codes in this session | No more codes for this session |
+| 403 | `CUSTOMER_STATUS_REVIEW` | `step-up`, `otp-prueba`, `otp-demo`, `/cliente/tarjetas`, `/cliente/transacciones` | The customer is `Suspended` or `Closed` | Nothing to retry; the chat already handed off |
+| 403 | `STEP_UP_LOCKED` | `step-up`, `otp-prueba`, `otp-demo` | 3 wrong codes in this session | No more codes for this session |
 | 403 | `"El registro abierto está deshabilitado en este entorno."` (text) | `registrar` | `ENV` is not `development` | Hide registration |
+| 403 | `DEMO_OTP_DISABLED` | `otp-demo` | `ENV` is not `development` | Take the code from the jurado console |
 | 404 | `CONVERSATION_NOT_FOUND` | `/chat/*` | Unknown conversation; or, when resuming, another customer's | Start a new conversation |
 | 404 | `CUSTOMER_NOT_FOUND` | `sesion-prueba` | The customer is not in gold | Show the message |
 | 404 | `SESSION_NOT_FOUND` | `otp-prueba` | Unknown or expired test session | Open a new test session |
@@ -1498,6 +1771,7 @@ HTTP 200
 | 409 | `CONVERSATION_CLOSED` | `/chat/sesiones` with `conversation_id` | The conversation ended or was handed off | Start a new conversation |
 | 409 | `SESSION_STILL_ACTIVE` | `/chat/sesiones` with `conversation_id` | The conversation's session is still valid | Keep using that session |
 | 409 | `SESSION_NOT_ATTACHED` | `/chat/mensaje` | This token's session is not the conversation's current session | Call `POST /chat/sesiones` with `conversation_id` first |
+| 409 | `NOT_IN_STEP_UP` | `otp-demo` | No conversation of this session is waiting for a code | Ask only while the chat state is `STEP_UP` |
 | 422 | FastAPI validation list | any | The body or query does not match the schema | Fix the request |
 | 429 | `RATE_LIMITED` | `/identidad/clientes` | More than 10 searches per minute | Wait a minute |
 | 503 | `GOLD_UNAVAILABLE` | `/identidad/*` | The server has no gold data loaded | Report to the operator |
@@ -1506,6 +1780,23 @@ When a bank tool fails inside a chat turn, the API still answers `200`: the assi
 not complete the request, claims no result, and hands off (POL-ESC-07).
 
 Captured error responses:
+
+<!-- example: err-sms-not-in-step-up -->
+`err-sms-not-in-step-up` · Simulated SMS with no verification pending
+
+```http
+POST /autenticacion/otp-demo
+Authorization: Bearer <customer token>
+
+HTTP 409
+{
+  "detail": {
+    "codigo": "NOT_IN_STEP_UP",
+    "mensaje": "No hay una verificación pendiente en su conversación."
+  }
+}
+```
+<!-- /example -->
 
 <!-- example: err-login -->
 `err-login` · Wrong password
@@ -1605,7 +1896,7 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "mensaje": "Hola"
 }
 
@@ -1627,7 +1918,7 @@ POST /chat/sesiones
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69"
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138"
 }
 
 HTTP 409
@@ -1648,7 +1939,7 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "mensaje": "Hola",
   "codigo_step_up": "123456"
 }
@@ -1663,7 +1954,7 @@ HTTP 422
       ],
       "msg": "Value error, Envíe mensaje o codigo_step_up, uno de los dos.",
       "input": {
-        "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+        "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
         "mensaje": "Hola",
         "codigo_step_up": "123456"
       },
@@ -1737,13 +2028,13 @@ The case file is the input to `open_handoff` (policy section 8, POL-HND-10 to 15
 `agent-case` · Full case file of dialogue 5
 
 ```http
-GET /casos/CASE-3630960D3B49
+GET /casos/CASE-ED908D0D6BC0
 Authorization: Bearer <agent token>
 
 HTTP 200
 {
-  "case_id": "CASE-3630960D3B49",
-  "created_at": "2026-10-05T04:35:44.858850Z",
+  "case_id": "CASE-ED908D0D6BC0",
+  "created_at": "2026-10-05T08:29:25.871796Z",
   "priority": "normal",
   "reason_rule_ids": [
     "POL-ESC-01"
@@ -1751,12 +2042,12 @@ HTTP 200
   "language": "es",
   "customer_id": "CLI-AYAHYQEG16BZ",
   "auth_level": "L1",
-  "policy_version": "cards-synthetic-0.8",
-  "conversation_ref": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "policy_version": "cards-synthetic-0.9",
+  "conversation_ref": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "appended_messages": [
     {
       "text_redacted": "¿En cuánto tiempo me contactan?",
-      "received_at": "2026-10-05T04:35:44.897860+00:00"
+      "received_at": "2026-10-05T08:29:25.968775+00:00"
     }
   ],
   "request": {
@@ -1799,30 +2090,30 @@ HTTP 200
       {
         "tool_call_id": "c1",
         "tool": "authenticate",
-        "called_at": "04:35:44",
+        "called_at": "08:29:25",
         "status": "ok",
-        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c1"
+        "result_ref": "audit://conv_01a10b2e-9891-724a-9051-4550c8121ac7/c1"
       },
       {
         "tool_call_id": "c2",
         "tool": "list_cards",
-        "called_at": "04:35:44",
+        "called_at": "08:29:25",
         "status": "ok",
-        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c2"
+        "result_ref": "audit://conv_01a10b2e-9891-724a-9051-4550c8121ac7/c2"
       },
       {
         "tool_call_id": "c3",
         "tool": "list_transactions",
-        "called_at": "04:35:44",
+        "called_at": "08:29:25",
         "status": "ok",
-        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c3"
+        "result_ref": "audit://conv_01a10b2e-9891-724a-9051-4550c8121ac7/c3"
       },
       {
         "tool_call_id": "c4",
         "tool": "describe_transaction",
-        "called_at": "04:35:44",
+        "called_at": "08:29:25",
         "status": "ok",
-        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c4"
+        "result_ref": "audit://conv_01a10b2e-9891-724a-9051-4550c8121ac7/c4"
       }
     ],
     "cards": [
@@ -1911,7 +2202,7 @@ Authorization: Bearer <customer token>
 
 HTTP 201
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "Hola, ¿en qué puedo ayudarle?",
   "state": "IDLE",
   "language": "es",
@@ -1928,13 +2219,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "mensaje": "Hola, ¿cuál es mi saldo?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
   "state": "SELECT_CARD",
   "language": "es",
@@ -1951,13 +2242,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "mensaje": "La tarjeta de crédito."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "El saldo actual de su tarjeta de crédito terminada en 5070 es de 8.741.863,41 COP y su límite de crédito es de 84.596.594,05 COP, según los datos del 3 de octubre de 2026 a las 23:34.",
   "state": "IDLE",
   "language": "es",
@@ -1974,13 +2265,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "mensaje": "¿Y cuánto tengo disponible para usar?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "No puedo calcular el crédito disponible; solo puedo indicarle el saldo y el límite registrados. Si lo necesita, puedo transferirle con un asesor.",
   "state": "IDLE",
   "language": "es",
@@ -1997,13 +2288,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "mensaje": "Ok. ¿Y el saldo de la tarjeta sigue igual que hace un rato?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "El saldo actual de su tarjeta de crédito terminada en 5070 es de 8.741.863,41 COP y su límite de crédito es de 84.596.594,05 COP, según los datos del 3 de octubre de 2026 a las 23:34.",
   "state": "IDLE",
   "language": "es",
@@ -2020,13 +2311,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "mensaje": "Gracias, eso es todo."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+  "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
   "reply": "Con gusto. Hasta luego.",
   "state": "ENDED",
   "language": "es",
@@ -2050,7 +2341,7 @@ Authorization: Bearer <customer token>
 
 HTTP 201
 {
-  "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+  "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
   "reply": "Hola, ¿en qué puedo ayudarle?",
   "state": "IDLE",
   "language": "es",
@@ -2067,13 +2358,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+  "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
   "mensaje": "Hola, hace unos días me rechazaron un pago en Uber con mi tarjeta terminada en 6873. ¿Qué pasó?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+  "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
   "reply": "La compra del 6 de junio de 2026 por 127.37 USD en Uber con la tarjeta terminada en 6873 fue rechazada. Tiene registrado el código de respuesta 54, que en las redes de pago significa: tarjeta vencida. Este código es lo que muestra el registro; no me permite confirmar la causa. Si necesita saber por qué ocurrió, puedo transferirle con un asesor.",
   "state": "IDLE",
   "language": "es",
@@ -2090,13 +2381,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+  "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
   "mensaje": "¿Entonces mi tarjeta está vencida?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+  "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
   "reply": "Su tarjeta de crédito terminada en 6873 está activa. No puedo confirmar fechas de vencimiento, así que no puedo decirle si el código 54 corresponde al estado real de su tarjeta. Si lo necesita, puedo transferirle con un asesor.",
   "state": "IDLE",
   "language": "es",
@@ -2113,13 +2404,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+  "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
   "mensaje": "No, así está bien. Gracias."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+  "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
   "reply": "Con gusto. Hasta luego.",
   "state": "ENDED",
   "language": "es",
@@ -2143,7 +2434,7 @@ Authorization: Bearer <customer token>
 
 HTTP 201
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "reply": "Hola, ¿en qué puedo ayudarle?",
   "state": "IDLE",
   "language": "es",
@@ -2160,13 +2451,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "mensaje": "No reconozco un cobro de Empresa Telefónica en mi tarjeta de crédito terminada en 4950. Quiero reclamarlo."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "reply": "La compra del 1 de junio de 2026 por 392.25 USD en Empresa Telefónica con la tarjeta terminada en 4950 fue aprobada. ¿Es este el cobro que no reconoce?",
   "state": "SELECT_TRANSACTION",
   "language": "es",
@@ -2183,13 +2474,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "mensaje": "Sí, ese."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "reply": "Su tarjeta de crédito terminada en 4950 está activa. ¿Quiere que la bloquee antes de transferir su reclamo? Para eso le pediré un código de verificación y su confirmación.",
   "state": "OFFER_BLOCK",
   "language": "es",
@@ -2206,18 +2497,18 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "mensaje": "No, por ahora solo quiero el reclamo."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-  "reply": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-3630960D3B49.",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+  "reply": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-ED908D0D6BC0.",
   "state": "HANDED_OFF",
   "language": "es",
   "pending_confirmation": null,
-  "case_id": "CASE-3630960D3B49",
+  "case_id": "CASE-ED908D0D6BC0",
   "turn": 3
 }
 ```
@@ -2229,18 +2520,18 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
   "mensaje": "¿En cuánto tiempo me contactan?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-  "reply": "Agregué su mensaje a su caso, referencia CASE-3630960D3B49. Un asesor lo revisará.",
+  "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+  "reply": "Agregué su mensaje a su caso, referencia CASE-ED908D0D6BC0. Un asesor lo revisará.",
   "state": "HANDED_OFF",
   "language": "es",
   "pending_confirmation": null,
-  "case_id": "CASE-3630960D3B49",
+  "case_id": "CASE-ED908D0D6BC0",
   "turn": 4
 }
 ```
@@ -2259,7 +2550,7 @@ Authorization: Bearer <customer token>
 
 HTTP 201
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "reply": "Olá, em que posso ajudar?",
   "state": "IDLE",
   "language": "pt",
@@ -2276,13 +2567,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "mensaje": "Oi, qual é o saldo da minha conta poupança?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "reply": "O saldo atual da sua conta poupança final 2700 é de 3,447.34 USD, segundo os dados de 3 de outubro de 2026 às 23:34.",
   "state": "IDLE",
   "language": "pt",
@@ -2299,13 +2590,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "mensaje": "E o do cartão de crédito?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "reply": "Você tem três cartões de crédito: final 7858 (ativo), final 2960 (ativo) e final 2952 (bloqueado). De qual deles quer consultar o saldo? Informe os últimos 4 dígitos.",
   "state": "SELECT_CARD",
   "language": "pt",
@@ -2322,13 +2613,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "mensaje": "O 7858."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "reply": "O saldo atual do seu cartão de crédito final 7858 é de 1,126.12 USD e o limite de crédito é de 5,366.87 USD, segundo os dados de 3 de outubro de 2026 às 23:34.",
   "state": "IDLE",
   "language": "pt",
@@ -2345,13 +2636,13 @@ POST /chat/mensaje
 Authorization: Bearer <customer token>
 
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "mensaje": "Obrigado, era isso."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+  "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
   "reply": "Por nada. Até logo.",
   "state": "ENDED",
   "language": "pt",
@@ -2380,13 +2671,13 @@ HTTP 201
 {
   "token": "<token>",
   "tipo_token": "bearer",
-  "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o",
+  "sesion_id": "ses_Mm8_hHJ6tan9U7nFAKN-updtq84U4mjC",
   "customer_id": "CLI-JPK27B33SV65",
   "customer_status": "Active",
   "nivel": "L1",
   "idioma": "pt",
-  "expira_inactividad_en": "2026-10-05T04:50:45.272723Z",
-  "expira_absoluta_en": "2026-10-05T05:35:45.272723Z",
+  "expira_inactividad_en": "2026-10-05T08:44:27.191321Z",
+  "expira_absoluta_en": "2026-10-05T09:29:27.191321Z",
   "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
 }
 ```
@@ -2401,7 +2692,7 @@ Authorization: Bearer <test session token>
 
 HTTP 201
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "reply": "Olá, em que posso ajudar?",
   "state": "IDLE",
   "language": "pt",
@@ -2418,13 +2709,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "mensaje": "Oi, perdi meu cartão de crédito. Quero bloquear agora."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "reply": "O seu cartão de crédito final 8407 está ativo. Para bloquear, preciso confirmar sua identidade com um código de verificação; digite-o na janela de verificação, não aqui no chat.",
   "state": "STEP_UP",
   "language": "pt",
@@ -2441,14 +2732,14 @@ POST /identidad/otp-prueba
 Authorization: Bearer <jurado token>
 
 {
-  "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o"
+  "sesion_id": "ses_Mm8_hHJ6tan9U7nFAKN-updtq84U4mjC"
 }
 
 HTTP 201
 {
-  "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o",
-  "codigo": "960532",
-  "expira_en": "2026-10-05T04:40:45.363831Z",
+  "sesion_id": "ses_Mm8_hHJ6tan9U7nFAKN-updtq84U4mjC",
+  "codigo": "451615",
+  "expira_en": "2026-10-05T08:34:27.312929Z",
   "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
 }
 ```
@@ -2460,20 +2751,20 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
-  "codigo_step_up": "960532"
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
+  "codigo_step_up": "451615"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "reply": "Identidade confirmada. Vou bloquear o seu cartão de crédito final 8407. Depois do bloqueio ele deixa de funcionar e eu não consigo desbloqueá-lo; só um atendente pode fazer isso. Confirma o bloqueio do cartão final 8407? Responda sim ou não.",
   "state": "AWAIT_CONFIRMATION",
   "language": "pt",
   "pending_confirmation": {
     "card_last4": "8407",
     "card_type": "Tarjeta Crédito",
-    "expires_at": "2026-10-05T04:37:45.413791+00:00"
+    "expires_at": "2026-10-05T08:31:27.380801+00:00"
   },
   "case_id": null,
   "turn": 2
@@ -2487,13 +2778,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "mensaje": "Sim, pode bloquear."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "reply": "Pronto: o seu cartão de crédito final 8407 está bloqueado. Para desbloquear ou pedir um cartão novo, é preciso falar com um atendente; posso transferir você, se quiser.",
   "state": "IDLE",
   "language": "pt",
@@ -2510,13 +2801,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "mensaje": "Não, era só isso, valeu."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+  "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
   "reply": "Por nada. Até logo.",
   "state": "ENDED",
   "language": "pt",
@@ -2540,7 +2831,7 @@ Authorization: Bearer <test session token>
 
 HTTP 201
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "reply": "Hola, ¿en qué puedo ayudarle?",
   "state": "IDLE",
   "language": "es",
@@ -2557,13 +2848,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "mensaje": "Hola, ¿cuál es mi saldo?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 0990, de su cuenta de ahorros terminada en 5747 o de su cuenta de ahorros terminada en 1447. ¿Cuál quiere consultar?",
   "state": "SELECT_CARD",
   "language": "es",
@@ -2580,13 +2871,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "mensaje": "La terminada en 0990."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "reply": "El saldo actual de su tarjeta de crédito terminada en 0990 es de 1,032.68 USD y su límite de crédito es de 13,678.19 USD, según los datos del 3 de octubre de 2026 a las 23:34.",
   "state": "IDLE",
   "language": "es",
@@ -2603,13 +2894,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "mensaje": "¿Qué movimientos tuvo esa tarjeta en el último mes?"
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "reply": "Estas son las transacciones de su tarjeta de crédito terminada en 0990 entre el 19 de mayo de 2026 y el 18 de junio de 2026: - 24 de mayo de 2026, retiro, 214.92 USD, aprobada",
   "state": "IDLE",
   "language": "es",
@@ -2626,13 +2917,13 @@ POST /chat/mensaje
 Authorization: Bearer <test session token>
 
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "mensaje": "Gracias, eso es todo."
 }
 
 HTTP 200
 {
-  "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+  "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
   "reply": "Con gusto. Hasta luego.",
   "state": "ENDED",
   "language": "es",

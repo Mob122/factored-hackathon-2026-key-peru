@@ -4,6 +4,7 @@ real (docs/policy_cards.md, POL-AUTH-10 a 13; límites en POL-AUTH-13 y docs/ope
 - Sesiones del lado del servidor con expiración por inactividad y absoluta (POL-AUTH-03).
 - Step-up L2 con un código de un solo uso, ligado a una tarjeta y una acción (POL-AUTH-04, 06).
 - Sesiones de prueba y códigos que abre un jurado, registrados en el audit log (POL-AUTH-11).
+- SMS simulado: en desarrollo, el cliente ve el código de su propia sesión en la web (POL-AUTH-14).
 
 Las tools del banco reciben un `SesionCliente`, que solo se construye desde un token verificado.
 Ninguna función de este módulo ni del banco acepta un customer_id escrito por el cliente (POL-AUTH-02).
@@ -17,6 +18,7 @@ from typing import Deque, Dict, List, Optional, Tuple
 from sqlalchemy import update
 from sqlmodel import Session, select
 
+from models.chat import Conversacion
 from models.identidad import CodigoOTPPrueba, SesionIdentidad, StepUp
 from security.config import (
     ALGORITHM,
@@ -33,6 +35,7 @@ from services import auditoria
 import hashlib
 import hmac
 import jwt
+import os
 import secrets
 import threading
 import time
@@ -41,6 +44,7 @@ ROLES = ("cliente", "agente", "jurado")
 ESTADOS_REVISION = {"Suspended", "Closed"} # POL-AUTH-09: solo transferencia.
 ACCIONES_CON_EFECTO = {"block_card"} # La única acción con efecto (sección 4 de la política).
 AVISO_IDP = "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
+AVISO_SMS_SIMULADO = "SMS simulado del IdP de prueba: un banco real enviaría este código a su teléfono (POL-AUTH-14)."
 MENSAJE_SESION_VENCIDA = "La sesión expiró o se cerró. Inicie sesión de nuevo."
 
 
@@ -429,18 +433,10 @@ def abrir_sesion_prueba(
     return registro, emitir_token(registro)
 
 
-def emitir_otp_prueba(sesion: Session, jurado: SesionIdentidad, sesion_id: str) -> Tuple[str, CodigoOTPPrueba]:
-    """Código de un solo uso para el step-up de una sesión de cliente vigente. Uno nuevo anula el anterior."""
-    objetivo = sesion.get(SesionIdentidad, sesion_id)
-
-    if objetivo is None or objetivo.rol != "cliente" or not objetivo.customer_id:
-        raise ErrorSesion("SESSION_NOT_FOUND", "Sesión no encontrada o vencida.")
-
-    try:
-        comprobar_vigencia(sesion, objetivo, tocar= False) # Lo pide el jurado: no cuenta como actividad del cliente.
-    except ErrorSesion:
-        raise ErrorSesion("SESSION_NOT_FOUND", "Sesión no encontrada o vencida.")
-
+def _emitir_codigo(
+    sesion: Session, objetivo: SesionIdentidad, emitido_por_usuario_id: Optional[int], rule_ids: List[str], test_idp: dict
+) -> Tuple[str, CodigoOTPPrueba]:
+    """Código de un solo uso para el step-up de `objetivo`. Uno nuevo anula el anterior; solo se guarda su HMAC."""
     if objetivo.step_up_bloqueado:
         raise ErrorSesion("STEP_UP_LOCKED", "La verificación adicional está bloqueada en esa sesión.")
     if objetivo.customer_status in ESTADOS_REVISION:
@@ -453,21 +449,56 @@ def emitir_otp_prueba(sesion: Session, jurado: SesionIdentidad, sesion_id: str) 
     registro = CodigoOTPPrueba(
         sesion_id= objetivo.id,
         codigo_hash= _hash_codigo(objetivo.id, codigo),
-        emitido_por_usuario_id= jurado.usuario_id,
+        emitido_por_usuario_id= emitido_por_usuario_id,
         creado_en= ahora,
         expira_en= ahora + timedelta(minutes= OTP_PRUEBA_TTL_MIN),
     )
     sesion.add(registro)
     nivel = nivel_actual(sesion, objetivo)
     auditar_sesion(
-        sesion, objetivo, "step_up_requested", rule_ids= ["POL-AUTH-04", "POL-AUTH-11"], state= "STEP_UP",
-        auth_level_before= nivel, auth_level_after= nivel, expires_at= registro.expira_en,
-        test_idp= _test_idp(jurado, "/identidad/otp-prueba"),
+        sesion, objetivo, "step_up_requested", rule_ids= rule_ids, state= "STEP_UP",
+        auth_level_before= nivel, auth_level_after= nivel, expires_at= registro.expira_en, test_idp= test_idp,
     )
     sesion.commit()
     sesion.refresh(registro)
 
     return codigo, registro
+
+
+def emitir_otp_prueba(sesion: Session, jurado: SesionIdentidad, sesion_id: str) -> Tuple[str, CodigoOTPPrueba]:
+    """Código de un solo uso para el step-up de una sesión de cliente vigente. Uno nuevo anula el anterior."""
+    objetivo = sesion.get(SesionIdentidad, sesion_id)
+
+    if objetivo is None or objetivo.rol != "cliente" or not objetivo.customer_id:
+        raise ErrorSesion("SESSION_NOT_FOUND", "Sesión no encontrada o vencida.")
+
+    try:
+        comprobar_vigencia(sesion, objetivo, tocar= False) # Lo pide el jurado: no cuenta como actividad del cliente.
+    except ErrorSesion:
+        raise ErrorSesion("SESSION_NOT_FOUND", "Sesión no encontrada o vencida.")
+
+    return _emitir_codigo(sesion, objetivo, jurado.usuario_id, ["POL-AUTH-04", "POL-AUTH-11"],
+                          _test_idp(jurado, "/identidad/otp-prueba"))
+
+
+def emitir_otp_demo(sesion: Session, registro: SesionIdentidad) -> Tuple[str, CodigoOTPPrueba]:
+    """SMS simulado (POL-AUTH-14): con ENV=development, el cliente recibe en la web el código de su propia
+    sesión, y solo mientras su conversación está en STEP_UP, que es cuando un banco enviaría el SMS."""
+    if os.getenv("ENV") != "development":
+        raise ErrorSesion("DEMO_OTP_DISABLED", "El SMS simulado solo existe en el entorno de desarrollo.")
+    if registro.rol != "cliente" or not registro.customer_id:
+        raise ErrorSesion("NOT_A_CUSTOMER_SESSION", "Esta sesión no corresponde a un cliente.")
+
+    en_step_up = sesion.exec(
+        select(Conversacion).where(Conversacion.sesion_id == registro.id, Conversacion.estado == "STEP_UP")
+    ).first()
+    if en_step_up is None:
+        raise ErrorSesion("NOT_IN_STEP_UP", "No hay una verificación pendiente en su conversación.")
+
+    test_idp = {"idp": "mock-test-idp", "issued_by_user_id": registro.usuario_id, "issued_by_role": registro.rol,
+                "endpoint": "/autenticacion/otp-demo", "channel": "simulated_sms"}
+    return _emitir_codigo(sesion, registro, registro.usuario_id or registro.emitida_por_usuario_id,
+                          ["POL-AUTH-04", "POL-AUTH-14"], test_idp)
 
 
 class LimitadorTasa:

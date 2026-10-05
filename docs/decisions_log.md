@@ -702,3 +702,82 @@ Context: the team asked for:
 - **Fix found by the test:** the pip bundled with Python 3.11.0 (22.3) rejects scikit-learn 1.9.1's metadata ("invalid metadata entry 'name'"), and the install fails. The README now upgrades pip first.
 - **Not a repository problem:** installing into a very deep Windows path exceeds the 260-character limit inside scikit-learn's test data. A normal clone path stays well under it.
 - **Not tested:** the frontend step (Node 14 here, see D-41).
+
+## Frontend integration: chat, customer portal and agent inbox (2026-10-05)
+
+Context: `dev-frontend` (PR #11) brought the app screens with hard-coded data. The chat page had a `TODO`
+where the API call goes. The team asked for the integration to be testable end to end in the web, with
+real gold data in the customer pages and an agent inbox.
+
+### D-44. Simulated SMS for the step-up in the web (POL-AUTH-14)
+
+- **Gap:** a customer in the web had no way to get a step-up code. Only the jurado could issue one, with
+  `POST /identidad/otp-prueba` from the CLI.
+- **Decision:** `POST /autenticacion/otp-demo` gives a customer session its own code. It works only with
+  `ENV=development`, and only while a conversation of the session is in `STEP_UP`.
+  - It shares `_emitir_codigo` with `otp-prueba`: same TTL, single use, replacement of earlier codes, lock and
+    review checks.
+  - The audit event is `step_up_requested`, with `test_idp.channel` set to `simulated_sms` (additive to the
+    D-21 extension).
+- **Policy 0.9:** new POL-AUTH-14 (T1); POL-AUTH-13 names it.
+- **Tests and contract:** 3 tests in `backend/tests/test_autenticacion.py`, one of them parametrized. Contract
+  section 4.3 has the `sms-*` examples.
+
+### D-45. Customer portal endpoints (POL-PII-10)
+
+- **Gap:** a golden persona saw fake cards (4821, 9137…) next to a chat about their real card.
+- **Decision:** four read-only endpoints, `/cliente/tarjetas`, `/cliente/transacciones?dias=`,
+  `/cliente/conversaciones` and `/cliente/casos`. Cards and transactions go through `list_cards` and
+  `list_transactions`, with the same checks as in the chat (session, customer, POL-AUTH-09, window, row cap).
+- **Left out on purpose:**
+  - Internal IDs: a card is `t1`, `t2`… in `card_id` order, which no tool accepts.
+  - Response codes: they are random in the data (POL-ANS-10), and the assistant states them with its caveat.
+  - Balances: only the assistant states them, read in the turn with `as_of` (POL-GEN-07).
+  - The case file: it stays with agents.
+- **Not audited:** portal reads are not chat turns. Auditing them is remaining work.
+- **Policy 0.9:** new POL-PII-10 (T1).
+- **Files:** `backend/routers/cliente.py`, `backend/services/portal.py`, `backend/schemas/cliente.py`,
+  `ClienteDependencia` in `backend/security/dependencias.py`, and 5 tests in `backend/tests/test_portal.py`.
+
+### D-46. Frontend wired to the API
+
+- **Chat** (`/app/consultas`, through `src/routes/api/chat/[accion]/+server.ts`):
+  - Every state of contract section 4.2 has a panel.
+  - `STEP_UP` shows a code widget with the simulated SMS button. `AWAIT_CONFIRMATION` shows the card and a
+    countdown.
+  - Quick replies: the last 4 digits named in a `SELECT_CARD` reply, and "Sí"/"No" ("Sim"/"Não" in Portuguese).
+  - The transcript lives in the tab's `sessionStorage`. In the same session the chat just continues. After
+    signing in again it resumes with `POST /chat/sesiones` and the old `conversation_id` (G-02).
+- **Portal pages:** they read `/cliente/*`. "Bloquear tarjeta" and the transaction buttons open the chat with
+  a prefilled message, so a block still needs the step-up and an explicit yes.
+- **Agent inbox:** `/app/bandeja` sorts cases by priority (POL-HND-15). Each case shows its file and the
+  audit trail grouped by turn, with `cadena_valida`.
+- **Roles:** `hooks.server.ts` sends the agent to the inbox. The jurado and a registered user without a
+  customer see a notice on `/app`.
+- **Authentication:**
+  - The login route no longer returns the token to the browser.
+  - The cookie lasts 60 minutes (was 7 days).
+  - `secure` keeps SvelteKit's default, which is off only on `http://localhost`.
+  - New `/logout`, and `?volver=` returns to the page after signing in.
+- **Found while testing:**
+  - The chat page had a `<main>` inside the layout's `<main>`.
+  - The unlayered `section p` rule of `layout.css` overrides Tailwind color utilities, so text on colored
+    backgrounds uses `!`.
+  - The root layout linked a missing `/favicon.ico`, which gave a 404 on every page.
+
+### D-47. How the integration was tested
+
+- **Backend:** 147 tests (138 plus 9 new). The contract was captured again (77 examples), and
+  `tools/check_docs.py` passes.
+- **Frontend:** `svelte-check` reports 0 errors and 0 warnings. This machine has Node 14, so it ran with a
+  portable Node 22.
+- **End to end:** an isolated backend (temporary SQLite, generated secrets, demo gold, `LLM_MODE=mock`) and
+  the Vite dev server.
+  - 57 curl checks through the SvelteKit routes passed: sign-in, portal, block with the simulated SMS,
+    dispute handoff, resume after signing in again, logout, agent inbox and jurado.
+  - A headless Edge run of the UI passed: block from the card page, restore, Portuguese with a quick reply,
+    resume after signing in again, and the agent's case page. There were no console errors.
+- **Harness notes, not app issues:**
+  - Git Bash mangles non-ASCII characters in `curl.exe` arguments, so bodies go through
+    `--data-binary @file`.
+  - curl 7.75 drops `Secure` cookies on `http://localhost`.

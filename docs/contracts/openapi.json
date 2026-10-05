@@ -183,6 +183,32 @@
     ]
    }
   },
+  "/autenticacion/otp-demo": {
+   "post": {
+    "tags": [
+     "Autenticación"
+    ],
+    "summary": "Otp Demo",
+    "operationId": "otp_demo_autenticacion_otp_demo_post",
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RespuestaOTPDemo"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
   "/autenticacion/cerrar-sesion": {
    "post": {
     "tags": [
@@ -750,6 +776,146 @@
     }
    }
   },
+  "/cliente/tarjetas": {
+   "get": {
+    "tags": [
+     "Portal del cliente"
+    ],
+    "summary": "Mis Tarjetas",
+    "operationId": "mis_tarjetas_cliente_tarjetas_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/TarjetaCliente"
+         },
+         "type": "array",
+         "title": "Response Mis Tarjetas Cliente Tarjetas Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/cliente/transacciones": {
+   "get": {
+    "tags": [
+     "Portal del cliente"
+    ],
+    "summary": "Mis Transacciones",
+    "operationId": "mis_transacciones_cliente_transacciones_get",
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "dias",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 90,
+       "minimum": 1,
+       "default": 30,
+       "title": "Dias"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TransaccionesCliente"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/cliente/conversaciones": {
+   "get": {
+    "tags": [
+     "Portal del cliente"
+    ],
+    "summary": "Mis Conversaciones",
+    "operationId": "mis_conversaciones_cliente_conversaciones_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ConversacionCliente"
+         },
+         "type": "array",
+         "title": "Response Mis Conversaciones Cliente Conversaciones Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
+  "/cliente/casos": {
+   "get": {
+    "tags": [
+     "Portal del cliente"
+    ],
+    "summary": "Mis Casos",
+    "operationId": "mis_casos_cliente_casos_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/CasoCliente"
+         },
+         "type": "array",
+         "title": "Response Mis Casos Cliente Casos Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "OAuth2PasswordBearer": []
+     }
+    ]
+   }
+  },
   "/": {
    "get": {
     "summary": "Get Root Endpoint",
@@ -769,6 +935,59 @@
  },
  "components": {
   "schemas": {
+   "CasoCliente": {
+    "properties": {
+     "case_id": {
+      "type": "string",
+      "title": "Case Id"
+     },
+     "creado_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creado En"
+     },
+     "prioridad": {
+      "type": "string",
+      "title": "Prioridad"
+     },
+     "motivo": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Motivo"
+     },
+     "tarjetas_last4": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Tarjetas Last4"
+     },
+     "mensajes_agregados": {
+      "type": "integer",
+      "title": "Mensajes Agregados"
+     },
+     "conversation_id": {
+      "type": "string",
+      "title": "Conversation Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "case_id",
+     "creado_en",
+     "prioridad",
+     "tarjetas_last4",
+     "mensajes_agregados",
+     "conversation_id"
+    ],
+    "title": "CasoCliente"
+   },
    "ClienteEncontrado": {
     "properties": {
      "customer_id": {
@@ -814,6 +1033,63 @@
      "expires_at"
     ],
     "title": "ConfirmacionPendiente"
+   },
+   "ConversacionCliente": {
+    "properties": {
+     "conversation_id": {
+      "type": "string",
+      "title": "Conversation Id"
+     },
+     "estado": {
+      "type": "string",
+      "title": "Estado"
+     },
+     "turnos": {
+      "type": "integer",
+      "title": "Turnos"
+     },
+     "idioma": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Idioma"
+     },
+     "case_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Case Id"
+     },
+     "creada_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Creada En"
+     },
+     "actualizada_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Actualizada En"
+     }
+    },
+    "type": "object",
+    "required": [
+     "conversation_id",
+     "estado",
+     "turnos",
+     "creada_en",
+     "actualizada_en"
+    ],
+    "title": "ConversacionCliente"
    },
    "CrearOTPPrueba": {
     "properties": {
@@ -1355,6 +1631,35 @@
     ],
     "title": "RespuestaChat"
    },
+   "RespuestaOTPDemo": {
+    "properties": {
+     "codigo": {
+      "type": "string",
+      "title": "Codigo"
+     },
+     "expira_en": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Expira En"
+     },
+     "canal": {
+      "type": "string",
+      "title": "Canal",
+      "default": "sms_simulado"
+     },
+     "aviso": {
+      "type": "string",
+      "title": "Aviso"
+     }
+    },
+    "type": "object",
+    "required": [
+     "codigo",
+     "expira_en",
+     "aviso"
+    ],
+    "title": "RespuestaOTPDemo"
+   },
    "RespuestaOTPPrueba": {
     "properties": {
      "sesion_id": {
@@ -1563,6 +1868,34 @@
     ],
     "title": "SolicitudStepUp"
    },
+   "TarjetaCliente": {
+    "properties": {
+     "ref": {
+      "type": "string",
+      "title": "Ref"
+     },
+     "last4": {
+      "type": "string",
+      "title": "Last4"
+     },
+     "tipo": {
+      "type": "string",
+      "title": "Tipo"
+     },
+     "estado": {
+      "type": "string",
+      "title": "Estado"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ref",
+     "last4",
+     "tipo",
+     "estado"
+    ],
+    "title": "TarjetaCliente"
+   },
    "TipoIdioma": {
     "type": "string",
     "enum": [
@@ -1579,6 +1912,121 @@
      "jurado"
     ],
     "title": "TipoRol"
+   },
+   "TransaccionCliente": {
+    "properties": {
+     "fecha": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Fecha"
+     },
+     "tipo": {
+      "type": "string",
+      "title": "Tipo"
+     },
+     "monto": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Monto"
+     },
+     "moneda": {
+      "type": "string",
+      "title": "Moneda"
+     },
+     "comercio": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Comercio"
+     },
+     "estado": {
+      "type": "string",
+      "title": "Estado"
+     }
+    },
+    "type": "object",
+    "required": [
+     "fecha",
+     "tipo",
+     "monto",
+     "moneda",
+     "estado"
+    ],
+    "title": "TransaccionCliente"
+   },
+   "TransaccionesCliente": {
+    "properties": {
+     "desde": {
+      "type": "string",
+      "format": "date",
+      "title": "Desde"
+     },
+     "hasta": {
+      "type": "string",
+      "format": "date",
+      "title": "Hasta"
+     },
+     "tarjetas": {
+      "items": {
+       "$ref": "#/components/schemas/TransaccionesTarjeta"
+      },
+      "type": "array",
+      "title": "Tarjetas"
+     }
+    },
+    "type": "object",
+    "required": [
+     "desde",
+     "hasta",
+     "tarjetas"
+    ],
+    "title": "TransaccionesCliente"
+   },
+   "TransaccionesTarjeta": {
+    "properties": {
+     "ref": {
+      "type": "string",
+      "title": "Ref"
+     },
+     "last4": {
+      "type": "string",
+      "title": "Last4"
+     },
+     "tipo": {
+      "type": "string",
+      "title": "Tipo"
+     },
+     "estado": {
+      "type": "string",
+      "title": "Estado"
+     },
+     "truncada": {
+      "type": "boolean",
+      "title": "Truncada"
+     },
+     "transacciones": {
+      "items": {
+       "$ref": "#/components/schemas/TransaccionCliente"
+      },
+      "type": "array",
+      "title": "Transacciones"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ref",
+     "last4",
+     "tipo",
+     "estado",
+     "truncada",
+     "transacciones"
+    ],
+    "title": "TransaccionesTarjeta"
    },
    "ValidationError": {
     "properties": {

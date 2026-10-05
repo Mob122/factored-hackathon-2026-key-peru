@@ -3,6 +3,7 @@ from routers import (
     auditoria_router,
     casos_router,
     chat_router,
+    cliente_router,
     identidad_router,
     usuarios_router
 )
@@ -52,6 +53,7 @@ app.include_router(identidad_router) # IdP de prueba (simulado): solo el rol jur
 app.include_router(chat_router) # Orquestador del asistente (docs/contracts/state_machine.md).
 app.include_router(casos_router) # Bandeja de casos: solo el rol agente.
 app.include_router(auditoria_router) # Audit log por sesión: roles agente y jurado.
+app.include_router(cliente_router) # Portal del cliente: sus datos, solo lectura (POL-PII-10).
 
 
 @app.get("/")

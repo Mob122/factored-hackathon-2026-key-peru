@@ -57,14 +57,14 @@
    "response": {
     "status": 200,
     "body": {
-     "sesion_id": "ses_a0JcZJZe2Dfq5qvDaQ8Rqe3bk1gCRJQJ",
+     "sesion_id": "ses_X7XzBe1pqqerQ8bWKxWI4Pw0j_3sqhUc",
      "rol": "cliente",
      "nivel": "L1",
      "metodo": "contrasena",
      "customer_id": "CLI-SQJOCEDJJNCZ",
      "idioma": null,
-     "expira_inactividad_en": "2026-10-05T04:50:43.017994Z",
-     "expira_absoluta_en": "2026-10-05T05:35:42.988737Z"
+     "expira_inactividad_en": "2026-10-05T08:44:22.718579Z",
+     "expira_absoluta_en": "2026-10-05T09:29:22.672336Z"
     }
    }
   },
@@ -81,7 +81,7 @@
    "response": {
     "status": 201,
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "reply": "Hola, ¿en qué puedo ayudarle?",
      "state": "IDLE",
      "language": "es",
@@ -100,14 +100,14 @@
     "query": null,
     "auth": "cliente:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "mensaje": "Hola, ¿cuál es mi saldo?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
      "state": "SELECT_CARD",
      "language": "es",
@@ -126,14 +126,14 @@
     "query": null,
     "auth": "cliente:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "mensaje": "La tarjeta de crédito."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "reply": "El saldo actual de su tarjeta de crédito terminada en 5070 es de 8.741.863,41 COP y su límite de crédito es de 84.596.594,05 COP, según los datos del 3 de octubre de 2026 a las 23:34.",
      "state": "IDLE",
      "language": "es",
@@ -152,14 +152,14 @@
     "query": null,
     "auth": "cliente:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "mensaje": "¿Y cuánto tengo disponible para usar?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "reply": "No puedo calcular el crédito disponible; solo puedo indicarle el saldo y el límite registrados. Si lo necesita, puedo transferirle con un asesor.",
      "state": "IDLE",
      "language": "es",
@@ -178,14 +178,14 @@
     "query": null,
     "auth": "cliente:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "mensaje": "Ok. ¿Y el saldo de la tarjeta sigue igual que hace un rato?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "reply": "El saldo actual de su tarjeta de crédito terminada en 5070 es de 8.741.863,41 COP y su límite de crédito es de 84.596.594,05 COP, según los datos del 3 de octubre de 2026 a las 23:34.",
      "state": "IDLE",
      "language": "es",
@@ -204,14 +204,14 @@
     "query": null,
     "auth": "cliente:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "mensaje": "Gracias, eso es todo."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a10c-7e03-8427-d72c471ad2ad",
+     "conversation_id": "conv_01a10b2e-8d70-7622-a28d-aeaf05eae097",
      "reply": "Con gusto. Hasta luego.",
      "state": "ENDED",
      "language": "es",
@@ -234,7 +234,7 @@
    "response": {
     "status": 201,
     "body": {
-     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
      "reply": "Hola, ¿en qué puedo ayudarle?",
      "state": "IDLE",
      "language": "es",
@@ -253,14 +253,14 @@
     "query": null,
     "auth": "cliente:CLI-5B9VSCP2GSML",
     "body": {
-     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
      "mensaje": "Hola, hace unos días me rechazaron un pago en Uber con mi tarjeta terminada en 6873. ¿Qué pasó?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
      "reply": "La compra del 6 de junio de 2026 por 127.37 USD en Uber con la tarjeta terminada en 6873 fue rechazada. Tiene registrado el código de respuesta 54, que en las redes de pago significa: tarjeta vencida. Este código es lo que muestra el registro; no me permite confirmar la causa. Si necesita saber por qué ocurrió, puedo transferirle con un asesor.",
      "state": "IDLE",
      "language": "es",
@@ -279,14 +279,14 @@
     "query": null,
     "auth": "cliente:CLI-5B9VSCP2GSML",
     "body": {
-     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
      "mensaje": "¿Entonces mi tarjeta está vencida?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
      "reply": "Su tarjeta de crédito terminada en 6873 está activa. No puedo confirmar fechas de vencimiento, así que no puedo decirle si el código 54 corresponde al estado real de su tarjeta. Si lo necesita, puedo transferirle con un asesor.",
      "state": "IDLE",
      "language": "es",
@@ -305,14 +305,14 @@
     "query": null,
     "auth": "cliente:CLI-5B9VSCP2GSML",
     "body": {
-     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
      "mensaje": "No, así está bien. Gracias."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a6ee-79af-9a3a-a35b7836930e",
+     "conversation_id": "conv_01a10b2e-9731-7190-af02-ea161931aa83",
      "reply": "Con gusto. Hasta luego.",
      "state": "ENDED",
      "language": "es",
@@ -335,7 +335,7 @@
    "response": {
     "status": 201,
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "reply": "Hola, ¿en qué puedo ayudarle?",
      "state": "IDLE",
      "language": "es",
@@ -354,14 +354,14 @@
     "query": null,
     "auth": "cliente:CLI-AYAHYQEG16BZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "mensaje": "No reconozco un cobro de Empresa Telefónica en mi tarjeta de crédito terminada en 4950. Quiero reclamarlo."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "reply": "La compra del 1 de junio de 2026 por 392.25 USD en Empresa Telefónica con la tarjeta terminada en 4950 fue aprobada. ¿Es este el cobro que no reconoce?",
      "state": "SELECT_TRANSACTION",
      "language": "es",
@@ -380,14 +380,14 @@
     "query": null,
     "auth": "cliente:CLI-AYAHYQEG16BZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "mensaje": "Sí, ese."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "reply": "Su tarjeta de crédito terminada en 4950 está activa. ¿Quiere que la bloquee antes de transferir su reclamo? Para eso le pediré un código de verificación y su confirmación.",
      "state": "OFFER_BLOCK",
      "language": "es",
@@ -406,19 +406,19 @@
     "query": null,
     "auth": "cliente:CLI-AYAHYQEG16BZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "mensaje": "No, por ahora solo quiero el reclamo."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-     "reply": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-3630960D3B49.",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+     "reply": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-ED908D0D6BC0.",
      "state": "HANDED_OFF",
      "language": "es",
      "pending_confirmation": null,
-     "case_id": "CASE-3630960D3B49",
+     "case_id": "CASE-ED908D0D6BC0",
      "turn": 3
     }
    }
@@ -432,21 +432,170 @@
     "query": null,
     "auth": "cliente:CLI-AYAHYQEG16BZ",
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "mensaje": "¿En cuánto tiempo me contactan?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-     "reply": "Agregué su mensaje a su caso, referencia CASE-3630960D3B49. Un asesor lo revisará.",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+     "reply": "Agregué su mensaje a su caso, referencia CASE-ED908D0D6BC0. Un asesor lo revisará.",
      "state": "HANDED_OFF",
      "language": "es",
      "pending_confirmation": null,
-     "case_id": "CASE-3630960D3B49",
+     "case_id": "CASE-ED908D0D6BC0",
      "turn": 4
     }
+   }
+  },
+  {
+   "id": "portal-cards",
+   "title": "The customer's cards, no internal IDs",
+   "request": {
+    "method": "GET",
+    "path": "/cliente/tarjetas",
+    "query": null,
+    "auth": "cliente:CLI-5B9VSCP2GSML",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": [
+     {
+      "ref": "t1",
+      "last4": "6898",
+      "tipo": "Tarjeta Débito",
+      "estado": "Active"
+     },
+     {
+      "ref": "t2",
+      "last4": "6873",
+      "tipo": "Tarjeta Crédito",
+      "estado": "Active"
+     },
+     {
+      "ref": "t3",
+      "last4": "0727",
+      "tipo": "Tarjeta Crédito",
+      "estado": "Blocked"
+     }
+    ]
+   }
+  },
+  {
+   "id": "portal-transactions",
+   "title": "Card transactions of the last 30 days of the bank clock",
+   "request": {
+    "method": "GET",
+    "path": "/cliente/transacciones",
+    "query": {
+     "dias": 30
+    },
+    "auth": "cliente:CLI-5B9VSCP2GSML",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "desde": "2026-05-19",
+     "hasta": "2026-06-18",
+     "tarjetas": [
+      {
+       "ref": "t1",
+       "last4": "6898",
+       "tipo": "Tarjeta Débito",
+       "estado": "Active",
+       "truncada": false,
+       "transacciones": []
+      },
+      {
+       "ref": "t2",
+       "last4": "6873",
+       "tipo": "Tarjeta Crédito",
+       "estado": "Active",
+       "truncada": false,
+       "transacciones": [
+        {
+         "fecha": "2026-06-06T19:43:19",
+         "tipo": "Purchase",
+         "monto": "127.37",
+         "moneda": "USD",
+         "comercio": "Uber",
+         "estado": "Declined"
+        },
+        {
+         "fecha": "2026-05-26T02:17:17",
+         "tipo": "Purchase",
+         "monto": "259.15",
+         "moneda": "USD",
+         "comercio": "Cine Premium",
+         "estado": "Approved"
+        }
+       ]
+      },
+      {
+       "ref": "t3",
+       "last4": "0727",
+       "tipo": "Tarjeta Crédito",
+       "estado": "Blocked",
+       "truncada": false,
+       "transacciones": []
+      }
+     ]
+    }
+   }
+  },
+  {
+   "id": "portal-conversations",
+   "title": "The customer's conversations, newest first",
+   "request": {
+    "method": "GET",
+    "path": "/cliente/conversaciones",
+    "query": null,
+    "auth": "cliente:CLI-AYAHYQEG16BZ",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": [
+     {
+      "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+      "estado": "HANDED_OFF",
+      "turnos": 4,
+      "idioma": "es",
+      "case_id": "CASE-ED908D0D6BC0",
+      "creada_en": "2026-10-05T08:29:25.562850Z",
+      "actualizada_en": "2026-10-05T08:29:25.993312Z"
+     }
+    ]
+   }
+  },
+  {
+   "id": "portal-cases",
+   "title": "The customer's cases: reference and context, never the case file",
+   "request": {
+    "method": "GET",
+    "path": "/cliente/casos",
+    "query": null,
+    "auth": "cliente:CLI-AYAHYQEG16BZ",
+    "body": null
+   },
+   "response": {
+    "status": 200,
+    "body": [
+     {
+      "case_id": "CASE-ED908D0D6BC0",
+      "creado_en": "2026-10-05T08:29:25.871796Z",
+      "prioridad": "normal",
+      "motivo": "charge_dispute",
+      "tarjetas_last4": [
+       "4950"
+      ],
+      "mensajes_agregados": 1,
+      "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7"
+     }
+    ]
    }
   },
   {
@@ -462,7 +611,7 @@
    "response": {
     "status": 201,
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "reply": "Olá, em que posso ajudar?",
      "state": "IDLE",
      "language": "pt",
@@ -481,14 +630,14 @@
     "query": null,
     "auth": "cliente:CLI-AN7KXGR09TB2",
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "mensaje": "Oi, qual é o saldo da minha conta poupança?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "reply": "O saldo atual da sua conta poupança final 2700 é de 3,447.34 USD, segundo os dados de 3 de outubro de 2026 às 23:34.",
      "state": "IDLE",
      "language": "pt",
@@ -507,14 +656,14 @@
     "query": null,
     "auth": "cliente:CLI-AN7KXGR09TB2",
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "mensaje": "E o do cartão de crédito?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "reply": "Você tem três cartões de crédito: final 7858 (ativo), final 2960 (ativo) e final 2952 (bloqueado). De qual deles quer consultar o saldo? Informe os últimos 4 dígitos.",
      "state": "SELECT_CARD",
      "language": "pt",
@@ -533,14 +682,14 @@
     "query": null,
     "auth": "cliente:CLI-AN7KXGR09TB2",
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "mensaje": "O 7858."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "reply": "O saldo atual do seu cartão de crédito final 7858 é de 1,126.12 USD e o limite de crédito é de 5,366.87 USD, segundo os dados de 3 de outubro de 2026 às 23:34.",
      "state": "IDLE",
      "language": "pt",
@@ -559,14 +708,14 @@
     "query": null,
     "auth": "cliente:CLI-AN7KXGR09TB2",
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "mensaje": "Obrigado, era isso."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a8c9-774b-a00c-4de516464a5c",
+     "conversation_id": "conv_01a10b2e-9c34-76b9-81ef-5f48380e30ed",
      "reply": "Por nada. Até logo.",
      "state": "ENDED",
      "language": "pt",
@@ -683,13 +832,13 @@
     "body": {
      "token": "<token>",
      "tipo_token": "bearer",
-     "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o",
+     "sesion_id": "ses_Mm8_hHJ6tan9U7nFAKN-updtq84U4mjC",
      "customer_id": "CLI-JPK27B33SV65",
      "customer_status": "Active",
      "nivel": "L1",
      "idioma": "pt",
-     "expira_inactividad_en": "2026-10-05T04:50:45.272723Z",
-     "expira_absoluta_en": "2026-10-05T05:35:45.272723Z",
+     "expira_inactividad_en": "2026-10-05T08:44:27.191321Z",
+     "expira_absoluta_en": "2026-10-05T09:29:27.191321Z",
      "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
     }
    }
@@ -707,7 +856,7 @@
    "response": {
     "status": 201,
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
      "reply": "Olá, em que posso ajudar?",
      "state": "IDLE",
      "language": "pt",
@@ -726,14 +875,14 @@
     "query": null,
     "auth": "prueba:CLI-JPK27B33SV65",
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
      "mensaje": "Oi, perdi meu cartão de crédito. Quero bloquear agora."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
      "reply": "O seu cartão de crédito final 8407 está ativo. Para bloquear, preciso confirmar sua identidade com um código de verificação; digite-o na janela de verificação, não aqui no chat.",
      "state": "STEP_UP",
      "language": "pt",
@@ -752,15 +901,15 @@
     "query": null,
     "auth": "jurado",
     "body": {
-     "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o"
+     "sesion_id": "ses_Mm8_hHJ6tan9U7nFAKN-updtq84U4mjC"
     }
    },
    "response": {
     "status": 201,
     "body": {
-     "sesion_id": "ses_9HereTHHD5EDuiIBCr83zmC7JeZomp9o",
-     "codigo": "960532",
-     "expira_en": "2026-10-05T04:40:45.363831Z",
+     "sesion_id": "ses_Mm8_hHJ6tan9U7nFAKN-updtq84U4mjC",
+     "codigo": "451615",
+     "expira_en": "2026-10-05T08:34:27.312929Z",
      "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
     }
    }
@@ -774,21 +923,21 @@
     "query": null,
     "auth": "prueba:CLI-JPK27B33SV65",
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
-     "codigo_step_up": "960532"
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
+     "codigo_step_up": "451615"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
      "reply": "Identidade confirmada. Vou bloquear o seu cartão de crédito final 8407. Depois do bloqueio ele deixa de funcionar e eu não consigo desbloqueá-lo; só um atendente pode fazer isso. Confirma o bloqueio do cartão final 8407? Responda sim ou não.",
      "state": "AWAIT_CONFIRMATION",
      "language": "pt",
      "pending_confirmation": {
       "card_last4": "8407",
       "card_type": "Tarjeta Crédito",
-      "expires_at": "2026-10-05T04:37:45.413791+00:00"
+      "expires_at": "2026-10-05T08:31:27.380801+00:00"
      },
      "case_id": null,
      "turn": 2
@@ -804,14 +953,14 @@
     "query": null,
     "auth": "prueba:CLI-JPK27B33SV65",
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
      "mensaje": "Sim, pode bloquear."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
      "reply": "Pronto: o seu cartão de crédito final 8407 está bloqueado. Para desbloquear ou pedir um cartão novo, é preciso falar com um atendente; posso transferir você, se quiser.",
      "state": "IDLE",
      "language": "pt",
@@ -830,14 +979,14 @@
     "query": null,
     "auth": "prueba:CLI-JPK27B33SV65",
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
      "mensaje": "Não, era só isso, valeu."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a9f8-7a3f-9ba2-99710b2d8e84",
+     "conversation_id": "conv_01a10b2e-9f17-7ad2-87ea-0566e4d7bd21",
      "reply": "Por nada. Até logo.",
      "state": "ENDED",
      "language": "pt",
@@ -865,13 +1014,13 @@
     "body": {
      "token": "<token>",
      "tipo_token": "bearer",
-     "sesion_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+     "sesion_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
      "customer_id": "CLI-1IKG56EOI0A5",
      "customer_status": "Active",
      "nivel": "L1",
      "idioma": "es",
-     "expira_inactividad_en": "2026-10-05T04:50:45.558314Z",
-     "expira_absoluta_en": "2026-10-05T05:35:45.558314Z",
+     "expira_inactividad_en": "2026-10-05T08:44:27.635170Z",
+     "expira_absoluta_en": "2026-10-05T09:29:27.635170Z",
      "aviso": "IdP de prueba simulado: no es un proveedor de identidad real (POL-AUTH-13)."
     }
    }
@@ -889,7 +1038,7 @@
    "response": {
     "status": 201,
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "reply": "Hola, ¿en qué puedo ayudarle?",
      "state": "IDLE",
      "language": "es",
@@ -908,14 +1057,14 @@
     "query": null,
     "auth": "prueba:CLI-1IKG56EOI0A5",
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "mensaje": "Hola, ¿cuál es mi saldo?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 0990, de su cuenta de ahorros terminada en 5747 o de su cuenta de ahorros terminada en 1447. ¿Cuál quiere consultar?",
      "state": "SELECT_CARD",
      "language": "es",
@@ -934,14 +1083,14 @@
     "query": null,
     "auth": "prueba:CLI-1IKG56EOI0A5",
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "mensaje": "La terminada en 0990."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "reply": "El saldo actual de su tarjeta de crédito terminada en 0990 es de 1,032.68 USD y su límite de crédito es de 13,678.19 USD, según los datos del 3 de octubre de 2026 a las 23:34.",
      "state": "IDLE",
      "language": "es",
@@ -960,14 +1109,14 @@
     "query": null,
     "auth": "prueba:CLI-1IKG56EOI0A5",
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "mensaje": "¿Qué movimientos tuvo esa tarjeta en el último mes?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "reply": "Estas son las transacciones de su tarjeta de crédito terminada en 0990 entre el 19 de mayo de 2026 y el 18 de junio de 2026: - 24 de mayo de 2026, retiro, 214.92 USD, aprobada",
      "state": "IDLE",
      "language": "es",
@@ -986,14 +1135,14 @@
     "query": null,
     "auth": "prueba:CLI-1IKG56EOI0A5",
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "mensaje": "Gracias, eso es todo."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "reply": "Con gusto. Hasta luego.",
      "state": "ENDED",
      "language": "es",
@@ -1008,7 +1157,7 @@
    "title": "Audit trail of the test session",
    "request": {
     "method": "GET",
-    "path": "/auditoria/ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+    "path": "/auditoria/ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
     "query": null,
     "auth": "jurado",
     "body": null
@@ -1016,24 +1165,24 @@
    "response": {
     "status": 200,
     "body": {
-     "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+     "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
      "total": 18,
      "eventos": [
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab18-73fa-9e23-8b92e7be1797",
+       "event_id": "01a10b2e-a0d8-7e58-9ccc-248564b98dfc",
        "event_type": "session",
-       "occurred_at": "2026-10-05T04:35:45.560Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.640Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 0,
-       "trace_id": "2fb03f7320b2b878b1fce9f0a7352b8e",
-       "span_id": "b37205333e459f08",
+       "trace_id": "63697bdcb135f87a33a16fa86d7f6c42",
+       "span_id": "a20feb0bfe3ccb82",
        "actor": "identity",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "UNAUTHENTICATED",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01",
@@ -1046,7 +1195,7 @@
        "session_event": "authenticated",
        "auth_level_before": "L0",
        "auth_level_after": "L1",
-       "expires_at": "2026-10-05T05:35:45.558Z",
+       "expires_at": "2026-10-05T09:29:27.635Z",
        "step_up": null,
        "failure_count": 0,
        "language_preference": "es",
@@ -1064,23 +1213,23 @@
         "hits": {}
        },
        "prev_event_hash": null,
-       "event_hash": "54d0748a632d18520b3dee252f93df6d0e30835d4b2bb2cc7b09ea61a6fa8d6b"
+       "event_hash": "4ff34d486adde149a096fda3bf3f905a55c151bc7d2d8a9f27acaa85b947d10b"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab34-719e-a86f-223c3aa9a279",
+       "event_id": "01a10b2e-a11d-7006-a39f-247cf9153c50",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:45.588Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.709Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 0,
-       "trace_id": "f3886868e52c0994c27cddafaacfb5d1",
-       "span_id": "e7c911e9f7b994ec",
+       "trace_id": "7c7520f0b916797384b3b31c15926086",
+       "span_id": "24330922f02a7a69",
        "actor": "identity",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "UNAUTHENTICATED",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01",
@@ -1112,24 +1261,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "54d0748a632d18520b3dee252f93df6d0e30835d4b2bb2cc7b09ea61a6fa8d6b",
-       "event_hash": "904d24249ec83071e5b58798234410535e4df22fcd32908186c1422f175b0ac1"
+       "prev_event_hash": "4ff34d486adde149a096fda3bf3f905a55c151bc7d2d8a9f27acaa85b947d10b",
+       "event_hash": "b2c8d5b73278d0625ca3848d1fc572fe53967c1dbb3043210f49857767f3ef63"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab36-75af-ae22-1af0139e2b08",
+       "event_id": "01a10b2e-a127-7ff1-93fb-44fedd067516",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:45.590Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.719Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 0,
-       "trace_id": "f3886868e52c0994c27cddafaacfb5d1",
-       "span_id": "49f9558c1c5ee542",
+       "trace_id": "7c7520f0b916797384b3b31c15926086",
+       "span_id": "22926d81e827c838",
        "actor": "orchestrator",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01",
@@ -1178,24 +1327,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "904d24249ec83071e5b58798234410535e4df22fcd32908186c1422f175b0ac1",
-       "event_hash": "054dc2ede643b4a6ea4826c61c0dac18b3f74c9e7d0db7cc0ee85d64b7aa1cfe"
+       "prev_event_hash": "b2c8d5b73278d0625ca3848d1fc572fe53967c1dbb3043210f49857767f3ef63",
+       "event_hash": "6ff739d9aa6b2a26f93b525de40613332e963bf4ae43c3b57d61e2a45160e37e"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab48-7f9a-9b5c-6f03809cd92a",
+       "event_id": "01a10b2e-a15c-7232-b1bb-b324c671b116",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:45.608Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.772Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 1,
-       "trace_id": "4c3064bd266c2d894709f5ac1b46709a",
-       "span_id": "f5b8f0b89ef35345",
+       "trace_id": "68eba81faa6ca1f3fb3e6596a309694d",
+       "span_id": "5e682d6aaa406265",
        "actor": "customer",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -1215,24 +1364,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "054dc2ede643b4a6ea4826c61c0dac18b3f74c9e7d0db7cc0ee85d64b7aa1cfe",
-       "event_hash": "b71fe996c6650cb7258f12d5538f791fd02fc1b1a4037aba19c98b6c665d7f97"
+       "prev_event_hash": "6ff739d9aa6b2a26f93b525de40613332e963bf4ae43c3b57d61e2a45160e37e",
+       "event_hash": "0055bc9bb592d3c42d81dedd695182eec892116f4b7b3db918f4cd075a789837"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab4c-7da0-90a9-94648ba1f45f",
+       "event_id": "01a10b2e-a164-7846-bb53-98c2ac55774a",
        "event_type": "classification",
-       "occurred_at": "2026-10-05T04:35:45.612Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.780Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 1,
-       "trace_id": "4c3064bd266c2d894709f5ac1b46709a",
-       "span_id": "cc67f69d3fd33217",
+       "trace_id": "68eba81faa6ca1f3fb3e6596a309694d",
+       "span_id": "4840a40f87a82b69",
        "actor": "orchestrator",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-ESC-06"
@@ -1275,24 +1424,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "b71fe996c6650cb7258f12d5538f791fd02fc1b1a4037aba19c98b6c665d7f97",
-       "event_hash": "162158f651ea3f3345b26ba0d71b49062ea4e83d2d30eaa5e4470907c698fad9"
+       "prev_event_hash": "0055bc9bb592d3c42d81dedd695182eec892116f4b7b3db918f4cd075a789837",
+       "event_hash": "a68a271db03f0f468000661c3aa11b1302bd9e545a9f0f2a88c101af3ebd9e2a"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab57-7900-96c4-eaadec74e8b4",
+       "event_id": "01a10b2e-a173-77c9-af07-4143d7b0fa3f",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:45.623Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.795Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 1,
-       "trace_id": "4c3064bd266c2d894709f5ac1b46709a",
-       "span_id": "25226ddd4afa61e0",
+       "trace_id": "68eba81faa6ca1f3fb3e6596a309694d",
+       "span_id": "87842ce4d8606cc8",
        "actor": "tool_gateway",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -1307,22 +1456,22 @@
        "args": {},
        "status": "ok",
        "error_code": null,
-       "latency_ms": 0,
+       "latency_ms": 15,
        "result": [
         {
-         "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+         "card_ref": "9014f7fb37ed6e95a1d53e8849c69212",
          "kind": "credit_card",
          "last4": "0990",
          "status": "Active"
         },
         {
-         "card_ref": "d2129dc5e949dbbccbc9a5a4ee2a861c",
+         "card_ref": "f3e33fab75e28065be6fe2851fce1550",
          "kind": "savings_account",
          "last4": "5747",
          "status": "Active"
         },
         {
-         "card_ref": "1a290e042df38446c33786f8bc41284a",
+         "card_ref": "fa7dd0e092ccd77ba207e0d84a8915bd",
          "kind": "savings_account",
          "last4": "1447",
          "status": "Active"
@@ -1336,24 +1485,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "162158f651ea3f3345b26ba0d71b49062ea4e83d2d30eaa5e4470907c698fad9",
-       "event_hash": "0deac3414272e813a3e01b9c20cd4f9864adc96e0c45015c5768c9951f125d09"
+       "prev_event_hash": "a68a271db03f0f468000661c3aa11b1302bd9e545a9f0f2a88c101af3ebd9e2a",
+       "event_hash": "35c34514f2b042aa7609f06cfa89f78c83de189ebd5feaa8b395b89cbc34e30b"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab5a-79f5-97fd-032ae35fc2d6",
+       "event_id": "01a10b2e-a176-7456-8026-4ee2d1b475ed",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:45.626Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.798Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 1,
-       "trace_id": "4c3064bd266c2d894709f5ac1b46709a",
-       "span_id": "e5eb8f0e38869269",
+       "trace_id": "68eba81faa6ca1f3fb3e6596a309694d",
+       "span_id": "fa560adf134aa35c",
        "actor": "orchestrator",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "SELECT_CARD",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -1404,24 +1553,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "0deac3414272e813a3e01b9c20cd4f9864adc96e0c45015c5768c9951f125d09",
-       "event_hash": "0689315853172bf64faa5c210728dec6a22f38e2b517285e971ca61175fa49fc"
+       "prev_event_hash": "35c34514f2b042aa7609f06cfa89f78c83de189ebd5feaa8b395b89cbc34e30b",
+       "event_hash": "8e8677c64a4dd97ca88f8bb5bb848cf55ce0148205aba99d62bd2b52c7e6ef8c"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab6c-709e-a101-84a9fefba3f0",
+       "event_id": "01a10b2e-a18e-72a4-a9f9-1ce5a11c599f",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:45.644Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.822Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 2,
-       "trace_id": "7c10bbf3033d44424d62ecebbba9253b",
-       "span_id": "27fb313b7ab73e7f",
+       "trace_id": "44414feacbb8c10aad9fc6b109b58b45",
+       "span_id": "e18aeac78749eb37",
        "actor": "customer",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "SELECT_CARD",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -1441,24 +1590,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "0689315853172bf64faa5c210728dec6a22f38e2b517285e971ca61175fa49fc",
-       "event_hash": "2ae232c044a892016b18cf442f0796fc0c887d46d1a433595daa5c4419b284cd"
+       "prev_event_hash": "8e8677c64a4dd97ca88f8bb5bb848cf55ce0148205aba99d62bd2b52c7e6ef8c",
+       "event_hash": "efd232268ebdcce64fc5cfadc768eebb9940d0fc2fafd8986187021be45eb8ef"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab7e-754f-a104-fcd4b6ce45dd",
+       "event_id": "01a10b2e-a19f-7d20-a2cb-5f8cb6fd2f85",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:45.662Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.839Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 2,
-       "trace_id": "7c10bbf3033d44424d62ecebbba9253b",
-       "span_id": "517150b14a9787bb",
+       "trace_id": "44414feacbb8c10aad9fc6b109b58b45",
+       "span_id": "96ae23e745e34e5b",
        "actor": "tool_gateway",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "ANSWERING",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -1471,13 +1620,13 @@
        "retry_of": null,
        "allowed_in_state": true,
        "args": {
-        "card_ref": "072ce832fbf132c5193471f3a49f86d3"
+        "card_ref": "9014f7fb37ed6e95a1d53e8849c69212"
        },
        "status": "ok",
        "error_code": null,
        "latency_ms": 15,
        "result": {
-        "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+        "card_ref": "9014f7fb37ed6e95a1d53e8849c69212",
         "kind": "credit_card",
         "last4": "0990",
         "status": "Active",
@@ -1497,24 +1646,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "2ae232c044a892016b18cf442f0796fc0c887d46d1a433595daa5c4419b284cd",
-       "event_hash": "6f50f5266ab4140ac6cd02d2eb69bfdec902e51de9edba6cf658ecef11ea88de"
+       "prev_event_hash": "efd232268ebdcce64fc5cfadc768eebb9940d0fc2fafd8986187021be45eb8ef",
+       "event_hash": "4539db4735440113f598f2d308450ec30a51018d483722c5d08b30e9d15cf472"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab82-7784-a7c8-6f6beb7fa261",
+       "event_id": "01a10b2e-a1a3-77b1-aca6-97c111030287",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:45.666Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.843Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 2,
-       "trace_id": "7c10bbf3033d44424d62ecebbba9253b",
-       "span_id": "89f81f6770795bc4",
+       "trace_id": "44414feacbb8c10aad9fc6b109b58b45",
+       "span_id": "1c45d89fe4d7a7ba",
        "actor": "orchestrator",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -1586,24 +1735,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "6f50f5266ab4140ac6cd02d2eb69bfdec902e51de9edba6cf658ecef11ea88de",
-       "event_hash": "ab105d70b0c23252786e710071f7f50b8dd81b3b4d31ce5f2eaf5b70d09c5118"
+       "prev_event_hash": "4539db4735440113f598f2d308450ec30a51018d483722c5d08b30e9d15cf472",
+       "event_hash": "03772bf7891f78eee3d572d93f81de6e55e84e36ca9aa31c63ef5a8bd230676f"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab97-7c53-9bf1-31a24f7c8e8e",
+       "event_id": "01a10b2e-a1bb-74df-b9f1-0020412ecd7f",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:45.687Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.867Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 3,
-       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-       "span_id": "c9e3d8368a0f5f05",
+       "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+       "span_id": "4b647c1b5403d213",
        "actor": "customer",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -1623,24 +1772,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "ab105d70b0c23252786e710071f7f50b8dd81b3b4d31ce5f2eaf5b70d09c5118",
-       "event_hash": "6d980aae1611aa40936757848de403a75277c9938f80a0280ad93ca68baebc80"
+       "prev_event_hash": "03772bf7891f78eee3d572d93f81de6e55e84e36ca9aa31c63ef5a8bd230676f",
+       "event_hash": "b499f65d11fc789d3975bd669f7ffb93edfa2c93f0aea06d9668ecfbe2314a6e"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ab9c-77e6-a930-7a95ba3f3732",
+       "event_id": "01a10b2e-a1c2-7963-8802-1632c2840459",
        "event_type": "classification",
-       "occurred_at": "2026-10-05T04:35:45.692Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.874Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 3,
-       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-       "span_id": "0e56228b5ab3144a",
+       "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+       "span_id": "1bbf679c3a13b89b",
        "actor": "orchestrator",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-ESC-06"
@@ -1684,24 +1833,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "6d980aae1611aa40936757848de403a75277c9938f80a0280ad93ca68baebc80",
-       "event_hash": "152b462bbd272ad3e8d29abbd3b66e850fc834ba762ce1e86cbdccc0e76378a3"
+       "prev_event_hash": "b499f65d11fc789d3975bd669f7ffb93edfa2c93f0aea06d9668ecfbe2314a6e",
+       "event_hash": "27bd456303974fa71279bf26b1e66b46e0dbd46eb56d9d148d2c69bd7bcf0141"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-aba6-742f-9541-cbe9afd23c4d",
+       "event_id": "01a10b2e-a1d2-7854-b3ac-238e2837beb8",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:45.702Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.890Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 3,
-       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-       "span_id": "56028e8ed416aec0",
+       "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+       "span_id": "6b62404f010573b0",
        "actor": "tool_gateway",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -1716,10 +1865,10 @@
        "args": {},
        "status": "ok",
        "error_code": null,
-       "latency_ms": 0,
+       "latency_ms": 15,
        "result": [
         {
-         "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+         "card_ref": "9014f7fb37ed6e95a1d53e8849c69212",
          "last4": "0990",
          "type": "Tarjeta Crédito",
          "status": "Active"
@@ -1733,24 +1882,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "152b462bbd272ad3e8d29abbd3b66e850fc834ba762ce1e86cbdccc0e76378a3",
-       "event_hash": "c16b6a24def32ec791b9b089654eaa842151ad04409370dc9f4f6d9254ba4e9c"
+       "prev_event_hash": "27bd456303974fa71279bf26b1e66b46e0dbd46eb56d9d148d2c69bd7bcf0141",
+       "event_hash": "73eb3b573db1757fb434eae2555207e637d2a230f62e45a4bd0ae19a1eebe36b"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-abb8-769f-b72e-8a80d934670c",
+       "event_id": "01a10b2e-a1ec-7a84-8960-e56ec9aadcee",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:45.720Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.916Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 3,
-       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-       "span_id": "774a42b2651d1663",
+       "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+       "span_id": "729d779c31c248a6",
        "actor": "tool_gateway",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "ANSWERING",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -1763,20 +1912,20 @@
        "retry_of": null,
        "allowed_in_state": true,
        "args": {
-        "card_ref": "072ce832fbf132c5193471f3a49f86d3"
+        "card_ref": "9014f7fb37ed6e95a1d53e8849c69212"
        },
        "status": "ok",
        "error_code": null,
-       "latency_ms": 15,
+       "latency_ms": 30,
        "result": {
-        "card_ref": "072ce832fbf132c5193471f3a49f86d3",
+        "card_ref": "9014f7fb37ed6e95a1d53e8849c69212",
         "from": "2026-05-19",
         "to": "2026-06-18",
         "window_capped": false,
         "truncated": false,
         "transactions": [
          {
-          "transaction_ref": "39bda70613f1788363779a5af42df097",
+          "transaction_ref": "75cbc34ea435b132547d503c22a32883",
           "date": "2026-05-24 05:28:38",
           "type": "Withdrawal",
           "amount": "214.92",
@@ -1795,24 +1944,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "c16b6a24def32ec791b9b089654eaa842151ad04409370dc9f4f6d9254ba4e9c",
-       "event_hash": "1a02f56e79823870b5270d3501b7f474b4c057fd80b9276fcae6bb06c175735f"
+       "prev_event_hash": "73eb3b573db1757fb434eae2555207e637d2a230f62e45a4bd0ae19a1eebe36b",
+       "event_hash": "f2911ac2f924c052ea0e439bb94fc9b13b642c318c872e4a8ce8f1219c6ef25d"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-abbb-7d92-81ce-b52b389e244f",
+       "event_id": "01a10b2e-a1ef-7e73-8e7a-c53ea9465953",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:45.723Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.919Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 3,
-       "trace_id": "717889d90cce89ef3314a4ca9c2ce07f",
-       "span_id": "50f8e58820a81ef5",
+       "trace_id": "ffd6e2bdd9fec3eff8d3db2429a6ac5b",
+       "span_id": "9658baf64f40e9ed",
        "actor": "orchestrator",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -1844,7 +1993,7 @@
          "fact": "transactions",
          "value": [
           {
-           "transaction_ref": "39bda70613f1788363779a5af42df097",
+           "transaction_ref": "75cbc34ea435b132547d503c22a32883",
            "date": "2026-05-24 05:28:38",
            "amount": "214.92",
            "currency": "USD",
@@ -1882,24 +2031,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "1a02f56e79823870b5270d3501b7f474b4c057fd80b9276fcae6bb06c175735f",
-       "event_hash": "f6b38e714138b4cb365b4236aaf96ff27c11b95764720902a8b656fc69cb6f50"
+       "prev_event_hash": "f2911ac2f924c052ea0e439bb94fc9b13b642c318c872e4a8ce8f1219c6ef25d",
+       "event_hash": "893ce4e61a4f2173b7359c1e1b5d6b86b2f1a61dff94754a84dd6e0dc008a477"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-abcd-7e8c-ab6f-48324ea32cf4",
+       "event_id": "01a10b2e-a206-7200-b0e0-c82d93caf4c7",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:45.741Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.942Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 4,
-       "trace_id": "72b8c0edecdb487f3e7320b43b954354",
-       "span_id": "20a96bb1cfc91c17",
+       "trace_id": "7418739812b2d3ea3fb8f4a256488ff7",
+       "span_id": "a1278a18f3ce5024",
        "actor": "customer",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -1919,24 +2068,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "f6b38e714138b4cb365b4236aaf96ff27c11b95764720902a8b656fc69cb6f50",
-       "event_hash": "88474de4b84407ec39872eac472c14c4b6c8edf50e34d7dab9a77f30f93b0039"
+       "prev_event_hash": "893ce4e61a4f2173b7359c1e1b5d6b86b2f1a61dff94754a84dd6e0dc008a477",
+       "event_hash": "3a818271ac7cdb378ea722fb44ebe3bef8bcbaea1883d547665015cab869a676"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-abd1-7813-b904-ae39de1c961e",
+       "event_id": "01a10b2e-a20c-7f63-b206-d496d328eaaf",
        "event_type": "classification",
-       "occurred_at": "2026-10-05T04:35:45.745Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.948Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 4,
-       "trace_id": "72b8c0edecdb487f3e7320b43b954354",
-       "span_id": "f773d373d3e1f2fb",
+       "trace_id": "7418739812b2d3ea3fb8f4a256488ff7",
+       "span_id": "3889ca167bf52847",
        "actor": "orchestrator",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-ESC-06"
@@ -1977,24 +2126,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "88474de4b84407ec39872eac472c14c4b6c8edf50e34d7dab9a77f30f93b0039",
-       "event_hash": "4ccaed6ca2cb18ad325bd21819fd8e2e80c498ae7af021a59e4a73c0a7ce5a5f"
+       "prev_event_hash": "3a818271ac7cdb378ea722fb44ebe3bef8bcbaea1883d547665015cab869a676",
+       "event_hash": "1c967ac8f7554c3f58e4219c8de4e3900f397951ecd202f1e83b63a8a428e605"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-abd3-7754-b03b-2ae74b17cc65",
+       "event_id": "01a10b2e-a20e-7864-a176-3d95cace92cb",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:45.747Z",
-       "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
-       "session_id": "ses_gOVdR7yxPrB_bUNrsu5hevZuzqy_impJ",
+       "occurred_at": "2026-10-05T08:29:27.950Z",
+       "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
+       "session_id": "ses_xcwzyyF1lohodqFO7zxSQAnn06M4-YjS",
        "turn_index": 4,
-       "trace_id": "72b8c0edecdb487f3e7320b43b954354",
-       "span_id": "a92a3d1c9f9418e2",
+       "trace_id": "7418739812b2d3ea3fb8f4a256488ff7",
+       "span_id": "0a79baf3474477a6",
        "actor": "orchestrator",
-       "customer_ref": "c0be5e51ff0ff8a544c4279334736247",
+       "customer_ref": "044e09dc492ee6a3e4c114f5167d15d6",
        "auth_level": "L1",
        "state": "ENDED",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -2042,8 +2191,8 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "4ccaed6ca2cb18ad325bd21819fd8e2e80c498ae7af021a59e4a73c0a7ce5a5f",
-       "event_hash": "4ceb0747cad037315593bb3dd104fdf36685dab61c72ca6b6d415fd18cfe3a36"
+       "prev_event_hash": "1c967ac8f7554c3f58e4219c8de4e3900f397951ecd202f1e83b63a8a428e605",
+       "event_hash": "ba775b3c017c4c35c3a62b067f7c833a00b9730d8f22a07425275cb2ac9ff803"
       }
      ]
     }
@@ -2083,8 +2232,8 @@
     "status": 200,
     "body": [
      {
-      "case_id": "CASE-3630960D3B49",
-      "created_at": "2026-10-05T04:35:44.858850Z",
+      "case_id": "CASE-ED908D0D6BC0",
+      "created_at": "2026-10-05T08:29:25.871796Z",
       "priority": "normal",
       "reason_rule_ids": [
        "POL-ESC-01"
@@ -2101,7 +2250,7 @@
    "title": "Full case file of dialogue 5",
    "request": {
     "method": "GET",
-    "path": "/casos/CASE-3630960D3B49",
+    "path": "/casos/CASE-ED908D0D6BC0",
     "query": null,
     "auth": "agente",
     "body": null
@@ -2109,8 +2258,8 @@
    "response": {
     "status": 200,
     "body": {
-     "case_id": "CASE-3630960D3B49",
-     "created_at": "2026-10-05T04:35:44.858850Z",
+     "case_id": "CASE-ED908D0D6BC0",
+     "created_at": "2026-10-05T08:29:25.871796Z",
      "priority": "normal",
      "reason_rule_ids": [
       "POL-ESC-01"
@@ -2118,12 +2267,12 @@
      "language": "es",
      "customer_id": "CLI-AYAHYQEG16BZ",
      "auth_level": "L1",
-     "policy_version": "cards-synthetic-0.8",
-     "conversation_ref": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "policy_version": "cards-synthetic-0.9",
+     "conversation_ref": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "appended_messages": [
       {
        "text_redacted": "¿En cuánto tiempo me contactan?",
-       "received_at": "2026-10-05T04:35:44.897860+00:00"
+       "received_at": "2026-10-05T08:29:25.968775+00:00"
       }
      ],
      "request": {
@@ -2166,30 +2315,30 @@
        {
         "tool_call_id": "c1",
         "tool": "authenticate",
-        "called_at": "04:35:44",
+        "called_at": "08:29:25",
         "status": "ok",
-        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c1"
+        "result_ref": "audit://conv_01a10b2e-9891-724a-9051-4550c8121ac7/c1"
        },
        {
         "tool_call_id": "c2",
         "tool": "list_cards",
-        "called_at": "04:35:44",
+        "called_at": "08:29:25",
         "status": "ok",
-        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c2"
+        "result_ref": "audit://conv_01a10b2e-9891-724a-9051-4550c8121ac7/c2"
        },
        {
         "tool_call_id": "c3",
         "tool": "list_transactions",
-        "called_at": "04:35:44",
+        "called_at": "08:29:25",
         "status": "ok",
-        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c3"
+        "result_ref": "audit://conv_01a10b2e-9891-724a-9051-4550c8121ac7/c3"
        },
        {
         "tool_call_id": "c4",
         "tool": "describe_transaction",
-        "called_at": "04:35:44",
+        "called_at": "08:29:25",
         "status": "ok",
-        "result_ref": "audit://conv_01a10a58-a7c8-7435-9064-02068925b196/c4"
+        "result_ref": "audit://conv_01a10b2e-9891-724a-9051-4550c8121ac7/c4"
        }
       ],
       "cards": [
@@ -2216,7 +2365,7 @@
    "title": "Audit trail of the case's conversation (conversation_ref)",
    "request": {
     "method": "GET",
-    "path": "/auditoria/conversacion/conv_01a10a58-a7c8-7435-9064-02068925b196",
+    "path": "/auditoria/conversacion/conv_01a10b2e-9891-724a-9051-4550c8121ac7",
     "query": null,
     "auth": "agente",
     "body": null
@@ -2224,25 +2373,25 @@
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
+     "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
      "total": 18,
      "cadena_valida": true,
      "eventos": [
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a7ca-7f97-8753-f13cb6e336db",
+       "event_id": "01a10b2e-9896-7bee-8bac-3240462b4aa8",
        "event_type": "session",
-       "occurred_at": "2026-10-05T04:35:44.714Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.526Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 0,
-       "trace_id": "782d0aa651b3089db807a1721835279c",
-       "span_id": "49bf164effbc3731",
+       "trace_id": "9c8d70d04fff67ebee6f0fbe98079847",
+       "span_id": "d8caaa0e2069f573",
        "actor": "identity",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "UNAUTHENTICATED",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01"
@@ -2255,7 +2404,7 @@
        "session_event": "authenticated",
        "auth_level_before": "L0",
        "auth_level_after": "L1",
-       "expires_at": "2026-10-05T05:35:44.712Z",
+       "expires_at": "2026-10-05T09:29:25.521Z",
        "step_up": null,
        "failure_count": 0,
        "language_preference": null,
@@ -2267,23 +2416,23 @@
         "hits": {}
        },
        "prev_event_hash": null,
-       "event_hash": "fe8c92fe8cd05201ccb7aed85e56d5585587fd1a2992e2f70c5599e9f7835453"
+       "event_hash": "65a5af771418d231292a361bff619c9ba77e81d43dcbf3832b22fc0fb5830917"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a7e4-7f47-9f8e-5f41e1f8b550",
+       "event_id": "01a10b2e-98be-7335-9eac-0b5ee4f52e63",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:44.740Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.566Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 0,
-       "trace_id": "d3e8ab7cfabe2a8e7eb24de9f4835460",
-       "span_id": "fc38b283f786ca0b",
+       "trace_id": "7c7eac689d1350d24edba2442ae07795",
+       "span_id": "d435c7f460a6bfc7",
        "actor": "identity",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "UNAUTHENTICATED",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01",
@@ -2316,24 +2465,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "fe8c92fe8cd05201ccb7aed85e56d5585587fd1a2992e2f70c5599e9f7835453",
-       "event_hash": "3dc937063f0ceeb5689c436300d5413abc056620175185fc6c72db5b2eb3f0bc"
+       "prev_event_hash": "65a5af771418d231292a361bff619c9ba77e81d43dcbf3832b22fc0fb5830917",
+       "event_hash": "c684d195cad71a547e5a2f3b0f6455c54d3345318e50fefb27fdd68cc510d3ba"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a7e6-7ae9-816e-6e15bda15764",
+       "event_id": "01a10b2e-98c4-759d-b744-1c6b59af2365",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:44.742Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.572Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 0,
-       "trace_id": "d3e8ab7cfabe2a8e7eb24de9f4835460",
-       "span_id": "d238c9a529f78824",
+       "trace_id": "7c7eac689d1350d24edba2442ae07795",
+       "span_id": "ed73ba1885c6c01c",
        "actor": "orchestrator",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01",
@@ -2383,24 +2532,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "3dc937063f0ceeb5689c436300d5413abc056620175185fc6c72db5b2eb3f0bc",
-       "event_hash": "ba3bdbab1474684c78dd8377d826500aee8beb4fc23fdcb9b7c731a127542008"
+       "prev_event_hash": "c684d195cad71a547e5a2f3b0f6455c54d3345318e50fefb27fdd68cc510d3ba",
+       "event_hash": "2d8eae38f69425029c034ceafe578dad98eca9efd972e06fc505014041a9b7c8"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a7f9-7aaa-b892-37f4a7c8f47f",
+       "event_id": "01a10b2e-98e4-78e8-ad52-7c0045bb86e8",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:44.761Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.604Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 1,
-       "trace_id": "79e87fb188128f9176ded752420ebcf4",
-       "span_id": "eb8f27ac47be707b",
+       "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+       "span_id": "cbb927834effce50",
        "actor": "customer",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -2421,24 +2570,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "ba3bdbab1474684c78dd8377d826500aee8beb4fc23fdcb9b7c731a127542008",
-       "event_hash": "793ace1bc79abc1de2f7fcb44361b68ac57814d5046b783cd36f4fed4fba10ff"
+       "prev_event_hash": "2d8eae38f69425029c034ceafe578dad98eca9efd972e06fc505014041a9b7c8",
+       "event_hash": "55ad09ce0c61972c72d901af295e11a38d4de4e5316bb47fc9218b35fdd69455"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a7fd-7237-907b-750570193771",
+       "event_id": "01a10b2e-98f0-7002-89a7-451ced224828",
        "event_type": "classification",
-       "occurred_at": "2026-10-05T04:35:44.765Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.616Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 1,
-       "trace_id": "79e87fb188128f9176ded752420ebcf4",
-       "span_id": "d3a8d0251f299040",
+       "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+       "span_id": "64e4f781210aae85",
        "actor": "orchestrator",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-ESC-06"
@@ -2483,24 +2632,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "793ace1bc79abc1de2f7fcb44361b68ac57814d5046b783cd36f4fed4fba10ff",
-       "event_hash": "22485ac78bd2dfd0149fcf85138a98b768abb392963648215bcda0800b952a89"
+       "prev_event_hash": "55ad09ce0c61972c72d901af295e11a38d4de4e5316bb47fc9218b35fdd69455",
+       "event_hash": "304ff7108cb6b4b6bed663ccdb5954b153ab463f08fd26abd1852b828d3b8d23"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a808-74c5-8091-286b57c2a91e",
+       "event_id": "01a10b2e-9905-771a-b991-2d49e28ea21d",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:44.776Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.637Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 1,
-       "trace_id": "79e87fb188128f9176ded752420ebcf4",
-       "span_id": "7462a4580780012d",
+       "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+       "span_id": "659f0caf5ebce25f",
        "actor": "tool_gateway",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -2519,13 +2668,13 @@
        "latency_ms": 15,
        "result": [
         {
-         "card_ref": "e173abf001493ae0db265fbf07db32ce",
+         "card_ref": "c46ed1104e1f61ecc907d6746fbf5011",
          "last4": "1883",
          "type": "Tarjeta Débito",
          "status": "Active"
         },
         {
-         "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639",
+         "card_ref": "6708cb472dfac582a72f09688ff54ea4",
          "last4": "4950",
          "type": "Tarjeta Crédito",
          "status": "Active"
@@ -2539,24 +2688,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "22485ac78bd2dfd0149fcf85138a98b768abb392963648215bcda0800b952a89",
-       "event_hash": "f6d5ca183fec3bc851a2f063be213eae0731db1ab9c4db7cfe4836e32d388f16"
+       "prev_event_hash": "304ff7108cb6b4b6bed663ccdb5954b153ab463f08fd26abd1852b828d3b8d23",
+       "event_hash": "8ebe14db839965ae83f0866f378b5f27d1e1f40b9b77eafa3926e81b36e33800"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a81b-7d8d-8945-e4c1c5f7d1e7",
+       "event_id": "01a10b2e-9933-7bb4-a90b-eb38e7d894dd",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:44.795Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.683Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 1,
-       "trace_id": "79e87fb188128f9176ded752420ebcf4",
-       "span_id": "2ac64845af053934",
+       "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+       "span_id": "5452752aee1e0a22",
        "actor": "tool_gateway",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "ANSWERING",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -2570,20 +2719,20 @@
        "retry_of": null,
        "allowed_in_state": true,
        "args": {
-        "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639"
+        "card_ref": "6708cb472dfac582a72f09688ff54ea4"
        },
        "status": "ok",
        "error_code": null,
-       "latency_ms": 15,
+       "latency_ms": 47,
        "result": {
-        "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639",
+        "card_ref": "6708cb472dfac582a72f09688ff54ea4",
         "from": "2026-05-19",
         "to": "2026-06-18",
         "window_capped": false,
         "truncated": false,
         "transactions": [
          {
-          "transaction_ref": "5c60036d1becb474c5a22a40e8232c11",
+          "transaction_ref": "5282a27a8deaed8865792a3c76a8cdcf",
           "date": "2026-06-01 04:20:42",
           "type": "Purchase",
           "amount": "392.25",
@@ -2602,24 +2751,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "f6d5ca183fec3bc851a2f063be213eae0731db1ab9c4db7cfe4836e32d388f16",
-       "event_hash": "0ba5908fddc310a1c04a4b29de71707c78be8ce3c920aa004396d4df97a302a7"
+       "prev_event_hash": "8ebe14db839965ae83f0866f378b5f27d1e1f40b9b77eafa3926e81b36e33800",
+       "event_hash": "3cdfe3d2fa549ea81d116d38eda3f20681d07954bb5df2ce2f7523dd1f20e54b"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a828-76bc-b7fc-4e764adca6a7",
+       "event_id": "01a10b2e-995a-77a9-9f19-0efe3173c9ed",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:44.808Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.722Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 1,
-       "trace_id": "79e87fb188128f9176ded752420ebcf4",
-       "span_id": "546e40f5d7f5fc23",
+       "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+       "span_id": "b623a144445042bf",
        "actor": "tool_gateway",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "ANSWERING",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -2633,13 +2782,13 @@
        "retry_of": null,
        "allowed_in_state": true,
        "args": {
-        "transaction_ref": "5c60036d1becb474c5a22a40e8232c11"
+        "transaction_ref": "5282a27a8deaed8865792a3c76a8cdcf"
        },
        "status": "ok",
        "error_code": null,
-       "latency_ms": 15,
+       "latency_ms": 30,
        "result": {
-        "transaction_ref": "5c60036d1becb474c5a22a40e8232c11",
+        "transaction_ref": "5282a27a8deaed8865792a3c76a8cdcf",
         "date": "2026-06-01 04:20:42",
         "type": "Purchase",
         "amount": "392.25",
@@ -2647,7 +2796,7 @@
         "merchant": "Empresa Telefónica",
         "status": "Approved",
         "response_code": "00",
-        "card_ref": "0bc8fdbcecb88a4fde9bddc61c642639",
+        "card_ref": "6708cb472dfac582a72f09688ff54ea4",
         "last4": "4950",
         "templates": [
          "POL-TXS-01",
@@ -2663,24 +2812,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "0ba5908fddc310a1c04a4b29de71707c78be8ce3c920aa004396d4df97a302a7",
-       "event_hash": "ba9eb7ff1780c2703c2f7295cd4014a43c609d6fc44969d36ed40ac6c5dabee5"
+       "prev_event_hash": "3cdfe3d2fa549ea81d116d38eda3f20681d07954bb5df2ce2f7523dd1f20e54b",
+       "event_hash": "4eb5247a56f847ece59468fb717efff9555cea9c8e45407819045d49fecdae63"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a82a-7d43-b437-d9e703038376",
+       "event_id": "01a10b2e-9963-772d-bd24-c8d531c155bd",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:44.810Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.731Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 1,
-       "trace_id": "79e87fb188128f9176ded752420ebcf4",
-       "span_id": "699fefb06d129d38",
+       "trace_id": "40e06af9acb113bf4bd08bfc6978e167",
+       "span_id": "5d73783427483d57",
        "actor": "orchestrator",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "SELECT_TRANSACTION",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -2725,7 +2874,7 @@
         {
          "fact": "transaction",
          "value": {
-          "transaction_ref": "5c60036d1becb474c5a22a40e8232c11",
+          "transaction_ref": "5282a27a8deaed8865792a3c76a8cdcf",
           "date": "2026-06-01 04:20:42",
           "type": "Purchase",
           "amount": "392.25",
@@ -2766,24 +2915,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "ba9eb7ff1780c2703c2f7295cd4014a43c609d6fc44969d36ed40ac6c5dabee5",
-       "event_hash": "0d4011e5e680dcbd8f5de37f7a104c8d89f054801a5615537da0f79ec36a7efc"
+       "prev_event_hash": "4eb5247a56f847ece59468fb717efff9555cea9c8e45407819045d49fecdae63",
+       "event_hash": "184441b697e2a51d0ac0bf2798de033fe92f530270cc184558cf18f94ce84d9c"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a83b-7836-a7b4-e36444af5aec",
+       "event_id": "01a10b2e-9997-7100-897c-aeff4f9937de",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:44.827Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.783Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 2,
-       "trace_id": "0edcde7198d070679dca0846e82cd7f5",
-       "span_id": "e29dcdac4b1178b1",
+       "trace_id": "3a410320ced6288f73d4a7e25fcc919d",
+       "span_id": "8cdf54d1742fde2e",
        "actor": "customer",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "SELECT_TRANSACTION",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -2804,24 +2953,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "0d4011e5e680dcbd8f5de37f7a104c8d89f054801a5615537da0f79ec36a7efc",
-       "event_hash": "07451c8c2e512b1731de3132dd6a49d8fc119f5246cc1d5012c2cc61097cd77e"
+       "prev_event_hash": "184441b697e2a51d0ac0bf2798de033fe92f530270cc184558cf18f94ce84d9c",
+       "event_hash": "cc18e2162b8e9788be6415cedae643561da739fe00d57d1378d52180c39fa8f3"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a83e-74f1-a1c0-527c998d150e",
+       "event_id": "01a10b2e-99a1-7181-a3ce-48a2f69fbb09",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:44.830Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.793Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 2,
-       "trace_id": "0edcde7198d070679dca0846e82cd7f5",
-       "span_id": "2d28467435658cab",
+       "trace_id": "3a410320ced6288f73d4a7e25fcc919d",
+       "span_id": "42b0552a75cc87d4",
        "actor": "orchestrator",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "OFFER_BLOCK",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -2869,24 +3018,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "07451c8c2e512b1731de3132dd6a49d8fc119f5246cc1d5012c2cc61097cd77e",
-       "event_hash": "6a24711f16bd16df9e9588e61a13afb90959e0a5e87b7b17192a2d7ce7388143"
+       "prev_event_hash": "cc18e2162b8e9788be6415cedae643561da739fe00d57d1378d52180c39fa8f3",
+       "event_hash": "5c26696a7b5a3593a52e60fcb5e64631a0e48e71ce9f28de649d7ff3fba8ad49"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a850-7037-b844-7763447a13ce",
+       "event_id": "01a10b2e-99d6-7e9f-9a0a-b20f16cf168b",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:44.848Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.846Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 3,
-       "trace_id": "0a864a8e868036f76ceec97ad28c3636",
-       "span_id": "f7582572a0013b1d",
+       "trace_id": "19b5753c3ac9abb01594fb89fb8895e8",
+       "span_id": "81c9064d5449aa29",
        "actor": "customer",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "OFFER_BLOCK",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -2907,24 +3056,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "6a24711f16bd16df9e9588e61a13afb90959e0a5e87b7b17192a2d7ce7388143",
-       "event_hash": "7f8702639bb241903e9c995b292b6a026e82d2bbd256492ddde45519b021b0d8"
+       "prev_event_hash": "5c26696a7b5a3593a52e60fcb5e64631a0e48e71ce9f28de649d7ff3fba8ad49",
+       "event_hash": "a67de8b3d5623d4d4af60e6d80160275f324d644f303a57e31a7ab23676db3c2"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a85a-7dd5-ac1e-547bc9bd1a55",
+       "event_id": "01a10b2e-99f1-7981-828e-c612764a04bc",
        "event_type": "handoff",
-       "occurred_at": "2026-10-05T04:35:44.858Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.873Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 3,
-       "trace_id": "0a864a8e868036f76ceec97ad28c3636",
-       "span_id": "8e18684b8d67913e",
+       "trace_id": "19b5753c3ac9abb01594fb89fb8895e8",
+       "span_id": "622d9f8012ba7e8f",
        "actor": "handoff_service",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "HANDOFF",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-HND-10",
@@ -2940,8 +3089,8 @@
         "role": "cliente"
        },
        "handoff_event": "opened",
-       "case_id": "CASE-3630960D3B49",
-       "idempotency_key": "conv_01a10a58-a7c8-7435-9064-02068925b196:t3",
+       "case_id": "CASE-ED908D0D6BC0",
+       "idempotency_key": "conv_01a10b2e-9891-724a-9051-4550c8121ac7:t3",
        "priority": "normal",
        "reason_rule_ids": [
         "POL-ESC-01"
@@ -2953,7 +3102,7 @@
         "evidence": true,
         "unresolved_questions": true
        },
-       "case_file_digest": "b62f75f577211390e1e1a7fdbeae07ae961c02618067b08be06b45b9b5ec9b43",
+       "case_file_digest": "8ea1d1032764cd1f21f65e99442093416b90767895928e3156d5c06de7970248",
        "counts": {
         "verified_facts": 2,
         "actions_taken": 0,
@@ -2965,24 +3114,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "7f8702639bb241903e9c995b292b6a026e82d2bbd256492ddde45519b021b0d8",
-       "event_hash": "42536548954fdb5a565035d179cc7c116b2b829c9e3364bd49ea806cdd44ef9b"
+       "prev_event_hash": "a67de8b3d5623d4d4af60e6d80160275f324d644f303a57e31a7ab23676db3c2",
+       "event_hash": "84cb4935678c377970fb2a80ec5947e5d81f3f7773d45e905d3f85db72b8cb7f"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a864-76dd-8a58-f0a01d3061a3",
+       "event_id": "01a10b2e-9a0e-7589-9ee3-df4ebbc9c505",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:44.868Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.902Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 3,
-       "trace_id": "0a864a8e868036f76ceec97ad28c3636",
-       "span_id": "de8df58659e20e31",
+       "trace_id": "19b5753c3ac9abb01594fb89fb8895e8",
+       "span_id": "ede30b039b4fb969",
        "actor": "tool_gateway",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "HANDOFF",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -2998,11 +3147,11 @@
        "args": {},
        "status": "ok",
        "error_code": null,
-       "latency_ms": 16,
+       "latency_ms": 30,
        "result": {
-        "case_id": "CASE-3630960D3B49"
+        "case_id": "CASE-ED908D0D6BC0"
        },
-       "result_digest": "3ea145974322715c3995511b905a8222ad3acdfb9186a922a2922d926b425601",
+       "result_digest": "853ad318ca418efb5d52e8f6513d6d0aa277fd922d19f364497bdbe39de36353",
        "data_as_of": null,
        "fixture": null,
        "pii_scan": {
@@ -3010,24 +3159,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "42536548954fdb5a565035d179cc7c116b2b829c9e3364bd49ea806cdd44ef9b",
-       "event_hash": "7a60389074571ae5bafd963909073eb3b3eccbd0d38c8afabba533d7ed206f54"
+       "prev_event_hash": "84cb4935678c377970fb2a80ec5947e5d81f3f7773d45e905d3f85db72b8cb7f",
+       "event_hash": "dd01435efa8afbf6c6388948023ad7f7b5d1f750ff749f86d28cf672a7b01388"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a866-75d1-8d67-eb97e350545c",
+       "event_id": "01a10b2e-9a17-7c7c-9dbe-c00fb4478c68",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:44.870Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.911Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 3,
-       "trace_id": "0a864a8e868036f76ceec97ad28c3636",
-       "span_id": "0316512277d67a0a",
+       "trace_id": "19b5753c3ac9abb01594fb89fb8895e8",
+       "span_id": "445b645eb9f05f6c",
        "actor": "orchestrator",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "HANDED_OFF",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -3065,7 +3214,7 @@
         "fallback_template": null
        },
        "reply": {
-        "text_redacted": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-3630960D3B49.",
+        "text_redacted": "No bloqueé la tarjeta. No puedo determinar si este cobro es válido; los reclamos los revisa un asesor. Un asesor revisará su caso, referencia CASE-ED908D0D6BC0.",
         "language": "es",
         "templates": [
          "POL-HND-03"
@@ -3088,24 +3237,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "7a60389074571ae5bafd963909073eb3b3eccbd0d38c8afabba533d7ed206f54",
-       "event_hash": "811fa114a76396565d15788ea2b2b56805b304cf633cabe53b761bcff3af4833"
+       "prev_event_hash": "dd01435efa8afbf6c6388948023ad7f7b5d1f750ff749f86d28cf672a7b01388",
+       "event_hash": "0ceb120fcdd3ed757a2a777ee97aa5cf917dbe5ba7d0d29f22eb4c0cec44d2f0"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a879-763c-b937-a6daf59345b6",
+       "event_id": "01a10b2e-9a3e-70f5-82cb-371f9420e9d1",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:44.889Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.950Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 4,
-       "trace_id": "058af897d5129a975d348e1760d9b5f5",
-       "span_id": "9fb44af40170816b",
+       "trace_id": "345ee8c2b5c5c7005080e3d56284882d",
+       "span_id": "406f8914a8317428",
        "actor": "customer",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "HANDED_OFF",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -3126,24 +3275,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "811fa114a76396565d15788ea2b2b56805b304cf633cabe53b761bcff3af4833",
-       "event_hash": "2f38b80211f47b01bf151a570a14289b5c097ce9bf6e683d186af9fed6687372"
+       "prev_event_hash": "0ceb120fcdd3ed757a2a777ee97aa5cf917dbe5ba7d0d29f22eb4c0cec44d2f0",
+       "event_hash": "c27e370bd281de1a67dd9d1c8d3196e52d012971fb1a89990ab850869e7e59ba"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a883-7f27-886b-91a7dca55383",
+       "event_id": "01a10b2e-9a54-797e-ba22-ee3cd8e68a46",
        "event_type": "handoff",
-       "occurred_at": "2026-10-05T04:35:44.899Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.972Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 4,
-       "trace_id": "058af897d5129a975d348e1760d9b5f5",
-       "span_id": "983d8350871ea2fa",
+       "trace_id": "345ee8c2b5c5c7005080e3d56284882d",
+       "span_id": "4873216a178ac7fe",
        "actor": "handoff_service",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "HANDED_OFF",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-HND-06"
@@ -3154,8 +3303,8 @@
         "role": "cliente"
        },
        "handoff_event": "message_appended",
-       "case_id": "CASE-3630960D3B49",
-       "idempotency_key": "conv_01a10a58-a7c8-7435-9064-02068925b196:t3",
+       "case_id": "CASE-ED908D0D6BC0",
+       "idempotency_key": "conv_01a10b2e-9891-724a-9051-4550c8121ac7:t3",
        "priority": "normal",
        "reason_rule_ids": [
         "POL-ESC-01"
@@ -3165,24 +3314,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "2f38b80211f47b01bf151a570a14289b5c097ce9bf6e683d186af9fed6687372",
-       "event_hash": "796abac0a5775222cac0d397362b51ce63ab426e705d581b5b18808a45380bc0"
+       "prev_event_hash": "c27e370bd281de1a67dd9d1c8d3196e52d012971fb1a89990ab850869e7e59ba",
+       "event_hash": "37e3cc8c1348143e4d270cfd5b56a621570db1ef88f522051bd46e8e8d8aabee"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-a88c-7b84-8b73-1e174e2e5163",
+       "event_id": "01a10b2e-9a65-7004-815f-ca5dedbe54ea",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:44.908Z",
-       "conversation_id": "conv_01a10a58-a7c8-7435-9064-02068925b196",
-       "session_id": "ses_YXc3CtfmBn-jrWXNpaawiqGhbdmBHuGJ",
+       "occurred_at": "2026-10-05T08:29:25.989Z",
+       "conversation_id": "conv_01a10b2e-9891-724a-9051-4550c8121ac7",
+       "session_id": "ses_oIdSIQwgbqu-xfCK41xddCaKt8RqP2id",
        "turn_index": 4,
-       "trace_id": "058af897d5129a975d348e1760d9b5f5",
-       "span_id": "a712855d552a9b54",
+       "trace_id": "345ee8c2b5c5c7005080e3d56284882d",
+       "span_id": "1edfc3a5c2d8196c",
        "actor": "orchestrator",
-       "customer_ref": "56ae90b15d399e40ab227ab95354192b",
+       "customer_ref": "765986de73b346dd7b9ba80a0d5578bf",
        "auth_level": "L1",
        "state": "HANDED_OFF",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -3210,7 +3359,7 @@
         "fallback_template": null
        },
        "reply": {
-        "text_redacted": "Agregué su mensaje a su caso, referencia CASE-3630960D3B49. Un asesor lo revisará.",
+        "text_redacted": "Agregué su mensaje a su caso, referencia CASE-ED908D0D6BC0. Un asesor lo revisará.",
         "language": "es",
         "templates": [
          "POL-HND-04"
@@ -3233,8 +3382,8 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "796abac0a5775222cac0d397362b51ce63ab426e705d581b5b18808a45380bc0",
-       "event_hash": "b4bf1f9b9e28a6e7613d511419b548609939d52e7ea98d7c184163a30de312bd"
+       "prev_event_hash": "37e3cc8c1348143e4d270cfd5b56a621570db1ef88f522051bd46e8e8d8aabee",
+       "event_hash": "221e1fe27ed490e2a7e5fd76ec25e7e0afd4dd0ea497df30eb7412ea159a1f36"
       }
      ]
     }
@@ -3329,7 +3478,7 @@
     "query": null,
     "auth": "cliente:CLI-5B9VSCP2GSML",
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "mensaje": "Hola"
     }
    },
@@ -3352,7 +3501,7 @@
     "query": null,
     "auth": "cliente:CLI-5B9VSCP2GSML",
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "mensaje": "Hola",
      "codigo_step_up": "123456"
     }
@@ -3368,7 +3517,7 @@
        ],
        "msg": "Value error, Envíe mensaje o codigo_step_up, uno de los dos.",
        "input": {
-        "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+        "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
         "mensaje": "Hola",
         "codigo_step_up": "123456"
        },
@@ -3411,14 +3560,14 @@
     "query": null,
     "auth": "prueba:CLI-1IKG56EOI0A5",
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "mensaje": "Hola de nuevo"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69",
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138",
      "reply": "Esta conversación terminó. Si necesita algo más, inicie una nueva.",
      "state": "ENDED",
      "language": "es",
@@ -3437,7 +3586,7 @@
     "query": null,
     "auth": "prueba:CLI-1IKG56EOI0A5",
     "body": {
-     "conversation_id": "conv_01a10a58-ab16-7da2-acb0-3a3d8ef89f69"
+     "conversation_id": "conv_01a10b2e-a0d3-7f87-b478-277cc81a0138"
     }
    },
    "response": {
@@ -3459,14 +3608,14 @@
     "query": null,
     "auth": "prueba:CLI-LD6QVNCSTR43",
     "body": {
-     "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+     "conversation_id": "conv_01a10b2e-a428-75c4-a3e9-25f3cee7f974",
      "mensaje": "Quiero bloquear mi tarjeta de débito."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+     "conversation_id": "conv_01a10b2e-a428-75c4-a3e9-25f3cee7f974",
      "reply": "Su tarjeta de débito terminada en 4214 está activa. Para bloquearla necesito confirmar su identidad con un código de verificación; ingréselo en la ventana de verificación, no en el chat.",
      "state": "STEP_UP",
      "language": "es",
@@ -3485,20 +3634,142 @@
     "query": null,
     "auth": "prueba:CLI-LD6QVNCSTR43",
     "body": {
-     "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+     "conversation_id": "conv_01a10b2e-a428-75c4-a3e9-25f3cee7f974",
      "codigo_step_up": "000000"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-acc8-7eb1-9b85-b6887f489025",
+     "conversation_id": "conv_01a10b2e-a428-75c4-a3e9-25f3cee7f974",
      "reply": "El código no es válido o venció. Ingréselo de nuevo en la ventana de verificación.",
      "state": "STEP_UP",
      "language": "es",
      "pending_confirmation": null,
      "case_id": null,
      "turn": 2
+    }
+   }
+  },
+  {
+   "id": "err-sms-not-in-step-up",
+   "title": "Simulated SMS with no verification pending",
+   "request": {
+    "method": "POST",
+    "path": "/autenticacion/otp-demo",
+    "query": null,
+    "auth": "cliente:CLI-LD6QVNCSTR43",
+    "body": null
+   },
+   "response": {
+    "status": 409,
+    "body": {
+     "detail": {
+      "codigo": "NOT_IN_STEP_UP",
+      "mensaje": "No hay una verificación pendiente en su conversación."
+     }
+    }
+   }
+  },
+  {
+   "id": "sms-t1",
+   "title": "Block request: step-up required",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-LD6QVNCSTR43",
+    "body": {
+     "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+     "mensaje": "Quiero bloquear mi tarjeta de débito."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+     "reply": "Su tarjeta de débito terminada en 4214 está activa. Para bloquearla necesito confirmar su identidad con un código de verificación; ingréselo en la ventana de verificación, no en el chat.",
+     "state": "STEP_UP",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 1
+    }
+   }
+  },
+  {
+   "id": "sms-otp",
+   "title": "Simulated SMS: the customer's own code (development only)",
+   "request": {
+    "method": "POST",
+    "path": "/autenticacion/otp-demo",
+    "query": null,
+    "auth": "cliente:CLI-LD6QVNCSTR43",
+    "body": null
+   },
+   "response": {
+    "status": 201,
+    "body": {
+     "codigo": "724979",
+     "expira_en": "2026-10-05T08:34:29.081970Z",
+     "canal": "sms_simulado",
+     "aviso": "SMS simulado del IdP de prueba: un banco real enviaría este código a su teléfono (POL-AUTH-14)."
+    }
+   }
+  },
+  {
+   "id": "sms-t2",
+   "title": "Code typed in the verification widget: confirmation prompt",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-LD6QVNCSTR43",
+    "body": {
+     "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+     "codigo_step_up": "724979"
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+     "reply": "Identidad confirmada. Voy a bloquear su tarjeta de débito terminada en 4214. Después del bloqueo la tarjeta deja de funcionar y yo no puedo desbloquearla; eso solo lo hace un asesor. ¿Confirma el bloqueo de la tarjeta terminada en 4214? Responda sí o no.",
+     "state": "AWAIT_CONFIRMATION",
+     "language": "es",
+     "pending_confirmation": {
+      "card_last4": "4214",
+      "card_type": "Tarjeta Débito",
+      "expires_at": "2026-10-05T08:31:29.172944+00:00"
+     },
+     "case_id": null,
+     "turn": 2
+    }
+   }
+  },
+  {
+   "id": "sms-t3",
+   "title": "A no cancels the block; nothing runs",
+   "request": {
+    "method": "POST",
+    "path": "/chat/mensaje",
+    "query": null,
+    "auth": "cliente:CLI-LD6QVNCSTR43",
+    "body": {
+     "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+     "mensaje": "No, mejor no."
+    }
+   },
+   "response": {
+    "status": 200,
+    "body": {
+     "conversation_id": "conv_01a10b2e-a5b3-7ab6-bde9-603ad8096a0d",
+     "reply": "Entendido, no bloqueé la tarjeta.",
+     "state": "IDLE",
+     "language": "es",
+     "pending_confirmation": null,
+     "case_id": null,
+     "turn": 3
     }
    }
   },
@@ -3511,14 +3782,14 @@
     "query": null,
     "auth": "prueba:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+     "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
      "mensaje": "Hola, ¿cuál es mi saldo?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
+     "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
      "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
      "state": "SELECT_CARD",
      "language": "es",
@@ -3533,7 +3804,7 @@
    "title": "Audit of the fallback turn",
    "request": {
     "method": "GET",
-    "path": "/auditoria/ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+    "path": "/auditoria/ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
     "query": null,
     "auth": "jurado",
     "body": null
@@ -3541,24 +3812,24 @@
    "response": {
     "status": 200,
     "body": {
-     "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+     "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
      "total": 8,
      "eventos": [
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ad44-738a-b24c-39b3c6cb29e3",
+       "event_id": "01a10b2e-a73b-79ad-b92a-442bb37375db",
        "event_type": "session",
-       "occurred_at": "2026-10-05T04:35:46.116Z",
-       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "occurred_at": "2026-10-05T08:29:29.275Z",
+       "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+       "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
        "turn_index": 0,
-       "trace_id": "d1183664ba654eeb63bebff12a6ab00e",
-       "span_id": "c3a376fda08a3409",
+       "trace_id": "c0de383e39e4febc9a1cc6fcea832f50",
+       "span_id": "06436f1e833ed8d6",
        "actor": "identity",
-       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
        "auth_level": "L1",
        "state": "UNAUTHENTICATED",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01",
@@ -3571,7 +3842,7 @@
        "session_event": "authenticated",
        "auth_level_before": "L0",
        "auth_level_after": "L1",
-       "expires_at": "2026-10-05T05:35:46.115Z",
+       "expires_at": "2026-10-05T09:29:29.272Z",
        "step_up": null,
        "failure_count": 0,
        "language_preference": "es",
@@ -3589,23 +3860,23 @@
         "hits": {}
        },
        "prev_event_hash": null,
-       "event_hash": "e815b05f12d7cc8f3e905694721ad1c0301ac0cdcfbf122fa852797a9d66887b"
+       "event_hash": "6b048836b6c916c1bd8149bc3298dc0c9dc249ed7e24be4d3f16dce0b7abd5e1"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ad5a-71ab-a255-0a95a1f0bbc2",
+       "event_id": "01a10b2e-a764-7f7d-b327-8e4e6fa76be6",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:46.138Z",
-       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "occurred_at": "2026-10-05T08:29:29.316Z",
+       "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+       "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
        "turn_index": 0,
-       "trace_id": "b462e028414fa17301bb36b4fdf30d7b",
-       "span_id": "38000eda8662dcee",
+       "trace_id": "d5076fa8ee5f9e35bb5b268efa1f628c",
+       "span_id": "802ea280ab168f6e",
        "actor": "identity",
-       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
        "auth_level": "L1",
        "state": "UNAUTHENTICATED",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01",
@@ -3637,24 +3908,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "e815b05f12d7cc8f3e905694721ad1c0301ac0cdcfbf122fa852797a9d66887b",
-       "event_hash": "dcaf4b4c24b2e182c77203dabcb9ccb78465ea1b3fa971730308719139e06fb0"
+       "prev_event_hash": "6b048836b6c916c1bd8149bc3298dc0c9dc249ed7e24be4d3f16dce0b7abd5e1",
+       "event_hash": "393704ebd3686ed3696eec8a1b669caef7962dd147082cc14c2838da8bc92d99"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ad5c-7b84-96a2-852b5929a9ea",
+       "event_id": "01a10b2e-a76a-79be-ac70-96eaec9a5664",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:46.140Z",
-       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "occurred_at": "2026-10-05T08:29:29.322Z",
+       "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+       "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
        "turn_index": 0,
-       "trace_id": "b462e028414fa17301bb36b4fdf30d7b",
-       "span_id": "b36a2bf6f1286c95",
+       "trace_id": "d5076fa8ee5f9e35bb5b268efa1f628c",
+       "span_id": "e1db9a53675076ca",
        "actor": "orchestrator",
-       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-AUTH-01",
@@ -3703,24 +3974,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "dcaf4b4c24b2e182c77203dabcb9ccb78465ea1b3fa971730308719139e06fb0",
-       "event_hash": "0bc7ccb1eb5087baa2e52addb933f18e83f0b87e8610ab244e2c983d59f4e4f3"
+       "prev_event_hash": "393704ebd3686ed3696eec8a1b669caef7962dd147082cc14c2838da8bc92d99",
+       "event_hash": "043f9d8e2b34a11fc9d3f6db51cab9f055c440b08449a17b8e38aada3706e0cc"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ad6e-78c8-b80c-1a95cc131815",
+       "event_id": "01a10b2e-a78e-7177-872a-0e970720430f",
        "event_type": "message_received",
-       "occurred_at": "2026-10-05T04:35:46.158Z",
-       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "occurred_at": "2026-10-05T08:29:29.358Z",
+       "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+       "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
        "turn_index": 1,
-       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
-       "span_id": "3055cfea17fe3bb4",
+       "trace_id": "3024bc00a2588aeca952e419d8e95046",
+       "span_id": "91088ade8639af8e",
        "actor": "customer",
-       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -3740,24 +4011,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "0bc7ccb1eb5087baa2e52addb933f18e83f0b87e8610ab244e2c983d59f4e4f3",
-       "event_hash": "5a50fb8e2d6133ba1647bb926054028cfcb91d2bc914dafc7f52e8dfb6cf41b7"
+       "prev_event_hash": "043f9d8e2b34a11fc9d3f6db51cab9f055c440b08449a17b8e38aada3706e0cc",
+       "event_hash": "445f2d5ceb8f04b8b472b27983829bf5686618a77018847ef87a39ac4d1746d8"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ad73-71c1-9e7c-e2be4ff90407",
+       "event_id": "01a10b2e-a798-786d-b178-e2cbfe09d049",
        "event_type": "classification",
-       "occurred_at": "2026-10-05T04:35:46.163Z",
-       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "occurred_at": "2026-10-05T08:29:29.368Z",
+       "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+       "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
        "turn_index": 1,
-       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
-       "span_id": "5c0cfee5c3cc6a4d",
+       "trace_id": "3024bc00a2588aeca952e419d8e95046",
+       "span_id": "63a2742360c4b1c3",
        "actor": "orchestrator",
-       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-ESC-06"
@@ -3800,24 +4071,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "5a50fb8e2d6133ba1647bb926054028cfcb91d2bc914dafc7f52e8dfb6cf41b7",
-       "event_hash": "10ec1ba66312d5b4983b9864d4a092d8273f4f4c07cd2ca313cb2a3682b4149d"
+       "prev_event_hash": "445f2d5ceb8f04b8b472b27983829bf5686618a77018847ef87a39ac4d1746d8",
+       "event_hash": "3cd59f40adeac4589a6962b37407c7bdf61bd459d7b910d09cd91307413347bb"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-ad7d-783b-860a-390e3ed18ed1",
+       "event_id": "01a10b2e-a7ad-7e92-a90f-c8b7724ae2aa",
        "event_type": "tool_call",
-       "occurred_at": "2026-10-05T04:35:46.173Z",
-       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "occurred_at": "2026-10-05T08:29:29.389Z",
+       "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+       "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
        "turn_index": 1,
-       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
-       "span_id": "ea25c83a06cee844",
+       "trace_id": "3024bc00a2588aeca952e419d8e95046",
+       "span_id": "7ad2c1fcab97efd7",
        "actor": "tool_gateway",
-       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
        "auth_level": "L1",
        "state": "IDLE",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [],
        "session_origin": {
@@ -3832,16 +4103,16 @@
        "args": {},
        "status": "ok",
        "error_code": null,
-       "latency_ms": 0,
+       "latency_ms": 15,
        "result": [
         {
-         "card_ref": "0046f27b22ca90d8d5ebc8607b59de9b",
+         "card_ref": "4dea2b568a5b30593522d0cb5b8895a3",
          "kind": "credit_card",
          "last4": "5070",
          "status": "Active"
         },
         {
-         "card_ref": "e4342a6ca9f19e3bcc898eb903c4753d",
+         "card_ref": "8c52e999c4a21dccd2b8a76d2bef83ae",
          "kind": "savings_account",
          "last4": "1317",
          "status": "Active"
@@ -3855,24 +4126,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "10ec1ba66312d5b4983b9864d4a092d8273f4f4c07cd2ca313cb2a3682b4149d",
-       "event_hash": "b98a06205fd95f1773d280e39aa3d0d7e7c518530fe54390efe460edf80873fe"
+       "prev_event_hash": "3cd59f40adeac4589a6962b37407c7bdf61bd459d7b910d09cd91307413347bb",
+       "event_hash": "ec49193532064c83baef44278ee9ff56b090666433bf2ce70162664f2ca863cb"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-cf95-731f-b08c-8b048def016d",
+       "event_id": "01a10b2e-cbbc-7ab2-9cb4-a1a2ce89d236",
        "event_type": "llm_call",
-       "occurred_at": "2026-10-05T04:35:54.901Z",
-       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "occurred_at": "2026-10-05T08:29:38.620Z",
+       "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+       "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
        "turn_index": 1,
-       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
-       "span_id": "d3b5fb3fb0eb146b",
+       "trace_id": "3024bc00a2588aeca952e419d8e95046",
+       "span_id": "2a71cf1a3ceef72e",
        "actor": "orchestrator",
-       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
        "auth_level": "L1",
        "state": "SELECT_CARD",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -3883,7 +4154,7 @@
         "method": "test_idp",
         "issued_by_user_id": 13
        },
-       "llm_call_id": "llm_8f92cc87abb1",
+       "llm_call_id": "llm_3f9f0943553d",
        "purpose": "reply_wording",
        "provider": "openai",
        "model_id": "gpt-4o-mini",
@@ -3893,7 +4164,7 @@
        "input_tokens": 0,
        "cached_input_tokens": 0,
        "output_tokens": 0,
-       "latency_ms": 8719,
+       "latency_ms": 9234,
        "status": "error",
        "retries": 3,
        "cost_usd": 0.0,
@@ -3907,24 +4178,24 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "b98a06205fd95f1773d280e39aa3d0d7e7c518530fe54390efe460edf80873fe",
-       "event_hash": "24ccc01aa14ade13d4ea540cf1bfbbb0806c428fcbe2461626ec5b86a8113f63"
+       "prev_event_hash": "ec49193532064c83baef44278ee9ff56b090666433bf2ce70162664f2ca863cb",
+       "event_hash": "d418ef28c1fc62244cdb9378ef87f11cace7260ed334b2b40416a5fa09a9da60"
       },
       {
        "schema_version": "audit-0.2",
-       "event_id": "01a10a58-cf97-7a31-81db-32e88a07e30f",
+       "event_id": "01a10b2e-cbc2-71ff-8093-b5a57bcc6950",
        "event_type": "policy_decision",
-       "occurred_at": "2026-10-05T04:35:54.903Z",
-       "conversation_id": "conv_01a10a58-ad43-746b-801b-98175db34659",
-       "session_id": "ses_qyq46u1HZlFFEdZXcvCrHd0gmEW04G1t",
+       "occurred_at": "2026-10-05T08:29:38.626Z",
+       "conversation_id": "conv_01a10b2e-a738-7dd1-8baa-d1f0d1181450",
+       "session_id": "ses_3NW0sp9wZup5YwZ0vykHFlwRvsE0Aywy",
        "turn_index": 1,
-       "trace_id": "a150659386a2b7c3c137b67be1e2accd",
-       "span_id": "f03be7f0145bbd4d",
+       "trace_id": "3024bc00a2588aeca952e419d8e95046",
+       "span_id": "e6125173100089b8",
        "actor": "orchestrator",
-       "customer_ref": "23ff291e775e70afec32d927897b27a7",
+       "customer_ref": "56f2fd4c9d84d0c4664f2f0561d59a1f",
        "auth_level": "L1",
        "state": "SELECT_CARD",
-       "policy_version": "cards-synthetic-0.8",
+       "policy_version": "cards-synthetic-0.9",
        "state_machine_version": "sm-0.4",
        "rule_ids": [
         "POL-PII-01",
@@ -3959,7 +4230,7 @@
         "language": "es",
         "templates": [],
         "llm_call_ids": [
-         "llm_8f92cc87abb1"
+         "llm_3f9f0943553d"
         ]
        },
        "counters": {
@@ -3978,8 +4249,8 @@
         "placeholders": {},
         "hits": {}
        },
-       "prev_event_hash": "24ccc01aa14ade13d4ea540cf1bfbbb0806c428fcbe2461626ec5b86a8113f63",
-       "event_hash": "8f9b70ce753cf94cc775940149bcebabef2505a251833580a30a04a172f34508"
+       "prev_event_hash": "d418ef28c1fc62244cdb9378ef87f11cace7260ed334b2b40416a5fa09a9da60",
+       "event_hash": "148abb13d4d950ddc13a2e36f7ddc2978bc97ab56e4fa21f85830164d7fc174e"
       }
      ]
     }
@@ -4099,7 +4370,7 @@
    "response": {
     "status": 201,
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
      "reply": "Hola, ¿en qué puedo ayudarle?",
      "state": "IDLE",
      "language": "es",
@@ -4118,14 +4389,14 @@
     "query": null,
     "auth": "prueba:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
      "mensaje": "Hola, ¿cuál es mi saldo?"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
      "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
      "state": "SELECT_CARD",
      "language": "es",
@@ -4144,14 +4415,14 @@
     "query": null,
     "auth": "prueba:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
      "mensaje": "La tarjeta de crédito."
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
      "reply": "Su sesión expiró. Por favor, inicie sesión de nuevo para continuar.",
      "state": "SESSION_EXPIRED",
      "language": "es",
@@ -4190,13 +4461,13 @@
     "query": null,
     "auth": "prueba:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475"
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a"
     }
    },
    "response": {
     "status": 201,
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
      "reply": "Sesión iniciada. ¿Quiere retomar lo que estaba haciendo?",
      "state": "IDLE",
      "language": "es",
@@ -4215,14 +4486,14 @@
     "query": null,
     "auth": "prueba:CLI-SQJOCEDJJNCZ",
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
      "mensaje": "Sí"
     }
    },
    "response": {
     "status": 200,
     "body": {
-     "conversation_id": "conv_01a10a58-d0c2-7b4f-8f14-82bee0b3f475",
+     "conversation_id": "conv_01a10b2e-cf52-7b2c-bfb6-f4c67c53833a",
      "reply": "Puedo consultar el saldo de su tarjeta de crédito terminada en 5070 o de su cuenta de ahorros terminada en 1317. ¿Cuál quiere consultar?",
      "state": "SELECT_CARD",
      "language": "es",

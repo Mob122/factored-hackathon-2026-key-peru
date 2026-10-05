@@ -46,6 +46,13 @@ class RespuestaOTPPrueba(BaseModel):
     expira_en: datetime
     aviso: str
 
+class RespuestaOTPDemo(BaseModel):
+    # SMS simulado (POL-AUTH-14): el código de la propia sesión, solo con ENV=development.
+    codigo: str
+    expira_en: datetime
+    canal: str = "sms_simulado"
+    aviso: str
+
 class SolicitudStepUp(BaseModel):
     codigo: str = Field(pattern= r"^\d{6}$")
     card_id: str = Field(pattern= PATRON_CARD_ID)

@@ -204,6 +204,14 @@ def capturar(g: Grabadora, gold: Path) -> None:
     g.chat("d5-t4", "Message after the handoff is appended to the case (T-38)", auth_d5, conv,
            "¿En cuánto tiempo me contactan?", estado= "HANDED_OFF")
 
+    # Portal del cliente (POL-PII-10): tarjetas y transacciones del diálogo 1, conversaciones y casos del diálogo 5.
+    g.llamar("portal-cards", "The customer's cards, no internal IDs", "GET", "/cliente/tarjetas", auth= f"cliente:{D1}")
+    g.llamar("portal-transactions", "Card transactions of the last 30 days of the bank clock", "GET", "/cliente/transacciones",
+             auth= f"cliente:{D1}", query= {"dias": 30})
+    g.llamar("portal-conversations", "The customer's conversations, newest first", "GET", "/cliente/conversaciones", auth= auth_d5)
+    g.llamar("portal-cases", "The customer's cases: reference and context, never the case file", "GET", "/cliente/casos",
+             auth= auth_d5)
+
     # Diálogo 12 (pt): saldo de la cuenta de ahorros y luego de una tarjeta.
     auth = entrar_cliente(g, "d12", D12, idioma= "pt")
     conv = abrir_chat(g, "d12-t0", auth)
@@ -279,6 +287,18 @@ def capturar(g: Grabadora, gold: Path) -> None:
     conv = abrir_chat(g, "_", auth, grabar= False)
     g.chat("err-stepup-t1", "Block request: step-up required", auth, conv, "Quiero bloquear mi tarjeta de débito.", estado= "STEP_UP")
     g.chat("err-stepup-t2", "Wrong code: asked again (T-29)", auth, conv, codigo= "000000", estado= "STEP_UP")
+
+    # SMS simulado (POL-AUTH-14): el mismo cliente entra con contraseña, como en la web, y pide su propio código.
+    auth = entrar_cliente(g, "sms", D9)
+    conv = abrir_chat(g, "_", auth, grabar= False)
+    g.llamar("err-sms-not-in-step-up", "Simulated SMS with no verification pending", "POST", "/autenticacion/otp-demo",
+             auth= auth, http= 409)
+    g.chat("sms-t1", "Block request: step-up required", auth, conv, "Quiero bloquear mi tarjeta de débito.", estado= "STEP_UP")
+    sms = g.llamar("sms-otp", "Simulated SMS: the customer's own code (development only)", "POST", "/autenticacion/otp-demo",
+                   auth= auth, http= 201)
+    g.chat("sms-t2", "Code typed in the verification widget: confirmation prompt", auth, conv, codigo= sms["codigo"],
+           estado= "AWAIT_CONFIRMATION")
+    g.chat("sms-t3", "A no cancels the block; nothing runs", auth, conv, "No, mejor no.", estado= "IDLE")
 
     # Respaldo del LLM: LLM_MODE=openai contra un puerto cerrado; la respuesta sale con las plantillas.
     prueba = sesion_prueba(g, None, D11, idioma= "es")

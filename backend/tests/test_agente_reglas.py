@@ -347,7 +347,7 @@ def test_cada_turno_escribe_un_policy_decision(http, jurado, agente, bd):
         chat.decir(mensaje)
     decisiones = chat.eventos("policy_decision")
     assert [d["turn_index"] for d in decisiones] == [0, 1, 2, 3, 4]
-    assert all(d["rule_ids"] and d["policy_version"] == "cards-synthetic-0.8" for d in decisiones)
+    assert all(d["rule_ids"] and d["policy_version"] == "cards-synthetic-0.9" for d in decisiones)
     assert len({d["trace_id"] for d in decisiones}) == 5
     assert auditoria.verificar_cadena(bd, chat.conversation_id)
 

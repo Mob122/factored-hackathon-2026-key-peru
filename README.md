@@ -75,7 +75,7 @@ You need Python 3.11, Node.js `^20.19` or `>=22.12` with pnpm (for the frontend)
    python cli.py --jurado jurado@keyperu.example --cliente CLI-0N6WSFJ54FF2
    ```
 
-6. Point the frontend at the API and start it:
+6. Point the frontend at the API and start it (Node `^20.19` or `>=22.12`; Vite 8 does not run on older Node):
 
    ```sh
    cd ../frontend
@@ -83,6 +83,15 @@ You need Python 3.11, Node.js `^20.19` or `>=22.12` with pnpm (for the frontend)
    pnpm install
    pnpm dev
    ```
+
+7. Open `http://localhost:5173` and sign in with the seeded users (password `SEED_PASSWORD`):
+   - **A customer**, for example `cli-5b9vscp2gsml@clientes.keyperu.example` (golden dialogue 1). *Mis tarjetas*,
+     *Transacciones* and *Mis casos* show their gold data. In *Consultas*:
+     - ask "¿Cuál es mi saldo?", or open a declined transaction and press "¿Por qué fue rechazada?";
+     - block a card from *Mis tarjetas*. When the chat asks for the code, press "Recibir el código por SMS
+       simulado" (only with `ENV=development`), then answer "Sí".
+   - **`agente@keyperu.example`** sees the case inbox, each case file and its audit trail.
+   - **`jurado@keyperu.example`** has no web console yet: use the CLI (step 5).
 
 The API the frontend uses is in [docs/contracts/chat_api.md](docs/contracts/chat_api.md), with captured
 examples and the OpenAPI file.

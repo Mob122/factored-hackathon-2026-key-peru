@@ -4,10 +4,14 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
+			// GET /autenticacion/mi-perfil (contrato chat_api.md, sección 3).
 			usuario: {
-				id: string;
+				id: number;
 				nombre: string;
-				[key: string]: any; // Permite propiedades adicionales.
+				correo_electronico: string;
+				es_activo: boolean;
+				rol: 'cliente' | 'agente' | 'jurado';
+				customer_id: string | null;
 			} | null;
 		}
 		// interface PageData {}
