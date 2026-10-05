@@ -1,4 +1,6 @@
 <script lang="ts">
+    import favicon from '$lib/assets/key-peru.svg';
+
 	import BarraLateral from '$lib/components/app/BarraLateral.svelte';
 	import BarraSuperior from '$lib/components/app/BarraSuperior.svelte';
 
@@ -11,6 +13,7 @@
     let abrirBarraLateral = $state(false);
 </script>
 
+<svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
 <div id="app" class="bg-red-50 font-roboto text-gris-secundario/62 ">
     <div class={["grid md:grid-cols-[300px_1fr]", page.url.pathname.startsWith('/app/consultas') ? 'h-screen' : 'min-h-screen']}>            

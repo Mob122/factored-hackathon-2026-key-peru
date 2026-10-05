@@ -71,7 +71,7 @@
 
                 <ul class="space-y-5">
                     {#each rutas.RutasSeguridad as ruta}
-                        <li class="flex gap-2 items-center">
+                        <li class="">
                             <a class={['flex items-center gap-2 group p-2 rounded-md', rutaActual === ruta.enlace && 'bg-red-500 text-white']} href={ruta.enlace} onclick={() => abrir = false }>
                                 <ruta.icono _class={["fill-gris-secundario/62  h-5 w-5", rutaActual === ruta.enlace && 'fill-white'].filter(Boolean).join(' ')} />
                                 {ruta.texto}

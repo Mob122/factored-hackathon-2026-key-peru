@@ -1,5 +1,5 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '$lib/assets/key-peru.svg';
 	import BarraNavegacion from '$lib/components/marketing/BarraNavegacion.svelte';
 
 	const RUTAS: { texto: string; enlace: string }[] = [

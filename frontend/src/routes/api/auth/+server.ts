@@ -48,10 +48,7 @@ export const POST: RequestHandler = async ({request, cookies, url}) => {
                 })
             });
 
-            cuerpo = await respuesta.json();            
-
-            console.log(cuerpo);
-            
+            cuerpo = await respuesta.json();                        
 
             if (!respuesta.ok) {
                 return new Response(JSON.stringify(cuerpo), {
