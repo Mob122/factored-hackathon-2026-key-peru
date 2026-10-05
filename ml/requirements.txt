@@ -1,0 +1,14 @@
+ipython>=8.10
+jupyterlab>=3.0
+notebook
+kedro~=1.6.0
+duckdb
+polars
+pyarrow
+kedro-viz
+scikit-learn
+pyyaml
+sentence-transformers
+rapidfuzz
+openai
+python-dotenv

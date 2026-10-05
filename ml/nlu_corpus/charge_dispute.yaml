@@ -1,0 +1,562 @@
+intent: charge_dispute
+groups:
+  - id: dsp-001
+    slots: {merchant: Boutique Moda}
+    es-MX:
+      - "No reconozco un cargo de Boutique Moda en mi tarjeta."
+      - "Me salió un cargo de Boutique Moda que yo no reconozco."
+    es-CO:
+      - "Tengo un cobro de Boutique Moda que no reconozco."
+      - "Me apareció un cobro de Boutique Moda y yo no compré nada ahí."
+    es-AR:
+      - "Tengo un consumo de Boutique Moda que no reconozco."
+      - "Me figura algo de Boutique Moda y yo no compré nada ahí, che."
+    pt-BR:
+      - "Não reconheço uma cobrança da Boutique Moda no meu cartão."
+      - "Apareceu uma compra da Boutique Moda que eu não fiz."
+  - id: dsp-002
+    slots: {merchant: Super Ahorro}
+    es-MX:
+      - "Me cobraron dos veces en Super Ahorro."
+      - "En Super Ahorro me hicieron el cargo doble."
+    es-CO:
+      - "En Super Ahorro me cobraron dos veces la misma compra."
+      - "Me salió el cobro de Super Ahorro duplicado."
+    es-AR:
+      - "En Super Ahorro me cobraron dos veces."
+      - "Me figura el consumo de Super Ahorro repetido, me lo cobraron dos veces."
+    pt-BR:
+      - "Fui cobrado duas vezes no Super Ahorro."
+      - "A compra no Super Ahorro veio em dobro."
+  - id: dsp-003
+    slots: {amount: "150 USD"}
+    es-MX:
+      - "Hay un cargo de 150 dólares que yo no hice."
+      - "Me aparece un cargo por 150 dólares que no hice yo."
+    es-CO:
+      - "Hay un cobro de 150 dólares que yo no hice."
+      - "Me aparece un cobro de 150 dólares que no es mío."
+    es-AR:
+      - "Hay un consumo de 150 dólares que yo no hice."
+      - "Me figura un consumo de 150 dólares que no es mío."
+    pt-BR:
+      - "Tem uma cobrança de 150 dólares que eu não fiz."
+      - "Apareceu uma compra de 150 dólares que não é minha."
+  - id: dsp-004
+    slots: {merchant: Internet Plus, date: yesterday}
+    es-MX:
+      - "Ayer me apareció un cargo de Internet Plus que no reconozco."
+      - "No reconozco el cargo de Internet Plus de ayer."
+    es-CO:
+      - "Ayer me apareció un cobro de Internet Plus que no reconozco."
+      - "El cobro de Internet Plus de ayer no lo reconozco."
+    es-AR:
+      - "Ayer me apareció un débito de Internet Plus que no reconozco."
+      - "El débito de Internet Plus de ayer no lo reconozco, che."
+    pt-BR:
+      - "Ontem apareceu uma cobrança da Internet Plus que não reconheço."
+      - "Não reconheço a cobrança da Internet Plus de ontem."
+  - id: dsp-005
+    slots: {last4: "8407"}
+    es-MX:
+      - "Quiero desconocer una compra de la tarjeta con terminación 8407."
+      - "Hay una compra en la tarjeta que termina en 8407 que no hice."
+    es-CO:
+      - "Quiero desconocer una compra de la tarjeta terminada en 8407."
+      - "En la tarjeta que termina en 8407 hay una compra que no hice."
+    es-AR:
+      - "Quiero desconocer un consumo de la tarjeta terminada en 8407."
+      - "En la tarjeta que termina en 8407 hay un consumo que no hice."
+    pt-BR:
+      - "Quero contestar uma compra do cartão final 8407."
+      - "No cartão final 8407 tem uma compra que eu não fiz."
+  - id: dsp-006
+    slots: {merchant: Restaurante El Buen Sabor}
+    es-MX:
+      - "Pagué una sola vez y me cobraron doble en Restaurante El Buen Sabor."
+      - "En Restaurante El Buen Sabor me pasaron la tarjeta dos veces y me cobraron las dos."
+    es-CO:
+      - "Qué pena, pagué una sola vez y en Restaurante El Buen Sabor me cobraron doble."
+      - "En Restaurante El Buen Sabor me pasaron la tarjeta dos veces y quedaron los dos cobros."
+    es-AR:
+      - "Pagué una vez y me cobraron doble en Restaurante El Buen Sabor, che."
+      - "En Restaurante El Buen Sabor me pasaron la tarjeta dos veces y me cobraron todo doble."
+    pt-BR:
+      - "Paguei uma vez só e cobraram em dobro no Restaurante El Buen Sabor."
+      - "No Restaurante El Buen Sabor passaram o cartão duas vezes e cobraram as duas."
+  - id: dsp-007
+    slots: {merchant: Streaming Music}
+    es-MX:
+      - "Cancelé la suscripción de Streaming Music y me siguen cobrando."
+      - "Ya me di de baja de Streaming Music y me volvieron a cobrar, quiero que lo quiten."
+    es-CO:
+      - "Ya cancelé la suscripción de Streaming Music y me siguen cobrando cada mes."
+      - "Ya cancelé Streaming Music y me volvieron a cobrar, quiero que me lo devuelvan."
+    es-AR:
+      - "Me di de baja de Streaming Music y me siguen cobrando."
+      - "Ya cancelé Streaming Music y me lo volvieron a cobrar, quiero que lo saquen."
+    pt-BR:
+      - "Cancelei a assinatura da Streaming Music e continuam cobrando."
+      - "Já cancelei a Streaming Music e cobraram de novo, quero o estorno."
+  - id: dsp-008
+    slots: {merchant: Gasolinera Express}
+    es-MX:
+      - "Me cobraron de más en Gasolinera Express."
+      - "En Gasolinera Express me cobraron más de lo que cargué."
+    es-CO:
+      - "En Gasolinera Express me cobraron de más, qué pena."
+      - "En Gasolinera Express me cobraron más de lo que tanqueé."
+    es-AR:
+      - "Me cobraron de más en Gasolinera Express, che."
+      - "En Gasolinera Express me cobraron más nafta de la que cargué."
+    pt-BR:
+      - "Me cobraram a mais na Gasolinera Express."
+      - "Na Gasolinera Express cobraram mais do que eu abasteci."
+  - id: dsp-009
+    slots: {}
+    es-MX:
+      - "Quiero que me devuelvan el dinero de una compra que nunca llegó."
+      - "Compré algo que nunca me entregaron y quiero mi dinero de vuelta."
+    es-CO:
+      - "Quiero que me devuelvan la plata de una compra que nunca llegó."
+      - "Compré algo que nunca me entregaron y quiero que me reintegren la plata."
+    es-AR:
+      - "Quiero que me reintegren la plata de una compra que nunca me llegó, che."
+      - "Compré algo que nunca me entregaron y quiero la guita de vuelta."
+    pt-BR:
+      - "Quero o meu dinheiro de volta de uma compra que nunca chegou."
+      - "Comprei uma coisa que nunca entregaram e quero o reembolso."
+  - id: dsp-010
+    slots: {merchant: Uber, date: "weekday:sat"}
+    es-MX:
+      - "Esa compra de Uber del sábado no la hice yo."
+      - "Yo no pedí ningún Uber el sábado y me lo cobraron."
+    es-CO:
+      - "Ese cobro de Uber del sábado no lo hice yo."
+      - "Yo no pedí ningún Uber el sábado y me salió el cobro."
+    es-AR:
+      - "Ese consumo de Uber del sábado no lo hice yo."
+      - "Yo no pedí ningún Uber el sábado y me lo cobraron, che."
+    pt-BR:
+      - "Essa compra do Uber de sábado não fui eu."
+      - "Eu não pedi nenhum Uber no sábado e me cobraram."
+  - id: dsp-011
+    slots: {merchant: Centro Comercial}
+    es-MX:
+      - "Alguien usó mi tarjeta para comprar en Centro Comercial."
+      - "Hay compras en Centro Comercial que hizo otra persona con mi tarjeta."
+    es-CO:
+      - "Alguien me usó la tarjeta para comprar en Centro Comercial."
+      - "Hay compras en Centro Comercial que hizo otra persona con mi tarjeta, yo no fui."
+    es-AR:
+      - "Alguien usó mi tarjeta para comprar en Centro Comercial, che."
+      - "Hay consumos en Centro Comercial que hizo otro con mi tarjeta."
+    pt-BR:
+      - "Alguém usou o meu cartão para comprar no Centro Comercial."
+      - "Tem compras no Centro Comercial que outra pessoa fez com o meu cartão."
+  - id: dsp-012
+    slots: {date: last_month}
+    es-MX:
+      - "Tengo cargos que no reconozco del mes pasado."
+      - "Del mes pasado hay varios cargos que yo no hice."
+    es-CO:
+      - "Tengo cobros que no reconozco del mes pasado."
+      - "Del mes pasado hay varios cobros que yo no hice."
+    es-AR:
+      - "Tengo consumos que no reconozco del mes pasado."
+      - "Del mes pasado hay varios consumos que no hice yo."
+    pt-BR:
+      - "Tenho cobranças que não reconheço do mês passado."
+      - "Do mês passado tem várias compras que eu não fiz."
+  - id: dsp-013
+    slots: {amount: "2500 PESO"}
+    es-MX:
+      - "Quiero reclamar un cargo duplicado de 2,500 pesos."
+      - "Me duplicaron un cargo de 2,500 pesos, quiero reclamarlo."
+    es-CO:
+      - "Quiero reclamar un cobro duplicado de 2.500 pesos."
+      - "Me duplicaron un cobro de 2.500 pesos, quiero reclamarlo."
+    es-AR:
+      - "Quiero reclamar un consumo duplicado de 2.500 pesos."
+      - "Me duplicaron un consumo de 2.500 pesos, lo quiero reclamar."
+    pt-BR:
+      - "Quero reclamar de uma cobrança duplicada de 2.500 pesos."
+      - "Duplicaram uma cobrança de 2.500 pesos, quero contestar."
+  - id: dsp-014
+    slots: {}
+    es-MX:
+      - "Me están cobrando una membresía que nunca contraté."
+      - "Me cargan cada mes una membresía que yo no contraté."
+    es-CO:
+      - "Me están cobrando una membresía que yo nunca tomé."
+      - "Me cobran cada mes una afiliación que yo no pedí."
+    es-AR:
+      - "Me están cobrando una membresía que nunca contraté, che."
+      - "Me debitan todos los meses una suscripción que yo no pedí."
+    pt-BR:
+      - "Estão me cobrando uma assinatura que eu nunca contratei."
+      - "Todo mês cobram uma mensalidade que eu não pedi."
+  - id: dsp-015
+    slots: {merchant: Teatro Nacional}
+    es-MX:
+      - "No hice ninguna compra en Teatro Nacional y me aparece un cargo."
+      - "Nunca fui a Teatro Nacional y me cobraron una compra ahí."
+    es-CO:
+      - "No hice ninguna compra en Teatro Nacional y me aparece un cobro."
+      - "Nunca fui a Teatro Nacional y me cobraron una compra allá."
+    es-AR:
+      - "No hice ninguna compra en Teatro Nacional y me figura un consumo."
+      - "Nunca fui a Teatro Nacional y me cobraron algo ahí."
+    pt-BR:
+      - "Não fiz nenhuma compra no Teatro Nacional e aparece uma cobrança."
+      - "Nunca fui ao Teatro Nacional e cobraram uma compra lá."
+  - id: dsp-016
+    slots: {date: "date:06-12"}
+    es-MX:
+      - "Quiero disputar el cargo del 12 de junio."
+      - "El cargo del 12 de junio no es mío, quiero disputarlo."
+    es-CO:
+      - "Quiero objetar el cobro del 12 de junio."
+      - "El cobro del 12 de junio no es mío, quiero reclamarlo."
+    es-AR:
+      - "Quiero desconocer el consumo del 12 de junio."
+      - "El consumo del 12 de junio no es mío, lo quiero reclamar."
+    pt-BR:
+      - "Quero contestar a cobrança de 12 de junho."
+      - "A cobrança de 12 de junho não é minha, quero contestar."
+  - id: dsp-017
+    slots: {}
+    es-MX:
+      - "Me llegó un cargo de una tienda en otro país que ni conozco."
+      - "Tengo un cargo de una tienda extranjera y yo no he salido del país."
+    es-CO:
+      - "Me llegó un cobro de una tienda de otro país que ni conozco."
+      - "Tengo un cobro de una tienda extranjera y yo no he salido del país."
+    es-AR:
+      - "Me llegó un consumo de un negocio de otro país que ni conozco."
+      - "Tengo un consumo de un local del exterior y yo no salí del país."
+    pt-BR:
+      - "Chegou uma cobrança de uma loja de outro país que eu nem conheço."
+      - "Tenho uma compra de uma loja estrangeira e eu não saí do país."
+  - id: dsp-018
+    slots: {amount: "999 USD"}
+    es-MX:
+      - "Hay un cargo raro de 999 dólares, yo no fui."
+      - "Me apareció un cargo de 999 dólares que no hice."
+    es-CO:
+      - "Hay un cobro raro de 999 dólares, yo no fui."
+      - "Me apareció un cobro de 999 dólares que no hice."
+    es-AR:
+      - "Hay un consumo raro de 999 dólares, yo no fui."
+      - "Me apareció un consumo de 999 dólares que no hice, che."
+    pt-BR:
+      - "Tem uma cobrança estranha de 999 dólares, não fui eu."
+      - "Apareceu uma compra de 999 dólares que eu não fiz."
+  - id: dsp-019
+    slots: {}
+    es-MX:
+      - "Quiero un reembolso de un cargo que no autoricé."
+      - "Hay un cargo que no autoricé y quiero que me lo reembolsen."
+    es-CO:
+      - "Quiero un reembolso de un cobro que no autoricé."
+      - "Hay un cobro que no autoricé y quiero que me lo reintegren."
+    es-AR:
+      - "Quiero un reintegro de un consumo que no autoricé."
+      - "Hay un consumo que no autoricé y quiero que me lo devuelvan."
+    pt-BR:
+      - "Quero o reembolso de uma cobrança que não autorizei."
+      - "Tem uma cobrança que não autorizei e quero o estorno."
+  - id: dsp-020
+    slots: {merchant: Tienda General}
+    es-MX:
+      - "Me cobraron una compra que cancelé en Tienda General."
+      - "Cancelé la compra en Tienda General y aun así me la cobraron."
+    es-CO:
+      - "Me salió cobrada una compra que cancelé en Tienda General."
+      - "Cancelé la compra en Tienda General y de todas formas me la cobraron."
+    es-AR:
+      - "Me cobraron una compra que cancelé en Tienda General, che."
+      - "Cancelé la compra en Tienda General y igual me la cobraron."
+    pt-BR:
+      - "Me cobraram uma compra que cancelei na Tienda General."
+      - "Cancelei a compra na Tienda General e mesmo assim cobraram."
+  - id: dsp-021
+    slots: {date: last_week}
+    es-MX:
+      - "No reconozco tres cargos de la semana pasada."
+      - "La semana pasada me aparecieron tres cargos que no hice."
+    es-CO:
+      - "No reconozco tres cobros de la semana pasada."
+      - "La semana pasada me aparecieron tres cobros que no hice."
+    es-AR:
+      - "No reconozco tres consumos de la semana pasada."
+      - "La semana pasada me aparecieron tres consumos que no hice, che."
+    pt-BR:
+      - "Não reconheço três cobranças da semana passada."
+      - "Semana passada apareceram três compras que eu não fiz."
+  - id: dsp-022
+    slots: {merchant: Taxi Seguro}
+    es-MX:
+      - "Me hicieron un cargo en Taxi Seguro y yo nunca tomé ese taxi."
+      - "Yo no usé Taxi Seguro y me cobraron un viaje."
+    es-CO:
+      - "Me hicieron un cobro en Taxi Seguro y yo nunca tomé ese taxi."
+      - "Yo no usé Taxi Seguro y me cobraron una carrera."
+    es-AR:
+      - "Me hicieron un cargo en Taxi Seguro y nunca me tomé ese taxi."
+      - "Yo no usé Taxi Seguro y me cobraron un viaje, che."
+    pt-BR:
+      - "Fizeram uma cobrança do Taxi Seguro e eu nunca peguei esse táxi."
+      - "Eu não usei o Taxi Seguro e me cobraram uma corrida."
+  - id: dsp-023
+    slots: {}
+    es-MX:
+      - "Bloqueen la tarjeta, hay cargos que no son míos."
+      - "Tengo cargos que no son míos, quiero bloquear la tarjeta y reclamarlos."
+    es-CO:
+      - "Bloqueen la tarjeta, hay cobros que no son míos."
+      - "Tengo cobros que no son míos, quiero bloquear la tarjeta y reclamarlos."
+    es-AR:
+      - "Bloqueen la tarjeta, hay consumos que no son míos."
+      - "Tengo consumos que no son míos, quiero bloquear la tarjeta y desconocerlos."
+    pt-BR:
+      - "Bloqueiem o cartão, tem compras que não são minhas."
+      - "Tenho cobranças que não são minhas, quero bloquear o cartão e contestar."
+  - id: dsp-024
+    slots: {last4: "1188"}
+    es-MX:
+      - "Quiero reportar un fraude en mi tarjeta con terminación 1188."
+      - "Creo que hay fraude en la tarjeta que termina en 1188, hay compras que no hice."
+    es-CO:
+      - "Quiero reportar un fraude en la tarjeta terminada en 1188."
+      - "Creo que me hicieron fraude con la tarjeta que termina en 1188, hay compras que no hice."
+    es-AR:
+      - "Quiero denunciar un fraude en la tarjeta terminada en 1188."
+      - "Creo que hay fraude en la tarjeta que termina en 1188, hay consumos que no hice."
+    pt-BR:
+      - "Quero denunciar uma fraude no cartão final 1188."
+      - "Acho que tem fraude no cartão final 1188, tem compras que não fiz."
+  - id: dsp-025
+    slots: {merchant: Servicios Públicos, date: this_month}
+    es-MX:
+      - "Me cobraron dos veces el pago de Servicios Públicos este mes."
+      - "Este mes Servicios Públicos me cobró doble."
+    es-CO:
+      - "Este mes me salió dos veces el cobro de Servicios Públicos."
+      - "Este mes Servicios Públicos me cobró doble, quiero que me devuelvan uno."
+    es-AR:
+      - "Me cobraron dos veces Servicios Públicos este mes."
+      - "Este mes Servicios Públicos me debitó doble, che."
+    pt-BR:
+      - "Este mês cobraram duas vezes a conta de Servicios Públicos."
+      - "A Servicios Públicos me cobrou em dobro este mês."
+  - id: dsp-026
+    slots: {amount: "35 USD", merchant: Cable TV}
+    es-MX:
+      - "Me cargaron 35 dólares de Cable TV y ya me había dado de baja."
+      - "Cable TV me cobró 35 dólares aunque ya cancelé el servicio."
+    es-CO:
+      - "Me cobraron 35 dólares de Cable TV y ya había cancelado."
+      - "Cable TV me cobró 35 dólares aunque ya cancelé el servicio, no corresponde."
+    es-AR:
+      - "Me debitaron 35 dólares de Cable TV y ya me había dado de baja."
+      - "Cable TV me cobró 35 dólares aunque ya me di de baja, che."
+    pt-BR:
+      - "Me cobraram 35 dólares da Cable TV e eu já tinha cancelado."
+      - "A Cable TV cobrou 35 dólares mesmo eu tendo cancelado o serviço."
+  - id: dsp-027
+    slots: {}
+    es-MX:
+      - "Hola, tengo un cargo que no reconozco."
+      - "Buenas tardes, me salió un cargo que yo no hice."
+    es-CO:
+      - "Buenas, tengo un cobro que no reconozco."
+      - "Hola, qué pena, me salió un cobro que yo no hice."
+    es-AR:
+      - "Hola, tengo un consumo que no reconozco, che."
+      - "Buenas, me salió un consumo que yo no hice."
+    pt-BR:
+      - "Oi, tenho uma cobrança que não reconheço."
+      - "Boa tarde, apareceu uma compra que eu não fiz."
+  - id: dsp-028
+    slots: {}
+    es-MX:
+      - "El súper me cobró de más, quiero que me devuelvan la diferencia."
+      - "En el súper me cobraron de más y quiero la diferencia de regreso."
+    es-CO:
+      - "El supermercado me cobró de más, quiero que me devuelvan la diferencia."
+      - "En el supermercado me cobraron de más y quiero que me reintegren la diferencia."
+    es-AR:
+      - "El chino me cobró de más, quiero que me devuelvan la diferencia."
+      - "En el súper me cobraron de más y quiero que me reintegren la diferencia."
+    pt-BR:
+      - "O mercado me cobrou a mais, quero a diferença de volta."
+      - "No mercado me cobraram a mais e quero que devolvam a diferença."
+  - id: dsp-029
+    slots: {date: yesterday}
+    es-MX:
+      - "Ayer me descontaron dinero sin mi autorización."
+      - "Me hicieron un cargo ayer que no autoricé."
+    es-CO:
+      - "Ayer me descontaron plata sin mi autorización."
+      - "Me hicieron un cobro ayer que no autoricé."
+    es-AR:
+      - "Ayer me debitaron plata sin mi autorización."
+      - "Me hicieron un consumo ayer que no autoricé, che."
+    pt-BR:
+      - "Ontem descontaram dinheiro sem a minha autorização."
+      - "Fizeram uma cobrança ontem que eu não autorizei."
+  - id: dsp-030
+    slots: {merchant: Clínica Médica}
+    es-MX:
+      - "Quiero objetar un cargo de Clínica Médica que no corresponde."
+      - "El cargo de Clínica Médica no corresponde, nunca fui a consulta."
+    es-CO:
+      - "Quiero reclamar un cobro de Clínica Médica que no corresponde."
+      - "El cobro de Clínica Médica no corresponde, nunca fui a cita."
+    es-AR:
+      - "Quiero desconocer un consumo de Clínica Médica que no corresponde."
+      - "El consumo de Clínica Médica no corresponde, nunca fui al turno."
+    pt-BR:
+      - "Quero contestar uma cobrança da Clínica Médica que não procede."
+      - "A cobrança da Clínica Médica não procede, nunca fui à consulta."
+  - id: dsp-031
+    slots: {amount: "210000 PESO"}
+    es-MX:
+      - "Ese cargo de 210,000 pesos no es mío."
+      - "No hice ningún cargo de 210,000 pesos."
+    es-CO:
+      - "Ese cobro de 210.000 pesos no es mío."
+      - "No hice ningún cobro de 210.000 pesos."
+    es-AR:
+      - "Ese consumo de 210.000 pesos no es mío."
+      - "No hice ningún consumo de 210.000 pesos, che."
+    pt-BR:
+      - "Essa cobrança de 210.000 pesos não é minha."
+      - "Eu não fiz nenhuma compra de 210.000 pesos."
+  - id: dsp-032
+    slots: {merchant: Boutique Moda}
+    es-MX:
+      - "Devolví la ropa en Boutique Moda y no me han reembolsado."
+      - "Hice una devolución en Boutique Moda y el reembolso nunca llegó."
+    es-CO:
+      - "Devolví la ropa en Boutique Moda y no me han reintegrado la plata."
+      - "Hice una devolución en Boutique Moda y nunca me devolvieron la plata, quiero reclamar."
+    es-AR:
+      - "Devolví la ropa en Boutique Moda y no me reintegraron nada."
+      - "Hice una devolución en Boutique Moda y nunca me devolvieron la guita, quiero reclamar."
+    pt-BR:
+      - "Devolvi a roupa na Boutique Moda e não fizeram o estorno."
+      - "Fiz uma devolução na Boutique Moda e o reembolso nunca caiu."
+  - id: dsp-033
+    slots: {merchant: Ferretería}
+    es-MX:
+      - "Me cobraron una compra en Ferretería que nunca recibí."
+      - "Pagué en Ferretería un pedido que nunca me llegó, quiero que me devuelvan."
+    es-CO:
+      - "Me cobraron un pedido de Ferretería que nunca me llegó."
+      - "Pagué en Ferretería un pedido que nunca me llegó, quiero que me devuelvan la plata."
+    es-AR:
+      - "Me cobraron una compra en Ferretería que nunca recibí, che."
+      - "Pagué en Ferretería un pedido que nunca llegó, quiero que me devuelvan la plata."
+    pt-BR:
+      - "Me cobraram uma compra na Ferretería que nunca recebi."
+      - "Paguei na Ferretería um pedido que nunca chegou, quero o dinheiro de volta."
+  - id: dsp-034
+    slots: {}
+    es-MX:
+      - "cargo no reconocido"
+      - "cargo que no hice"
+    es-CO:
+      - "cobro no reconocido"
+      - "cobro que no hice"
+    es-AR:
+      - "consumo no reconocido"
+      - "consumo que no hice"
+    pt-BR:
+      - "cobrança não reconhecida"
+      - "compra que não fiz"
+  - id: dsp-035
+    slots: {date: yesterday}
+    es-MX:
+      - "no reconozco un cargo de ayer"
+      - "ayer me cobraron algo q no hice"
+    es-CO:
+      - "no reconozco un cobro de ayer"
+      - "ayer me cobraron algo q yo no hice"
+    es-AR:
+      - "no reconozco un consumo de ayer"
+      - "ayer me cobraron algo q no hice che"
+    pt-BR:
+      - "nao reconheco uma cobranca de ontem"
+      - "ontem me cobraram algo q nao fiz"
+  - id: dsp-036
+    slots: {}
+    es-MX:
+      - "Gracias. Además tengo un cargo que no reconozco."
+      - "Ok, gracias. Otra cosa, hay un cargo que yo no hice."
+    es-CO:
+      - "Listo, gracias. Además tengo un cobro que no reconozco."
+      - "Bueno, gracias. Otra cosa, hay un cobro que yo no hice."
+    es-AR:
+      - "Gracias. Además tengo un consumo que no reconozco."
+      - "Dale, gracias. Otra cosa, hay un consumo que no hice."
+    pt-BR:
+      - "Obrigado. Além disso tenho uma cobrança que não reconheço."
+      - "Valeu. Outra coisa, tem uma compra que eu não fiz."
+  - id: dsp-037
+    slots: {merchant: Uber}
+    es-MX:
+      - "Quiero hablar del cargo de Uber que no reconozco."
+      - "Vengo por el cargo de Uber que no reconozco."
+    es-CO:
+      - "Quiero hablar del cobro de Uber que no reconozco."
+      - "Vengo por el cobro de Uber que no reconozco."
+    es-AR:
+      - "Quiero hablar del consumo de Uber que no reconozco."
+      - "Vengo por el consumo de Uber que no reconozco, che."
+    pt-BR:
+      - "Quero falar da cobrança do Uber que não reconheço."
+      - "Estou vindo por causa da cobrança do Uber que não reconheço."
+  - id: dsp-038
+    slots: {merchant: Óptica Visión}
+    es-MX:
+      - "Me cobraron en Óptica Visión unos lentes que nunca me dieron."
+      - "Óptica Visión me cobró un servicio que no me hicieron."
+    es-CO:
+      - "Me cobraron en Óptica Visión unas gafas que nunca me entregaron."
+      - "Óptica Visión me cobró un servicio que no me prestaron."
+    es-AR:
+      - "Me cobraron en Óptica Visión unos anteojos que nunca me dieron."
+      - "Óptica Visión me cobró un servicio que no me hicieron, che."
+    pt-BR:
+      - "Me cobraram na Óptica Visión uns óculos que nunca recebi."
+      - "A Óptica Visión cobrou um serviço que não fizeram."
+  - id: dsp-039
+    slots: {amount: "75 USD"}
+    es-MX:
+      - "Me aparecen dos cargos iguales de 75 dólares, me cobraron doble."
+      - "Tengo el mismo cargo de 75 dólares dos veces."
+    es-CO:
+      - "Me aparecen dos cobros iguales de 75 dólares, me cobraron doble."
+      - "Tengo el mismo cobro de 75 dólares dos veces."
+    es-AR:
+      - "Me figuran dos consumos iguales de 75 dólares, me cobraron doble."
+      - "Tengo el mismo consumo de 75 dólares dos veces, che."
+    pt-BR:
+      - "Aparecem duas cobranças iguais de 75 dólares, cobraram em dobro."
+      - "Tenho a mesma compra de 75 dólares duas vezes."
+  - id: dsp-040
+    slots: {last4: "6873"}
+    es-MX:
+      - "Hay compras en mi tarjeta con terminación 6873 que yo no hice."
+      - "En la tarjeta que termina en 6873 hay cargos que no son míos."
+    es-CO:
+      - "Hay compras en la tarjeta terminada en 6873 que yo no hice."
+      - "En la tarjeta que termina en 6873 hay cobros que no son míos."
+    es-AR:
+      - "Hay consumos en la tarjeta terminada en 6873 que yo no hice."
+      - "En la tarjeta que termina en 6873 hay consumos que no son míos, che."
+    pt-BR:
+      - "Tem compras no cartão final 6873 que eu não fiz."
+      - "No cartão final 6873 tem cobranças que não são minhas."

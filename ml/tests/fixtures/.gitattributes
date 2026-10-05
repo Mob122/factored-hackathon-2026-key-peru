@@ -1,0 +1,2 @@
+# Fixture files must stay byte-identical on every OS (raw CSV format, SHA-256 in the load log).
+* text eol=lf

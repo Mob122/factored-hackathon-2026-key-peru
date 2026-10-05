@@ -1,0 +1,30 @@
+{
+ "method": "split_conformal_lac",
+ "alpha": 0.1,
+ "threshold": 0.6683924683762994,
+ "max_set": 2,
+ "classes": [
+  "balance_inquiry",
+  "card_list",
+  "card_status",
+  "transaction_list",
+  "transaction_detail",
+  "card_block",
+  "charge_dispute",
+  "block_reason",
+  "card_unblock",
+  "human_request",
+  "conversation_end",
+  "out_of_scope"
+ ],
+ "n_calibration": 832,
+ "mondrian_by_language": null,
+ "status": "adopted for the deployed model by amendment eval-plan-0.3 (decided after the APS result, before held-out A)",
+ "safety_overrides": "card_block and charge_dispute are added to the set when rules.block_signal or rules.dispute_signal fires (predict.apply_overrides)",
+ "alternatives": {
+  "aps": {
+   "threshold": 0.988877817839221,
+   "status": "original pre-registration (eval-plan-0.2); replaced for the deployed model by eval-plan-0.3"
+  }
+ }
+}

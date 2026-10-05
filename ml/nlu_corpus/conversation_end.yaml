@@ -1,0 +1,562 @@
+intent: conversation_end
+groups:
+  - id: end-001
+    slots: {}
+    es-MX:
+      - "Muchas gracias por la ayuda, eso sería todo."
+      - "Le agradezco mucho, sería todo por hoy."
+    es-CO:
+      - "Muchísimas gracias por la ayuda, eso sería todo."
+      - "Le agradezco, sería todo por hoy, muy amable."
+    es-AR:
+      - "Muchas gracias por la ayuda, eso sería todo, che."
+      - "Te agradezco, por hoy sería todo."
+    pt-BR:
+      - "Muito obrigado pela ajuda, seria só isso."
+      - "Agradeço muito, por hoje é só."
+  - id: end-002
+    slots: {}
+    es-MX:
+      - "Perfecto, ya resolví lo que necesitaba, gracias."
+      - "Órale, ya quedó lo que necesitaba, gracias."
+    es-CO:
+      - "Perfecto, ya resolví lo que necesitaba, mil gracias."
+      - "Listo, ya quedó resuelto lo que necesitaba, gracias."
+    es-AR:
+      - "Perfecto, ya resolví lo que necesitaba, gracias, che."
+      - "Joya, ya está lo que necesitaba, gracias."
+    pt-BR:
+      - "Perfeito, já resolvi o que precisava, obrigado."
+      - "Show, já resolveu o que eu precisava, valeu."
+  - id: end-003
+    slots: {}
+    es-MX:
+      - "Ok, hasta luego."
+      - "Sale, hasta luego."
+    es-CO:
+      - "Bueno, hasta luego."
+      - "Listo, hasta luego pues."
+    es-AR:
+      - "Dale, hasta luego."
+      - "Bueno, nos vemos."
+    pt-BR:
+      - "Ok, até logo."
+      - "Beleza, até mais."
+  - id: end-004
+    slots: {}
+    es-MX:
+      - "No necesito nada más, que tenga buen día."
+      - "Ya no ocupo nada más, que tenga bonito día."
+    es-CO:
+      - "No necesito nada más, que tenga un buen día."
+      - "Ya no necesito nada más, que esté muy bien."
+    es-AR:
+      - "No necesito nada más, que tengas buen día."
+      - "Ya no necesito nada más, que andes bien."
+    pt-BR:
+      - "Não preciso de mais nada, tenha um bom dia."
+      - "Já não preciso de mais nada, um ótimo dia."
+  - id: end-005
+    slots: {}
+    es-MX:
+      - "Excelente servicio, gracias, adiós."
+      - "Muy buen servicio, muchas gracias, adiós."
+    es-CO:
+      - "Excelente servicio, muchas gracias, chao."
+      - "Muy buena atención, gracias, chao pues."
+    es-AR:
+      - "Excelente atención, gracias, chau."
+      - "Muy buena atención, gracias, chau chau."
+    pt-BR:
+      - "Excelente atendimento, obrigado, tchau."
+      - "Muito bom atendimento, valeu, tchau."
+  - id: end-006
+    slots: {}
+    es-MX:
+      - "Ya está, eso era lo único."
+      - "Eso era lo único que quería, ya está."
+    es-CO:
+      - "Ya quedó, eso era lo único, gracias."
+      - "Eso era lo único que necesitaba, listo."
+    es-AR:
+      - "Ya está, eso era lo único, che."
+      - "Eso era lo único que quería, listo."
+    pt-BR:
+      - "Pronto, era só isso mesmo."
+      - "Era a única coisa que eu queria, pronto."
+  - id: end-007
+    slots: {}
+    es-MX:
+      - "Listo, muchas gracias, bye."
+      - "Va, gracias, bye bye."
+    es-CO:
+      - "Listo, muy amable, bye."
+      - "Listo pues, gracias, bye bye."
+    es-AR:
+      - "Listo, gracias mil, bye."
+      - "Dale, gracias, bye bye."
+    pt-BR:
+      - "Pronto, muito obrigado, bye."
+      - "Fechou, valeu, bye bye."
+  - id: end-008
+    slots: {}
+    es-MX:
+      - "Nada más, gracias por todo."
+      - "Es todo, gracias por todo."
+    es-CO:
+      - "Nada más, mil gracias por todo."
+      - "Es todo, gracias por todo, muy amable."
+    es-AR:
+      - "Nada más, gracias por todo, che."
+      - "Eso es todo, gracias por todo, genio."
+    pt-BR:
+      - "Mais nada, obrigado por tudo."
+      - "É só isso, obrigado por tudo."
+  - id: end-009
+    slots: {}
+    es-MX:
+      - "Ya quedó claro, gracias."
+      - "Ya me quedó clarísimo, muchas gracias."
+    es-CO:
+      - "Ya me quedó claro, gracias."
+      - "Ya entendí todo, muchas gracias."
+    es-AR:
+      - "Ya quedó claro, gracias, che."
+      - "Me quedó re claro, muchas gracias."
+    pt-BR:
+      - "Ficou claro, obrigado."
+      - "Ficou claríssimo, muito obrigado."
+  - id: end-010
+    slots: {}
+    es-MX:
+      - "Está bien, era todo lo que quería saber."
+      - "De acuerdo, eso era todo lo que quería saber."
+    es-CO:
+      - "Bueno, era todo lo que quería saber, muy amable."
+      - "Bueno, eso era todo lo que necesitaba saber."
+    es-AR:
+      - "Está bien, era todo lo que quería saber, che."
+      - "Bueno, eso era todo lo que quería saber."
+    pt-BR:
+      - "Está bem, era tudo que eu queria saber."
+      - "Tudo bem, era só o que eu queria saber."
+  - id: end-011
+    slots: {}
+    es-MX:
+      - "Gracias, me sirvió mucho."
+      - "Me ayudó mucho, gracias."
+    es-CO:
+      - "Gracias, me sirvió muchísimo."
+      - "Me ayudó bastante, gracias."
+    es-AR:
+      - "Gracias, me sirvió un montón."
+      - "Me ayudaste un montón, gracias."
+    pt-BR:
+      - "Obrigado, me ajudou muito."
+      - "Ajudou bastante, valeu."
+  - id: end-012
+    slots: {}
+    es-MX:
+      - "Con eso me basta, gracias."
+      - "Con eso es suficiente, gracias."
+    es-CO:
+      - "Con eso me basta, muchas gracias."
+      - "Con eso es suficiente, gracias pues."
+    es-AR:
+      - "Con eso me alcanza, gracias."
+      - "Con eso es suficiente, gracias, che."
+    pt-BR:
+      - "Com isso já basta, obrigado."
+      - "Isso é suficiente, obrigado."
+  - id: end-013
+    slots: {}
+    es-MX:
+      - "No, ya no tengo más preguntas."
+      - "Ya no tengo más dudas."
+    es-CO:
+      - "No, ya no tengo más preguntas, muy amable."
+      - "Ya no tengo más dudas, gracias."
+    es-AR:
+      - "No, ya no tengo más preguntas, che."
+      - "Ya no me quedan dudas."
+    pt-BR:
+      - "Não, não tenho mais perguntas."
+      - "Já não tenho mais dúvidas."
+  - id: end-014
+    slots: {}
+    es-MX:
+      - "Bueno, me retiro, gracias."
+      - "Me despido, muchas gracias."
+    es-CO:
+      - "Bueno, me retiro, mil gracias."
+      - "Me despido, muchas gracias, que esté bien."
+    es-AR:
+      - "Bueno, me voy, gracias."
+      - "Me despido, muchas gracias, che."
+    pt-BR:
+      - "Bom, vou indo, obrigado."
+      - "Me despeço, muito obrigado."
+  - id: end-015
+    slots: {}
+    es-MX:
+      - "Ya terminé, gracias."
+      - "Ya acabé, gracias."
+    es-CO:
+      - "Ya terminé, muchas gracias."
+      - "Ya acabé, muy amable."
+    es-AR:
+      - "Ya terminé, gracias, che."
+      - "Ya está, terminé."
+    pt-BR:
+      - "Já terminei, obrigado."
+      - "Já acabei, valeu."
+  - id: end-016
+    slots: {}
+    es-MX:
+      - "Eso es todo por ahora, luego vuelvo si necesito algo."
+      - "Por ahora es todo, si necesito algo regreso."
+    es-CO:
+      - "Por ahora es todo, si necesito algo más vuelvo, gracias."
+      - "Por ahora es todo, si necesito algo vuelvo a escribir."
+    es-AR:
+      - "Eso es todo por ahora, después vuelvo si necesito algo."
+      - "Por ahora es todo, si necesito algo te escribo."
+    pt-BR:
+      - "Por enquanto é só, depois volto se precisar."
+      - "Por agora é isso, se precisar eu volto."
+  - id: end-017
+    slots: {}
+    es-MX:
+      - "Mil gracias, que esté bien."
+      - "Mil gracias, cuídese."
+    es-CO:
+      - "Mil gracias, que esté muy bien."
+      - "Mil gracias, que Dios lo bendiga."
+    es-AR:
+      - "Mil gracias, que andes bien."
+      - "Mil gracias, cuidate."
+    pt-BR:
+      - "Mil obrigados, fica bem."
+      - "Muito obrigado, se cuida."
+  - id: end-018
+    slots: {}
+    es-MX:
+      - "No, eso era todo, bendiciones."
+      - "No, era todo, muchas bendiciones."
+    es-CO:
+      - "No señor, eso era todo, bendiciones."
+      - "No, era todo, Dios le pague."
+    es-AR:
+      - "No, eso era todo, abrazo."
+      - "No, era todo, un abrazo."
+    pt-BR:
+      - "Não, era só isso, abraço."
+      - "Não, era tudo, um abraço."
+  - id: end-019
+    slots: {}
+    es-MX:
+      - "Ok gracias, chao."
+      - "Ok, mil gracias, chao."
+    es-CO:
+      - "Ok, muy amable, chao."
+      - "Ok, mil gracias, chao pues."
+    es-AR:
+      - "Ok gracias, chau."
+      - "Ok, mil gracias, chau."
+    pt-BR:
+      - "Ok obrigado, tchau."
+      - "Ok, valeu, tchau tchau."
+  - id: end-020
+    slots: {}
+    es-MX:
+      - "Ya no, gracias, muy amable."
+      - "Ya no, muy amable, gracias."
+    es-CO:
+      - "Ya no más, gracias, qué amable."
+      - "Ya no más, muy amable, gracias."
+    es-AR:
+      - "Ya no, gracias, sos muy amable."
+      - "Ya no, re amable, gracias."
+    pt-BR:
+      - "Não, obrigado, muito gentil."
+      - "Só isso, muito gentil, obrigado."
+  - id: end-021
+    slots: {}
+    es-MX:
+      - "Perfecto, ya puede cerrar la conversación."
+      - "Puede cerrar el chat, gracias."
+    es-CO:
+      - "Perfecto, ya puede cerrar la conversación, gracias."
+      - "Puede cerrar el chat, muchas gracias."
+    es-AR:
+      - "Perfecto, ya podés cerrar la conversación."
+      - "Podés cerrar el chat, gracias."
+    pt-BR:
+      - "Perfeito, já pode encerrar a conversa."
+      - "Pode fechar o chat, obrigado."
+  - id: end-022
+    slots: {}
+    es-MX:
+      - "Ya me ayudaste, gracias, adiós."
+      - "Ya me ayudó bastante, gracias, adiós."
+    es-CO:
+      - "Ya me ayudó, gracias, chao."
+      - "Ya me ayudó bastante, gracias, chao."
+    es-AR:
+      - "Ya me ayudaste, gracias, chau."
+      - "Ya me ayudaste bastante, gracias, chau."
+    pt-BR:
+      - "Você já me ajudou, obrigado, tchau."
+      - "Já ajudou bastante, obrigado, tchau."
+  - id: end-023
+    slots: {}
+    es-MX:
+      - "De acuerdo, no necesito más."
+      - "De acuerdo, ya no requiero nada más."
+    es-CO:
+      - "Bueno, de acuerdo, no necesito más."
+      - "De acuerdo, ya no requiero nada más, muy amable."
+    es-AR:
+      - "De acuerdo, no necesito más, che."
+      - "De acuerdo, ya no preciso nada más."
+    pt-BR:
+      - "Combinado, não preciso de mais."
+      - "Certo, não preciso de mais nada."
+  - id: end-024
+    slots: {}
+    es-MX:
+      - "Súper, gracias, hasta la próxima."
+      - "Qué padre, gracias, hasta la próxima."
+    es-CO:
+      - "Súper bien, gracias, hasta la próxima."
+      - "Qué chévere, gracias, hasta la próxima."
+    es-AR:
+      - "Bárbaro, gracias, hasta la próxima."
+      - "Genial, gracias, hasta la próxima."
+    pt-BR:
+      - "Ótimo, obrigado, até a próxima."
+      - "Massa, valeu, até a próxima."
+  - id: end-025
+    slots: {}
+    es-MX:
+      - "Gracias por la información, eso es todo."
+      - "Gracias por la info, es todo."
+    es-CO:
+      - "Muy amable por la información, eso es todo."
+      - "Gracias por la info, es todo pues."
+    es-AR:
+      - "Gracias por la información, eso es todo, che."
+      - "Gracias por la info, es todo, che."
+    pt-BR:
+      - "Obrigado pela informação, é só isso."
+      - "Valeu pela info, é isso."
+  - id: end-026
+    slots: {}
+    es-MX:
+      - "Todo claro, buenas noches."
+      - "Ya entendí todo, buenas noches."
+    es-CO:
+      - "Todo claro, feliz noche."
+      - "Ya entendí todo, feliz noche."
+    es-AR:
+      - "Todo claro, buenas noches, che."
+      - "Ya entendí todo, que descanses."
+    pt-BR:
+      - "Tudo claro, boa noite."
+      - "Entendi tudo, boa noite."
+  - id: end-027
+    slots: {}
+    es-MX:
+      - "Listo, ya me puedo ir."
+      - "Ya con eso me voy, gracias."
+    es-CO:
+      - "Listo pues, ya me puedo ir."
+      - "Ya con eso me voy, gracias pues."
+    es-AR:
+      - "Listo, ya me puedo ir, che."
+      - "Ya con eso me voy, gracias, genio."
+    pt-BR:
+      - "Pronto, já posso ir."
+      - "Com isso já vou, obrigado."
+  - id: end-028
+    slots: {}
+    es-MX:
+      - "Ok, entendido, gracias."
+      - "Entendido, muchas gracias."
+    es-CO:
+      - "Ok, entendido, mil gracias."
+      - "Entendido, muchas gracias, muy amable."
+    es-AR:
+      - "Ok, entendido, gracias, che."
+      - "Entendido, muchas gracias, genio."
+    pt-BR:
+      - "Ok, entendido, obrigado."
+      - "Entendi, muito obrigado."
+  - id: end-029
+    slots: {}
+    es-MX:
+      - "No, todo bien, gracias."
+      - "Todo bien por ahora, gracias."
+    es-CO:
+      - "No señora, todo bien, gracias."
+      - "Todo bien por ahora, gracias, muy amable."
+    es-AR:
+      - "No, todo bien, gracias, che."
+      - "Todo bien por ahora, gracias, che."
+    pt-BR:
+      - "Não, tudo certo, obrigado."
+      - "Tudo certo por enquanto, valeu."
+  - id: end-030
+    slots: {}
+    es-MX:
+      - "Ya resolví, adiós."
+      - "Ya lo resolví, adiós."
+    es-CO:
+      - "Ya resolví, chao."
+      - "Ya lo resolví, chao pues."
+    es-AR:
+      - "Ya resolví, chau."
+      - "Ya lo resolví, chau, che."
+    pt-BR:
+      - "Já resolvi, tchau."
+      - "Já está resolvido, tchau."
+  - id: end-031
+    slots: {}
+    es-MX:
+      - "Gracias, muy amable, hasta mañana."
+      - "Muy amable, gracias, hasta mañana."
+    es-CO:
+      - "Gracias, qué amable, hasta mañana."
+      - "Muy amable, gracias, nos hablamos mañana."
+    es-AR:
+      - "Gracias, re amable, hasta mañana."
+      - "Muy amable, gracias, hasta mañana, che."
+    pt-BR:
+      - "Obrigado, muito gentil, até amanhã."
+      - "Muito gentil, valeu, até amanhã."
+  - id: end-032
+    slots: {}
+    es-MX:
+      - "Me quedo tranquilo, gracias."
+      - "Ya me quedo más tranquila, gracias."
+    es-CO:
+      - "Me quedo tranquilo, mil gracias."
+      - "Ya quedo más tranquila, muchas gracias."
+    es-AR:
+      - "Me quedo tranquilo, gracias, che."
+      - "Ya me quedo más tranqui, gracias."
+    pt-BR:
+      - "Fico tranquilo, obrigado."
+      - "Agora fico mais tranquila, obrigada."
+  - id: end-033
+    slots: {}
+    es-MX:
+      - "Nada más por ahora."
+      - "Por ahora nada más."
+    es-CO:
+      - "Nada más por el momento."
+      - "Por el momento nada más."
+    es-AR:
+      - "Nada más por ahora, che."
+      - "Por ahora nada más, gracias."
+    pt-BR:
+      - "Mais nada por enquanto."
+      - "Por enquanto, mais nada."
+  - id: end-034
+    slots: {}
+    es-MX:
+      - "Eso es todo, buen fin de semana."
+      - "Es todo, que tenga buen fin de semana."
+    es-CO:
+      - "Eso es todo, feliz fin de semana."
+      - "Es todo, que pase buen fin de semana."
+    es-AR:
+      - "Eso es todo, buen finde."
+      - "Es todo, que tengas buen finde."
+    pt-BR:
+      - "É só isso, bom fim de semana."
+      - "É isso, tenha um bom fim de semana."
+  - id: end-035
+    slots: {}
+    es-MX:
+      - "Gracias, con esa información es suficiente."
+      - "Con esa información ya tengo suficiente, gracias."
+    es-CO:
+      - "Muy amable, con esa información es suficiente."
+      - "Con esa información ya tengo suficiente, gracias pues."
+    es-AR:
+      - "Gracias, con esa información me alcanza."
+      - "Con esa información ya tengo suficiente, gracias, che."
+    pt-BR:
+      - "Obrigado, com essa informação já basta."
+      - "Com essa informação já tenho o suficiente, obrigado."
+  - id: end-036
+    slots: {}
+    es-MX:
+      - "Ya tengo lo que necesitaba."
+      - "Ya obtuve lo que necesitaba, gracias."
+    es-CO:
+      - "Ya tengo lo que necesitaba, gracias."
+      - "Ya obtuve lo que necesitaba, muy amable."
+    es-AR:
+      - "Ya tengo lo que necesitaba, che."
+      - "Ya conseguí lo que necesitaba, gracias."
+    pt-BR:
+      - "Já tenho o que precisava."
+      - "Já consegui o que precisava, obrigado."
+  - id: end-037
+    slots: {}
+    es-MX:
+      - "Ok, nos vemos."
+      - "Va, nos vemos."
+    es-CO:
+      - "Ok, nos hablamos."
+      - "Bueno, nos hablamos."
+    es-AR:
+      - "Ok, nos vemos, che."
+      - "Dale, nos vemos."
+    pt-BR:
+      - "Ok, a gente se fala."
+      - "Beleza, a gente se vê."
+  - id: end-038
+    slots: {}
+    es-MX:
+      - "Terminamos, gracias."
+      - "Ya terminamos, gracias por atenderme."
+    es-CO:
+      - "Terminamos, muy amable."
+      - "Ya terminamos, gracias por la atención."
+    es-AR:
+      - "Terminamos, gracias, che."
+      - "Ya terminamos, gracias por atenderme, che."
+    pt-BR:
+      - "Terminamos, obrigado."
+      - "Já terminamos, obrigado pelo atendimento."
+  - id: end-039
+    slots: {}
+    es-MX:
+      - "ok gracias"
+      - "gracias bye"
+    es-CO:
+      - "ok mil gracias"
+      - "gracias chao"
+    es-AR:
+      - "ok gracias che"
+      - "gracias chau"
+    pt-BR:
+      - "ok obg"
+      - "valeu tchau"
+  - id: end-040
+    slots: {}
+    es-MX:
+      - "graciaaas"
+      - "muchas gracias!!"
+    es-CO:
+      - "graciasss"
+      - "mil gracias!!"
+    es-AR:
+      - "gracias genio"
+      - "graciaaas!!"
+    pt-BR:
+      - "obrigadaaa"
+      - "brigado!!"

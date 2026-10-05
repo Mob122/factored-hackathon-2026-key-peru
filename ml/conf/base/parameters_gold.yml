@@ -1,0 +1,13 @@
+# Parameters for the 'gold' pipeline (docs/contracts/freshness_policy.md).
+#
+# partitions: delivery dates (YYYY-MM-DD) to load; null loads every delivered file
+#   (backfill). Daily load: kedro run --pipeline gold --params gold.partitions=2026-06-18
+# snapshot_delivery_date: delivery date of the one-file snapshots customers.csv and
+#   products.csv (freshness policy section 1).
+# batch_id, loaded_at: fixed values for reproducible tests; null means a new batch ID
+#   and the current time.
+gold:
+  partitions: null
+  snapshot_delivery_date: "2026-06-17"
+  batch_id: null
+  loaded_at: null

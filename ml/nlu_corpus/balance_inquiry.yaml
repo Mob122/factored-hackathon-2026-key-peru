@@ -1,0 +1,562 @@
+intent: balance_inquiry
+groups:
+  - id: bal-001
+    slots: {product_kind: credit_card, balance_item: balance}
+    es-MX:
+      - "¿Me podría decir el saldo actual de mi tarjeta de crédito?"
+      - "Quisiera consultar el saldo de la tarjeta de crédito, por favor."
+    es-CO:
+      - "¿Me regala el saldo de la tarjeta de crédito, por favor?"
+      - "Necesito saber cómo está el saldo de mi tarjeta crédito."
+    es-AR:
+      - "¿Me pasás el saldo de la tarjeta de crédito?"
+      - "Quiero saber qué saldo tiene mi tarjeta de crédito."
+    pt-BR:
+      - "Pode me informar o saldo do meu cartão de crédito?"
+      - "Queria saber o saldo atual do cartão de crédito."
+  - id: bal-002
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "¿Cuánto dinero tengo en mi cuenta de ahorros?"
+      - "Me gustaría checar el saldo de mi cuenta de ahorro."
+    es-CO:
+      - "¿Cuánta plata hay en mi cuenta de ahorros?"
+      - "Quiero revisar el saldo de la cuenta de ahorros."
+    es-AR:
+      - "¿Cuánta plata tengo en la caja de ahorro?"
+      - "Fijate cuánto hay en mi caja de ahorro, porfa."
+    pt-BR:
+      - "Quanto dinheiro eu tenho na conta poupança?"
+      - "Quero ver quanto tem na minha poupança."
+  - id: bal-003
+    slots: {product_kind: card, last4: "3187", balance_item: balance}
+    es-MX:
+      - "¿Cuál es el saldo de la tarjeta con terminación 3187?"
+      - "Quiero saber el saldo de mi tarjeta que termina en 3187."
+    es-CO:
+      - "¿Me dice el saldo de la tarjeta terminada en 3187?"
+      - "¿Qué saldo tiene la tarjeta que termina en 3187?"
+    es-AR:
+      - "Decime el saldo de la tarjeta terminada en 3187."
+      - "¿Cuánto saldo tiene la tarjeta que termina en 3187?"
+    pt-BR:
+      - "Qual é o saldo do cartão final 3187?"
+      - "Quero saber o saldo do cartão com final 3187."
+  - id: bal-004
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "Buenos días, quisiera conocer el saldo de mi cuenta de ahorros."
+      - "Buenas tardes, ¿me puede dar el saldo de la cuenta de ahorro?"
+    es-CO:
+      - "Buenos días, ¿me colabora con el saldo de mi cuenta de ahorros?"
+      - "Buenas tardes, quisiera saber el saldo de la cuenta de ahorros."
+    es-AR:
+      - "Buen día, ¿me decís el saldo de la caja de ahorro?"
+      - "Hola, buenas, quería consultar el saldo de mi caja de ahorro."
+    pt-BR:
+      - "Bom dia, gostaria de saber o saldo da minha conta poupança."
+      - "Boa tarde, pode me passar o saldo da poupança?"
+  - id: bal-005
+    slots: {product_kind: credit_card, balance_item: balance}
+    es-MX:
+      - "¿Cuánto debo en total en la tarjeta de crédito?"
+      - "¿Cuál es el total que le debo a mi tarjeta de crédito?"
+    es-CO:
+      - "¿Cuánto es lo que debo en total de la tarjeta crédito?"
+      - "¿Cuánto le estoy debiendo a la tarjeta de crédito?"
+    es-AR:
+      - "¿Cuánto debo en total de la tarjeta de crédito?"
+      - "¿Cuánto le debo en total a la tarjeta de crédito?"
+    pt-BR:
+      - "Quanto eu estou devendo no total no cartão de crédito?"
+      - "Qual é o total da minha dívida no cartão de crédito?"
+  - id: bal-006
+    slots: {product_kind: card, balance_item: credit_limit}
+    es-MX:
+      - "¿De cuánto es el límite de mi tarjeta?"
+      - "¿Qué límite de crédito tiene mi tarjeta?"
+    es-CO:
+      - "¿De cuánto es el cupo total de mi tarjeta?"
+      - "¿Me dice cuál es el cupo de la tarjeta?"
+    es-AR:
+      - "¿De cuánto es el límite de la tarjeta?"
+      - "¿Qué límite me dieron en la tarjeta?"
+    pt-BR:
+      - "Qual é o limite total do meu cartão?"
+      - "De quanto é o limite do cartão?"
+  - id: bal-007
+    slots: {product_kind: card, balance_item: available_credit}
+    es-MX:
+      - "¿Cuánto crédito disponible me queda en la tarjeta?"
+      - "¿Cuánto tengo disponible para compras en mi tarjeta?"
+    es-CO:
+      - "¿Cuánto cupo disponible me queda en la tarjeta?"
+      - "¿Cuánto tengo libre en la tarjeta para gastar?"
+    es-AR:
+      - "¿Cuánto me queda disponible en la tarjeta para compras?"
+      - "¿Cuánto puedo gastar todavía con mi tarjeta?"
+    pt-BR:
+      - "Quanto de limite disponível eu tenho no cartão?"
+      - "Quanto ainda posso gastar no meu cartão?"
+  - id: bal-008
+    slots: {product_kind: credit_card, balance_item: minimum_payment}
+    es-MX:
+      - "¿Cuánto es el pago mínimo de mi tarjeta de crédito?"
+      - "¿De cuánto es el mínimo a pagar en la tarjeta de crédito?"
+    es-CO:
+      - "¿Cuál es el pago mínimo de la tarjeta de crédito este mes?"
+      - "¿Me dice el valor del pago mínimo de mi tarjeta crédito?"
+    es-AR:
+      - "¿Cuánto es el pago mínimo de la tarjeta de crédito?"
+      - "¿Me decís el mínimo que tengo que pagar de la tarjeta de crédito?"
+    pt-BR:
+      - "Qual é o pagamento mínimo do meu cartão de crédito?"
+      - "Quanto é o mínimo da fatura do cartão de crédito?"
+  - id: bal-009
+    slots: {product_kind: card, balance_item: due_date}
+    es-MX:
+      - "¿Cuál es la fecha límite de pago de mi tarjeta?"
+      - "¿Qué día vence el pago de la tarjeta?"
+    es-CO:
+      - "¿Hasta qué fecha tengo para pagar la tarjeta?"
+      - "¿Cuál es la fecha de pago de mi tarjeta?"
+    es-AR:
+      - "¿Cuándo vence el resumen de la tarjeta?"
+      - "¿Hasta cuándo tengo para pagar la tarjeta?"
+    pt-BR:
+      - "Qual é a data de vencimento da fatura do cartão?"
+      - "Até quando eu tenho para pagar o cartão?"
+  - id: bal-010
+    slots: {balance_item: balance}
+    es-MX:
+      - "¿Me dice mi saldo, por favor?"
+      - "Quiero consultar mi saldo."
+    es-CO:
+      - "¿Me regala mi saldo, porfa?"
+      - "Necesito consultar el saldo."
+    es-AR:
+      - "¿Me decís mi saldo?"
+      - "Quería saber mi saldo."
+    pt-BR:
+      - "Pode me dizer o meu saldo?"
+      - "Quero consultar meu saldo."
+  - id: bal-011
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "¿Cuánto llevo ahorrado en la cuenta de ahorros?"
+      - "¿Cuánto tengo juntado en mi cuenta de ahorro?"
+    es-CO:
+      - "¿Cuánta plata llevo ahorrada en la cuenta de ahorros?"
+      - "¿Cuánto he juntado en mi cuenta de ahorros hasta hoy?"
+    es-AR:
+      - "¿Cuánto llevo ahorrado en la caja de ahorro?"
+      - "¿Cuánto junté en la caja de ahorro hasta ahora?"
+    pt-BR:
+      - "Quanto eu já juntei na conta poupança?"
+      - "Quanto tenho guardado na poupança até agora?"
+  - id: bal-012
+    slots: {product_kind: current_account, balance_item: balance}
+    es-MX:
+      - "¿Cuánto tengo en mi cuenta de cheques?"
+      - "¿Me da el saldo de mi cuenta de cheques?"
+    es-CO:
+      - "¿Me regala el saldo de la cuenta corriente?"
+      - "¿Cuánta plata hay en la cuenta corriente?"
+    es-AR:
+      - "¿Cuánto tengo en la cuenta corriente?"
+      - "Pasame el saldo de la cuenta corriente."
+    pt-BR:
+      - "Quanto tenho na conta corrente?"
+      - "Qual o saldo da minha conta corrente?"
+  - id: bal-013
+    slots: {product_kind: debit_card, balance_item: balance}
+    es-MX:
+      - "¿Cuál es el saldo de mi tarjeta de débito?"
+      - "¿Cuánto tengo en la tarjeta de débito?"
+    es-CO:
+      - "¿Cuánto tengo en la tarjeta débito?"
+      - "Quiero saber el saldo de la tarjeta débito."
+    es-AR:
+      - "¿Cuánta plata tengo en la tarjeta de débito?"
+      - "Decime el saldo de la tarjeta de débito."
+    pt-BR:
+      - "Qual o saldo do cartão de débito?"
+      - "Quanto tem no meu cartão de débito?"
+  - id: bal-014
+    slots: {product_kind: other_product, balance_item: balance}
+    es-MX:
+      - "¿Cuánto me falta por pagar de mi préstamo?"
+      - "¿Cuál es el saldo pendiente del préstamo?"
+    es-CO:
+      - "¿Cuánto me falta para terminar de pagar el préstamo?"
+      - "¿Cuál es el saldo de mi préstamo?"
+    es-AR:
+      - "¿Cuánto me queda por pagar del préstamo?"
+      - "¿Cuánto debo todavía del préstamo?"
+    pt-BR:
+      - "Quanto falta pagar do meu empréstimo?"
+      - "Qual é o saldo devedor do empréstimo?"
+  - id: bal-015
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "Gracias. ¿Y cuánto tengo en la cuenta de ahorros?"
+      - "Muy amable. Ahora, ¿cuál es el saldo de mi cuenta de ahorro?"
+    es-CO:
+      - "Listo, gracias. ¿Y cuánto hay en la cuenta de ahorros?"
+      - "Gracias. ¿Me regala también el saldo de la cuenta de ahorros?"
+    es-AR:
+      - "Gracias. ¿Y cuánto tengo en la caja de ahorro?"
+      - "Bárbaro, gracias. ¿Y el saldo de la caja de ahorro?"
+    pt-BR:
+      - "Obrigado. E quanto tenho na poupança?"
+      - "Valeu. E o saldo da conta poupança?"
+  - id: bal-016
+    slots: {product_kind: card, last4: "5521", balance_item: balance}
+    es-MX:
+      - "Hola, ¿cuánto debo en la tarjeta terminación 5521?"
+      - "Hola, ¿qué saldo trae mi tarjeta terminación 5521?"
+    es-CO:
+      - "Hola, ¿cuánto debo en la tarjeta terminada en 5521?"
+      - "Buenas, ¿cuánto le debo a la tarjeta que termina en 5521?"
+    es-AR:
+      - "Hola, ¿cuánto debo en la tarjeta que termina en 5521?"
+      - "Buenas, ¿cuánto tengo de saldo en la tarjeta terminada en 5521?"
+    pt-BR:
+      - "Oi, quanto eu devo no cartão final 5521?"
+      - "Olá, qual o saldo do cartão final 5521?"
+  - id: bal-017
+    slots: {product_kind: credit_card, balance_item: balance}
+    es-MX:
+      - "Dígame el saldo de mi tarjeta de crédito y después los movimientos."
+      - "Primero el saldo de la tarjeta de crédito y luego quiero ver mis compras."
+    es-CO:
+      - "Deme el saldo de la tarjeta crédito y después me muestra los movimientos."
+      - "Necesito el saldo de la tarjeta de crédito y también los últimos movimientos."
+    es-AR:
+      - "Decime el saldo de la tarjeta de crédito y después los consumos."
+      - "Pasame el saldo de la tarjeta de crédito y también los últimos consumos."
+    pt-BR:
+      - "Me diz o saldo do cartão de crédito e depois as compras."
+      - "Quero o saldo do cartão de crédito e depois os lançamentos."
+  - id: bal-018
+    slots: {balance_item: available_credit}
+    es-MX:
+      - "Voy a hacer una compra grande, ¿cuánto crédito disponible tengo?"
+      - "Quiero comprar una tele, ¿cuánto tengo disponible para gastar?"
+    es-CO:
+      - "Voy a hacer una compra grande, ¿cuánto cupo disponible tengo?"
+      - "Quiero comprar un celular, ¿cuánto cupo me queda libre?"
+    es-AR:
+      - "Voy a hacer una compra grande, ¿cuánto tengo disponible?"
+      - "Me quiero comprar una heladera, ¿cuánto me queda disponible?"
+    pt-BR:
+      - "Vou fazer uma compra grande, quanto limite disponível eu tenho?"
+      - "Quero comprar uma geladeira, quanto ainda tenho de limite?"
+  - id: bal-019
+    slots: {product_kind: card, balance_item: balance}
+    es-MX:
+      - "Antes de pagar la tarjeta quiero saber cuánto debo."
+      - "Para saber cuánto pagar, ¿cuánto debo en la tarjeta?"
+    es-CO:
+      - "Antes de pagar la tarjeta, ¿cuánto es lo que debo?"
+      - "Voy a pagar la tarjeta, pero primero dígame cuánto debo."
+    es-AR:
+      - "Antes de pagar la tarjeta, ¿cuánto estoy debiendo?"
+      - "Voy a pagar la tarjeta, decime primero cuánto debo."
+    pt-BR:
+      - "Antes de pagar o cartão, quero saber quanto eu devo."
+      - "Vou pagar o cartão, mas antes me diz quanto estou devendo."
+  - id: bal-020
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "Necesito sacar efectivo, ¿cuánto tengo en mi cuenta de ahorros?"
+      - "Voy al cajero, ¿me dice cuánto hay en la cuenta de ahorro?"
+    es-CO:
+      - "Voy a retirar plata, ¿cuánto tengo en la cuenta de ahorros?"
+      - "Tengo que sacar efectivo, ¿cuánto hay en mi cuenta de ahorros?"
+    es-AR:
+      - "Tengo que sacar plata del cajero, ¿cuánto hay en la caja de ahorro?"
+      - "Voy a retirar efectivo, ¿cuánto me queda en la caja de ahorro?"
+    pt-BR:
+      - "Vou sacar dinheiro, quanto tenho na poupança?"
+      - "Preciso tirar dinheiro no caixa, quanto tem na conta poupança?"
+  - id: bal-021
+    slots: {product_kind: credit_card, balance_item: credit_limit}
+    es-MX:
+      - "¿Cuál es el límite total de mi tarjeta de crédito, no lo disponible?"
+      - "Quiero saber el límite de crédito completo de la tarjeta de crédito."
+    es-CO:
+      - "¿Cuál es el cupo total de la tarjeta de crédito, no el disponible?"
+      - "¿De cuánto es el cupo completo de mi tarjeta crédito?"
+    es-AR:
+      - "¿Cuál es el límite total de la tarjeta de crédito, no lo que me queda?"
+      - "¿De cuánto es el límite completo de mi tarjeta de crédito?"
+    pt-BR:
+      - "Qual é o limite total do cartão de crédito, não o disponível?"
+      - "De quanto é o limite completo do meu cartão de crédito?"
+  - id: bal-022
+    slots: {balance_item: minimum_payment}
+    es-MX:
+      - "¿Cuánto tengo que pagar como mínimo este mes?"
+      - "¿Cuál es el pago mínimo de este mes?"
+    es-CO:
+      - "¿Cuánto es lo mínimo que tengo que pagar este mes?"
+      - "¿Cuál es el valor mínimo a pagar este mes?"
+    es-AR:
+      - "¿Cuánto tengo que poner como mínimo este mes?"
+      - "¿Cuál es el pago mínimo de este resumen?"
+    pt-BR:
+      - "Quanto eu preciso pagar no mínimo este mês?"
+      - "Qual é o valor mínimo para pagar este mês?"
+  - id: bal-023
+    slots: {product_kind: card, balance_item: due_date}
+    es-MX:
+      - "¿Para cuándo tengo que pagar la tarjeta?"
+      - "¿Cuándo es mi fecha de pago de la tarjeta?"
+    es-CO:
+      - "¿Para cuándo debo pagar la tarjeta?"
+      - "¿Qué día es el pago de la tarjeta este mes?"
+    es-AR:
+      - "¿Para cuándo hay que pagar la tarjeta?"
+      - "¿Qué día tengo que pagar la tarjeta este mes?"
+    pt-BR:
+      - "Para quando eu tenho que pagar o cartão?"
+      - "Que dia vence a fatura do cartão este mês?"
+  - id: bal-024
+    slots: {product_kind: credit_card, last4: "0712", balance_item: balance}
+    es-MX:
+      - "¿Cuánto debo en la tarjeta de crédito terminada en 0712?"
+      - "¿Me da el saldo de la tarjeta de crédito con terminación 0712?"
+    es-CO:
+      - "¿Cuánto debo en la tarjeta crédito terminada en 0712?"
+      - "¿Me regala el saldo de la tarjeta de crédito que termina en 0712?"
+    es-AR:
+      - "¿Cuánto estoy debiendo en la tarjeta de crédito terminada en 0712?"
+      - "Decime el saldo de la tarjeta de crédito que termina en 0712."
+    pt-BR:
+      - "Quanto devo no cartão de crédito final 0712?"
+      - "Qual o saldo do cartão de crédito final 0712?"
+  - id: bal-025
+    slots: {product_kind: card, balance_item: balance}
+    es-MX:
+      - "¿De cuánto me llegó el estado de cuenta de la tarjeta?"
+      - "¿Por cuánto viene el estado de cuenta de mi tarjeta este mes?"
+    es-CO:
+      - "¿De cuánto me llegó el extracto de la tarjeta?"
+      - "¿Por cuánto viene el extracto de mi tarjeta este mes?"
+    es-AR:
+      - "¿De cuánto me vino el resumen de la tarjeta?"
+      - "¿Por cuánto viene el resumen de la tarjeta este mes?"
+    pt-BR:
+      - "De quanto veio a fatura do cartão?"
+      - "Qual é o valor da fatura do cartão deste mês?"
+  - id: bal-026
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "saldo cuenta de ahorros"
+      - "saldo de mi cuenta de ahorro porfa"
+    es-CO:
+      - "saldo de la cuenta de ahorros"
+      - "saldo cuenta ahorros por favor"
+    es-AR:
+      - "saldo caja de ahorro"
+      - "saldo de la caja de ahorro porfa"
+    pt-BR:
+      - "saldo da poupança"
+      - "saldo conta poupança por favor"
+  - id: bal-027
+    slots: {product_kind: credit_card, balance_item: balance}
+    es-MX:
+      - "cuanto debo en la tarjeta de credito"
+      - "cual es mi saldo de la tarjeta de credito"
+    es-CO:
+      - "cuanto debo en la tarjeta credito"
+      - "cual es el saldo de la tarjeta de credito"
+    es-AR:
+      - "cuanto debo de la tarjeta de credito"
+      - "que saldo tengo en la tarjeta de credito"
+    pt-BR:
+      - "quanto devo no cartao de credito"
+      - "qual meu saldo do cartao de credito"
+  - id: bal-028
+    slots: {product_kind: card, balance_item: balance}
+    es-MX:
+      - "¿Tengo saldo a favor en la tarjeta?"
+      - "¿Me quedó algún saldo a favor en mi tarjeta?"
+    es-CO:
+      - "¿Será que tengo saldo a favor en la tarjeta?"
+      - "¿Quedó algún saldo a favor en mi tarjeta?"
+    es-AR:
+      - "¿Me quedó saldo a favor en la tarjeta?"
+      - "¿Tengo algo de saldo a favor en mi tarjeta?"
+    pt-BR:
+      - "Tenho saldo positivo no cartão?"
+      - "Ficou algum saldo a meu favor no cartão?"
+  - id: bal-029
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "¿Cuánto me queda en la cuenta de ahorro?"
+      - "¿Con cuánto me quedé en mi cuenta de ahorros después del retiro?"
+    es-CO:
+      - "¿Cuánto me queda en la cuenta de ahorros?"
+      - "¿Con cuánto quedé en la cuenta de ahorros después del retiro?"
+    es-AR:
+      - "¿Cuánto me queda en la caja de ahorro?"
+      - "¿Con cuánto quedé en la caja de ahorro después de sacar plata?"
+    pt-BR:
+      - "Quanto sobrou na minha poupança?"
+      - "Com quanto fiquei na conta poupança depois do saque?"
+  - id: bal-030
+    slots: {balance_item: available_credit}
+    es-MX:
+      - "¿Me alcanza el crédito disponible para una compra de 500 dólares?"
+      - "¿Tengo suficiente disponible para gastar 500 dólares?"
+    es-CO:
+      - "¿Me alcanza el cupo disponible para una compra de 500 dólares?"
+      - "¿Tengo cupo libre suficiente para gastar 500 dólares?"
+    es-AR:
+      - "¿Me alcanza lo disponible para una compra de 500 dólares?"
+      - "¿Tengo disponible suficiente para gastar 500 dólares?"
+    pt-BR:
+      - "O meu limite disponível dá para uma compra de 500 dólares?"
+      - "Tenho limite disponível suficiente para gastar 500 dólares?"
+  - id: bal-031
+    slots: {product_kind: card, balance_item: balance}
+    es-MX:
+      - "Quiero saber cuánto es mi deuda total con la tarjeta."
+      - "¿A cuánto asciende mi deuda de la tarjeta?"
+    es-CO:
+      - "Quiero saber cuánto es la deuda total de la tarjeta."
+      - "¿A cuánto llega mi deuda con la tarjeta?"
+    es-AR:
+      - "Necesito saber de cuánto es mi deuda con la tarjeta."
+      - "¿A cuánto llega lo que debo de la tarjeta?"
+    pt-BR:
+      - "Quero saber qual é a minha dívida total no cartão."
+      - "Quanto está a minha dívida do cartão?"
+  - id: bal-032
+    slots: {balance_item: balance}
+    es-MX:
+      - "¿Cuál es mi saldo al día de hoy?"
+      - "¿Qué saldo tengo hasta el momento?"
+    es-CO:
+      - "¿Cuál es mi saldo a la fecha?"
+      - "¿Con qué saldo estoy hoy?"
+    es-AR:
+      - "¿Con cuánto saldo estoy a hoy?"
+      - "¿Qué saldo tengo a esta altura?"
+    pt-BR:
+      - "Qual é o meu saldo até hoje?"
+      - "Qual saldo eu tenho no momento?"
+  - id: bal-033
+    slots: {balance_item: available_credit}
+    es-MX:
+      - "¿Cuánto crédito disponible me queda?"
+      - "¿De cuánto es mi crédito disponible ahorita?"
+    es-CO:
+      - "¿Cuánto cupo me queda disponible?"
+      - "¿De cuánto es mi cupo disponible en este momento?"
+    es-AR:
+      - "¿Cuánto disponible me queda para usar?"
+      - "¿Cuánto tengo disponible ahora mismo?"
+    pt-BR:
+      - "Quanto de limite disponível ainda me resta?"
+      - "Qual é o meu limite disponível agora?"
+  - id: bal-034
+    slots: {product_kind: credit_card, balance_item: due_date}
+    es-MX:
+      - "¿Cuándo vence el pago de mi tarjeta de crédito?"
+      - "¿Qué día se vence el pago de la tarjeta de crédito?"
+    es-CO:
+      - "¿Cuándo vence el pago de la tarjeta de crédito?"
+      - "¿Qué fecha tiene el vencimiento del pago de mi tarjeta crédito?"
+    es-AR:
+      - "¿Cuándo se vence el pago de la tarjeta de crédito?"
+      - "¿Qué día vence el resumen de mi tarjeta de crédito?"
+    pt-BR:
+      - "Quando vence o pagamento do cartão de crédito?"
+      - "Qual o dia de vencimento da fatura do cartão de crédito?"
+  - id: bal-035
+    slots: {product_kind: card, last4: "3390", balance_item: minimum_payment}
+    es-MX:
+      - "¿Cuál es el monto mínimo a pagar de la tarjeta terminada en 3390?"
+      - "¿Cuánto es el pago mínimo de mi tarjeta terminación 3390?"
+    es-CO:
+      - "¿Cuál es el pago mínimo de la tarjeta terminada en 3390?"
+      - "¿Me dice el mínimo a pagar de la tarjeta que termina en 3390?"
+    es-AR:
+      - "¿Cuánto es el pago mínimo de la tarjeta terminada en 3390?"
+      - "Decime el mínimo a pagar de la tarjeta que termina en 3390."
+    pt-BR:
+      - "Qual é o pagamento mínimo do cartão final 3390?"
+      - "Quanto é o mínimo do cartão final 3390?"
+  - id: bal-036
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "Necesito el saldo de mi cuenta de ahorros para ver si hago una transferencia."
+      - "Antes de transferirle a mi hermana, ¿cuánto tengo en la cuenta de ahorro?"
+    es-CO:
+      - "Necesito el saldo de la cuenta de ahorros para saber si hago una transferencia."
+      - "Antes de transferir, ¿cuánta plata tengo en la cuenta de ahorros?"
+    es-AR:
+      - "Necesito el saldo de la caja de ahorro para ver si hago una transferencia."
+      - "Antes de transferirle a mi viejo, ¿cuánto tengo en la caja de ahorro?"
+    pt-BR:
+      - "Preciso do saldo da poupança para ver se faço uma transferência."
+      - "Antes de fazer um Pix, quanto tenho na conta poupança?"
+  - id: bal-037
+    slots: {product_kind: debit_card, last4: "4214", balance_item: balance}
+    es-MX:
+      - "¿Cuál es el saldo de la tarjeta de débito terminada en 4214?"
+      - "¿Cuánto tengo en mi tarjeta de débito terminación 4214?"
+    es-CO:
+      - "¿Cuál es el saldo de la tarjeta débito terminada en 4214?"
+      - "¿Cuánto hay en la tarjeta débito que termina en 4214?"
+    es-AR:
+      - "¿Cuánto tengo en la tarjeta de débito terminada en 4214?"
+      - "Decime el saldo de la tarjeta de débito que termina en 4214."
+    pt-BR:
+      - "Qual o saldo do cartão de débito final 4214?"
+      - "Quanto tem no cartão de débito final 4214?"
+  - id: bal-038
+    slots: {product_kind: credit_card, balance_item: available_credit}
+    es-MX:
+      - "¿Me podría decir cuánto tengo disponible en mi tarjeta de crédito?"
+      - "¿Cuánto crédito me queda libre en la tarjeta de crédito?"
+    es-CO:
+      - "¿Me dice cuánto cupo disponible tengo en la tarjeta de crédito?"
+      - "¿Cuánto me queda disponible en la tarjeta crédito?"
+    es-AR:
+      - "¿Me decís cuánto tengo disponible en la tarjeta de crédito?"
+      - "¿Cuánto me queda para gastar en la tarjeta de crédito?"
+    pt-BR:
+      - "Pode me dizer quanto tenho disponível no cartão de crédito?"
+      - "Quanto ainda posso usar do cartão de crédito?"
+  - id: bal-039
+    slots: {balance_item: credit_limit}
+    es-MX:
+      - "Quiero revisar el límite de crédito que me autorizaron."
+      - "¿Cuál es mi línea de crédito total?"
+    es-CO:
+      - "Quiero revisar el cupo que me aprobaron."
+      - "¿De cuánto es el cupo que me dieron?"
+    es-AR:
+      - "Quiero revisar el límite que me aprobaron."
+      - "¿Cuál es mi límite de compra total?"
+    pt-BR:
+      - "Quero conferir o limite que foi aprovado para mim."
+      - "Qual é o meu limite total de crédito?"
+  - id: bal-040
+    slots: {product_kind: savings_account, balance_item: balance}
+    es-MX:
+      - "Oiga, ¿cuánta lana tengo en la cuenta de ahorro?"
+      - "¿Cuánta lana me queda en mi cuenta de ahorros?"
+    es-CO:
+      - "Oiga, ¿cuánta plata me queda en la cuenta de ahorros?"
+      - "¿Será que me puede decir cuánta plata tengo en la cuenta de ahorros?"
+    es-AR:
+      - "Che, ¿cuánta guita tengo en la caja de ahorro?"
+      - "¿Cuánta guita me queda en la caja de ahorro?"
+    pt-BR:
+      - "Ei, quanta grana eu tenho na poupança?"
+      - "Quanto dinheiro ainda tenho na poupança?"

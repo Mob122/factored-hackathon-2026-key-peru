@@ -1,0 +1,2 @@
+﻿transaction_id,transaction_date,process_date,product_id,customer_id,transaction_type,transaction_category,amount,currency,amount_usd,channel,branch_id,merchant_name,merchant_category,transaction_country,transaction_city,transaction_status,response_code,is_fraud,fraud_score,latitude,longitude
+TRX-ST87M8AJLZ2GJHFR0B3F,2026-06-06 13:31:35,2026-06-06,PRD-S9E8FA7G5YXX,CLI-X7VXKV9P7ZC6,Purchase,Services,1488737.81,COP,372.18,ATM,SUC-8AM4U1NU,Internet Plus,Services,Colombia,Cartagena,Approved,00,False,,,

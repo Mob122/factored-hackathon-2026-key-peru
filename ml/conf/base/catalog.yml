@@ -1,0 +1,29 @@
+# Here you can define all your datasets by using simple YAML syntax.
+#
+# Documentation for this file format can be found in "The Data Catalog"
+# Link: https://docs.kedro.org/en/stable/catalog-data/introduction/#data-catalog
+
+# --- data_ingestion ----------------------------------------------------------
+# One typed Parquet per raw table, all rows kept, with a source_file column.
+"{table}_intermediate":
+  type: banking_cs.datasets.DuckDBQueryDataset
+  filepath: data/02_intermediate/{table}.parquet
+
+# Per table and typed column: raw values that failed to cast (became NULL).
+ingestion_cast_failures:
+  type: banking_cs.datasets.DuckDBQueryDataset
+  filepath: data/08_reporting/ingestion_cast_failures.csv
+  file_format: csv
+
+# --- gold ---------------------------------------------------------------------
+# The four tables read by the mock bank, _load_log.parquet and _quarantine/
+# (docs/contracts/gold_tables.md). gold_previous loads the live gold that a load
+# upserts into; gold_store publishes the new version. The HMAC key card_hash_key
+# is registered by banking_cs.hooks.CardHashKeyHook, not here.
+gold_previous:
+  type: banking_cs.datasets.GoldStoreDataset
+  path: data/03_primary/gold
+
+gold_store:
+  type: banking_cs.datasets.GoldStoreDataset
+  path: data/03_primary/gold

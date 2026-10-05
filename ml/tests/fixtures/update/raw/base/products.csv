@@ -1,0 +1,4 @@
+﻿product_id,customer_id,product_type,product_number,currency,current_balance,credit_limit,interest_rate,opening_date,expiration_date,opening_branch_id,product_status,opening_channel,has_linked_app,days_past_due,last_transaction_date,last_updated
+PRD-S9E8FA7G5YXX,CLI-X7VXKV9P7ZC6,Tarjeta Crédito,4000000000009205,COP,3433398.95,151856782.35,42.98,2022-01-09,2026-01-08,SUC-X57ITSKO,Active,Branch,False,0.0,2022-03-10 09:56:21,2022-03-29 11:49:21
+PRD-IEJK2KCWITQW,CLI-X7VXKV9P7ZC6,Préstamo Personal,LOAN-00008811,COP,52025518.2,34863082.44,23.39,2026-02-23,,SUC-85YWBJ74,Active,Web,True,0.0,2026-06-03 08:30:50,2026-08-06 19:11:32
+PRD-I97V8EFELBUP,CLI-X7VXKV9P7ZC6,Tarjeta Crédito,4000000000007921,COP,14667875.79,83267555.49,35.15,2022-07-07,2026-07-06,SUC-RFQLK7RX,Active,Branch,False,0.0,2023-10-23 16:05:10,2023-06-02 09:45:58

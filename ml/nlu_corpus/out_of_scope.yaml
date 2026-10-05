@@ -1,0 +1,789 @@
+intent: out_of_scope
+groups:
+  - id: oos-001
+    slots: {}
+    es-MX:
+      - "Quiero solicitar un préstamo personal."
+      - "¿Me pueden prestar 20 mil pesos?"
+    es-CO:
+      - "Quisiera pedir un crédito de libre inversión."
+      - "¿Me pueden prestar 5 millones de pesos?"
+    es-AR:
+      - "Quiero pedir un préstamo personal, che."
+      - "¿Me pueden prestar 500 lucas?"
+    pt-BR:
+      - "Quero pedir um empréstimo pessoal."
+      - "Vocês me emprestam 10 mil reais?"
+  - id: oos-002
+    slots: {}
+    es-MX:
+      - "Necesito transferir dinero a la cuenta de mi hermano."
+      - "¿Cómo le mando dinero a otra cuenta?"
+    es-CO:
+      - "Necesito pasarle plata a la cuenta de mi hermano."
+      - "¿Cómo le mando plata a otra cuenta?"
+    es-AR:
+      - "Tengo que transferirle guita a la cuenta de mi hermano."
+      - "¿Cómo le giro plata a otra cuenta?"
+    pt-BR:
+      - "Preciso transferir dinheiro para a conta do meu irmão."
+      - "Como mando dinheiro para outra conta?"
+  - id: oos-003
+    slots: {}
+    es-MX:
+      - "¿Cómo pago mi tarjeta desde la app?"
+      - "Quiero pagar la tarjeta en línea, ¿cómo le hago?"
+    es-CO:
+      - "¿Cómo pago la tarjeta desde la app?"
+      - "Quisiera pagar la tarjeta por internet, ¿cómo hago?"
+    es-AR:
+      - "¿Cómo pago la tarjeta desde la app, che?"
+      - "Quiero pagar el resumen online, ¿cómo hago?"
+    pt-BR:
+      - "Como pago o meu cartão pelo aplicativo?"
+      - "Quero pagar a fatura pela internet, como faço?"
+  - id: oos-004
+    slots: {}
+    es-MX:
+      - "Quiero hacer un SPEI a mi mamá."
+      - "¿Cómo hago una transferencia SPEI?"
+    es-CO:
+      - "Quiero pasarle plata a mi mamá por Nequi."
+      - "¿Cómo hago una transferencia a Nequi?"
+    es-AR:
+      - "Quiero transferirle a mi vieja por alias."
+      - "¿Cómo hago una transferencia a un CBU?"
+    pt-BR:
+      - "Quero mandar um Pix pra minha mãe."
+      - "Como faço um Pix?"
+  - id: oos-005
+    slots: {}
+    es-MX:
+      - "¿Me pueden subir el límite de la tarjeta?"
+      - "Quiero que me aumenten el límite de crédito."
+    es-CO:
+      - "¿Me pueden aumentar el cupo de la tarjeta?"
+      - "Quisiera que me suban el cupo."
+    es-AR:
+      - "¿Me pueden subir el límite de la tarjeta, che?"
+      - "Quiero que me amplíen el límite."
+    pt-BR:
+      - "Vocês podem aumentar o limite do cartão?"
+      - "Quero que aumentem o meu limite."
+  - id: oos-006
+    slots: {}
+    es-MX:
+      - "Quiero cancelar mi tarjeta de crédito porque ya no la uso."
+      - "Ya no uso la tarjeta de crédito, quiero darla de baja."
+    es-CO:
+      - "Quiero cancelar la tarjeta de crédito porque ya no la uso."
+      - "Ya no uso la tarjeta crédito, quisiera cancelarla."
+    es-AR:
+      - "Quiero dar de baja la tarjeta de crédito porque no la uso."
+      - "Ya no uso la tarjeta de crédito, la quiero dar de baja."
+    pt-BR:
+      - "Quero cancelar o cartão de crédito porque não uso mais."
+      - "Não uso mais o cartão de crédito, quero cancelar."
+  - id: oos-007
+    slots: {}
+    es-MX:
+      - "Me interesa sacar una tarjeta de crédito."
+      - "¿Qué necesito para tramitar una tarjeta de crédito?"
+    es-CO:
+      - "Quisiera sacar una tarjeta de crédito con ustedes."
+      - "¿Qué requisitos piden para una tarjeta de crédito nueva?"
+    es-AR:
+      - "Me interesa sacar una tarjeta de crédito, che."
+      - "¿Qué piden para tramitar una tarjeta de crédito?"
+    pt-BR:
+      - "Tenho interesse em fazer um cartão de crédito."
+      - "O que preciso para pedir um cartão de crédito?"
+  - id: oos-008
+    slots: {}
+    es-MX:
+      - "Necesito actualizar mi domicilio."
+      - "Me cambié de casa, ¿cómo actualizo la dirección?"
+    es-CO:
+      - "Necesito actualizar mi dirección."
+      - "Me trasteé, ¿cómo actualizo la dirección?"
+    es-AR:
+      - "Necesito actualizar mi domicilio, che."
+      - "Me mudé, ¿cómo cambio la dirección?"
+    pt-BR:
+      - "Preciso atualizar o meu endereço."
+      - "Me mudei, como atualizo o endereço?"
+  - id: oos-009
+    slots: {}
+    es-MX:
+      - "¿A cómo está el dólar hoy?"
+      - "¿Cuál es el tipo de cambio del día?"
+    es-CO:
+      - "¿A cómo amaneció el dólar hoy?"
+      - "¿Cuál es la tasa de cambio de hoy?"
+    es-AR:
+      - "¿A cuánto está el dólar hoy, che?"
+      - "¿Cuál es la cotización del dólar?"
+    pt-BR:
+      - "Quanto está o dólar hoje?"
+      - "Qual é a cotação do dólar?"
+  - id: oos-010
+    slots: {}
+    es-MX:
+      - "¿Hasta qué año es válida mi tarjeta?"
+      - "¿Cuál es la fecha de expiración de mi tarjeta?"
+    es-CO:
+      - "¿Hasta qué año es válida la tarjeta?"
+      - "¿Cuál es la fecha de expiración de la tarjeta?"
+    es-AR:
+      - "¿Hasta qué año es válida la tarjeta, che?"
+      - "¿Cuándo expira la tarjeta?"
+    pt-BR:
+      - "Qual é a validade do meu cartão?"
+      - "Até que ano o cartão é válido?"
+  - id: oos-011
+    slots: {}
+    es-MX:
+      - "Buenas tardes."
+      - "Hola, ¿qué tal?"
+    es-CO:
+      - "Buenas noches."
+      - "Hola, ¿cómo está?"
+    es-AR:
+      - "Hola, ¿cómo andás?"
+      - "Buenas, che."
+    pt-BR:
+      - "Oi, tudo bem?"
+      - "Olá, boa tarde."
+  - id: oos-012
+    slots: {}
+    es-MX:
+      - "Olvidé el NIP de mi tarjeta, ¿cómo lo cambio?"
+      - "Quiero cambiar el NIP de la tarjeta."
+    es-CO:
+      - "Se me olvidó la clave de la tarjeta, ¿cómo la cambio?"
+      - "Quisiera cambiar la clave de la tarjeta."
+    es-AR:
+      - "Me olvidé el PIN de la tarjeta, ¿cómo lo cambio?"
+      - "Quiero cambiar el PIN de la tarjeta, che."
+    pt-BR:
+      - "Esqueci a senha do cartão, como troco?"
+      - "Quero trocar a senha do cartão."
+  - id: oos-013
+    slots: {}
+    es-MX:
+      - "No puedo entrar a la app del banco."
+      - "La aplicación no me deja iniciar sesión."
+    es-CO:
+      - "No puedo ingresar a la app del banco."
+      - "La aplicación no me deja entrar."
+    es-AR:
+      - "No puedo entrar a la app del banco, che."
+      - "La app no me deja loguearme."
+    pt-BR:
+      - "Não consigo entrar no aplicativo do banco."
+      - "O app não me deixa fazer login."
+  - id: oos-014
+    slots: {}
+    es-MX:
+      - "Quiero contratar un seguro de vida."
+      - "¿Qué seguros de auto manejan?"
+    es-CO:
+      - "Quisiera adquirir un seguro de vida."
+      - "¿Qué seguros de carro tienen?"
+    es-AR:
+      - "Quiero contratar un seguro de vida, che."
+      - "¿Qué seguros para el auto tienen?"
+    pt-BR:
+      - "Quero contratar um seguro de vida."
+      - "Quais seguros de carro vocês têm?"
+  - id: oos-015
+    slots: {}
+    es-MX:
+      - "¿A qué hora abre la sucursal?"
+      - "¿Cuál es el horario de la sucursal del centro?"
+    es-CO:
+      - "¿A qué hora abre la oficina?"
+      - "¿Cuál es el horario de la oficina del centro?"
+    es-AR:
+      - "¿A qué hora abre la sucursal, che?"
+      - "¿Qué horario tiene la sucursal del centro?"
+    pt-BR:
+      - "Que horas abre a agência?"
+      - "Qual é o horário da agência do centro?"
+  - id: oos-016
+    slots: {}
+    es-MX:
+      - "¿Dónde hay un cajero cerca?"
+      - "¿Me dice dónde queda el cajero más cercano?"
+    es-CO:
+      - "¿Dónde hay un cajero por aquí cerca?"
+      - "¿Me dice dónde queda el cajero más cercano, por favor?"
+    es-AR:
+      - "¿Dónde hay un cajero cerca, che?"
+      - "¿Dónde queda el cajero más cercano?"
+    pt-BR:
+      - "Onde tem um caixa eletrônico perto?"
+      - "Onde fica o caixa eletrônico mais próximo?"
+  - id: oos-017
+    slots: {}
+    es-MX:
+      - "Quiero invertir en un pagaré."
+      - "¿Qué opciones de inversión tienen?"
+    es-CO:
+      - "Quiero abrir un CDT."
+      - "¿Qué opciones de inversión manejan?"
+    es-AR:
+      - "Quiero hacer un plazo fijo."
+      - "¿Qué opciones de inversión tienen, che?"
+    pt-BR:
+      - "Quero investir num CDB."
+      - "Quais opções de investimento vocês têm?"
+  - id: oos-018
+    slots: {}
+    es-MX:
+      - "Voy a viajar a Europa, ¿tengo que avisarles?"
+      - "Quiero dar aviso de viaje."
+    es-CO:
+      - "Me voy de viaje a Europa, ¿toca avisarles?"
+      - "Quisiera registrar un aviso de viaje."
+    es-AR:
+      - "Me voy a Europa, ¿les tengo que avisar?"
+      - "Quiero dar aviso de viaje, che."
+    pt-BR:
+      - "Vou viajar para a Europa, preciso avisar vocês?"
+      - "Quero registrar um aviso de viagem."
+  - id: oos-019
+    slots: {}
+    es-MX:
+      - "¿Cómo estoy en el buró de crédito?"
+      - "¿Cuál es mi calificación crediticia?"
+    es-CO:
+      - "¿Cómo estoy en las centrales de riesgo?"
+      - "¿Cuál es mi puntaje en Datacrédito?"
+    es-AR:
+      - "¿Cómo estoy en el Veraz?"
+      - "¿Cuál es mi score crediticio?"
+    pt-BR:
+      - "Como está o meu score no Serasa?"
+      - "Qual é a minha pontuação de crédito?"
+  - id: oos-020
+    slots: {}
+    es-MX:
+      - "Necesito una chequera."
+      - "¿Cómo solicito una chequera nueva?"
+    es-CO:
+      - "Necesito una chequera, por favor."
+      - "¿Cómo solicito una chequera nueva con ustedes?"
+    es-AR:
+      - "Necesito una chequera, che."
+      - "¿Cómo pido una chequera nueva, che?"
+    pt-BR:
+      - "Preciso de um talão de cheques."
+      - "Como peço um talão de cheques novo?"
+  - id: oos-021
+    slots: {}
+    es-MX:
+      - "Necesito una copia del estado de cuenta en PDF."
+      - "¿Me pueden mandar mi estado de cuenta por correo?"
+    es-CO:
+      - "Necesito una copia del extracto en PDF."
+      - "¿Me pueden mandar el extracto al correo?"
+    es-AR:
+      - "Necesito una copia del resumen en PDF."
+      - "¿Me pueden mandar el resumen por mail?"
+    pt-BR:
+      - "Preciso de uma cópia da fatura em PDF."
+      - "Podem mandar a fatura para o meu e-mail?"
+  - id: oos-022
+    slots: {}
+    es-MX:
+      - "Quiero información sobre créditos hipotecarios."
+      - "¿Qué tasas tienen para comprar casa?"
+    es-CO:
+      - "Quisiera información sobre créditos de vivienda."
+      - "¿Qué tasas tienen para comprar vivienda?"
+    es-AR:
+      - "Quiero información sobre créditos hipotecarios, che."
+      - "¿Qué tasas tienen para comprar una casa?"
+    pt-BR:
+      - "Quero informações sobre financiamento imobiliário."
+      - "Quais taxas vocês têm para comprar casa?"
+  - id: oos-023
+    slots: {}
+    es-MX:
+      - "¿Cómo te llamas?"
+      - "¿Quién eres tú?"
+    es-CO:
+      - "¿Usted cómo se llama?"
+      - "¿Quién es usted?"
+    es-AR:
+      - "¿Cómo te llamás?"
+      - "¿Quién sos vos?"
+    pt-BR:
+      - "Qual é o seu nome?"
+      - "Quem é você?"
+  - id: oos-024
+    slots: {}
+    es-MX:
+      - "Quiero cambiar mi número de celular registrado."
+      - "Cambié de número, ¿cómo lo actualizo?"
+    es-CO:
+      - "Quiero cambiar el número de celular registrado."
+      - "Cambié de número, ¿cómo lo actualizo con ustedes?"
+    es-AR:
+      - "Quiero cambiar el número de celu registrado."
+      - "Cambié de número, ¿cómo lo actualizo, che?"
+    pt-BR:
+      - "Quero trocar o número de celular cadastrado."
+      - "Mudei de número, como atualizo?"
+  - id: oos-025
+    slots: {}
+    es-MX:
+      - "Quiero abrir una cuenta de ahorros."
+      - "¿Qué necesito para abrir una cuenta?"
+    es-CO:
+      - "Quisiera abrir una cuenta de ahorros."
+      - "¿Qué necesito para abrir una cuenta con ustedes?"
+    es-AR:
+      - "Quiero abrir una caja de ahorro."
+      - "¿Qué necesito para abrir una cuenta, che?"
+    pt-BR:
+      - "Quero abrir uma conta poupança."
+      - "O que preciso para abrir uma conta?"
+  - id: oos-026
+    slots: {}
+    es-MX:
+      - "¿Puedo hacer una disposición de efectivo con la tarjeta?"
+      - "Quiero sacar efectivo de la tarjeta de crédito."
+    es-CO:
+      - "¿Puedo sacar un avance con la tarjeta?"
+      - "Quiero hacer un avance en efectivo con la tarjeta crédito."
+    es-AR:
+      - "¿Puedo sacar un adelanto en efectivo con la tarjeta?"
+      - "Quiero sacar efectivo con la tarjeta de crédito, che."
+    pt-BR:
+      - "Posso fazer um saque no crédito com o cartão?"
+      - "Quero sacar dinheiro do cartão de crédito."
+  - id: oos-027
+    slots: {}
+    es-MX:
+      - "¿Qué tasa de interés cobra la tarjeta?"
+      - "¿Cuál es el CAT de la tarjeta de crédito?"
+    es-CO:
+      - "¿Qué tasa de interés me cobra la tarjeta?"
+      - "¿Cuál es la tasa efectiva anual de la tarjeta?"
+    es-AR:
+      - "¿Qué tasa de interés cobra la tarjeta, che?"
+      - "¿Cuál es el CFT de la tarjeta de crédito?"
+    pt-BR:
+      - "Qual a taxa de juros do cartão?"
+      - "Qual é o CET do cartão de crédito?"
+  - id: oos-028
+    slots: {}
+    es-MX:
+      - "¿Cuántos puntos tengo acumulados?"
+      - "¿Cómo canjeo mis puntos de la tarjeta?"
+    es-CO:
+      - "¿Cuántos puntos llevo acumulados?"
+      - "¿Cómo redimo los puntos de la tarjeta?"
+    es-AR:
+      - "¿Cuántos puntos tengo acumulados, che?"
+      - "¿Cómo canjeo los puntos de la tarjeta?"
+    pt-BR:
+      - "Quantos pontos eu tenho acumulados?"
+      - "Como resgato os pontos do cartão?"
+  - id: oos-029
+    slots: {}
+    es-MX:
+      - "Quiero comprar dólares."
+      - "¿Puedo cambiar pesos a dólares con ustedes?"
+    es-CO:
+      - "Quisiera comprar dólares."
+      - "¿Será que puedo cambiar pesos a dólares con ustedes?"
+    es-AR:
+      - "Quiero comprar dólares, che."
+      - "¿Puedo pasar pesos a dólares con ustedes?"
+    pt-BR:
+      - "Quero comprar dólares."
+      - "Posso trocar reais por dólares com vocês?"
+  - id: oos-030
+    slots: {}
+    es-MX:
+      - "¿Cuándo me llega la tarjeta nueva que pedí?"
+      - "¿Ya enviaron la tarjeta que solicité?"
+    es-CO:
+      - "¿Cuándo me va a llegar la tarjeta nueva que pedí?"
+      - "¿Ya despacharon la tarjeta que solicité?"
+    es-AR:
+      - "¿Cuándo me llega la tarjeta nueva que pedí, che?"
+      - "¿Ya mandaron la tarjeta que pedí?"
+    pt-BR:
+      - "Quando chega o cartão novo que eu pedi?"
+      - "Já enviaram o cartão que eu solicitei?"
+  - id: oos-031
+    slots: {}
+    es-MX:
+      - "Quiero recargar saldo a mi celular."
+      - "¿Puedo hacer una recarga de tiempo aire?"
+    es-CO:
+      - "Quiero recargar saldo al celular."
+      - "¿Puedo hacer una recarga al celular desde aquí?"
+    es-AR:
+      - "Quiero cargar saldo al celu."
+      - "¿Puedo hacer una recarga de celular, che?"
+    pt-BR:
+      - "Quero colocar crédito no celular."
+      - "Posso fazer uma recarga de celular?"
+  - id: oos-032
+    slots: {}
+    es-MX:
+      - "Quiero pagar la luz con mi tarjeta."
+      - "¿Puedo pagar el agua desde aquí?"
+    es-CO:
+      - "Quiero pagar los servicios con la tarjeta."
+      - "¿Puedo pagar el recibo del agua desde aquí?"
+    es-AR:
+      - "Quiero pagar la luz con la tarjeta, che."
+      - "¿Puedo pagar el gas desde acá?"
+    pt-BR:
+      - "Quero pagar a conta de luz com o cartão."
+      - "Posso pagar a conta de água por aqui?"
+  - id: oos-033
+    slots: {}
+    es-MX:
+      - "Quiero pasar una compra a meses sin intereses."
+      - "¿Puedo diferir una compra a meses?"
+    es-CO:
+      - "Quiero diferir una compra a cuotas."
+      - "¿Puedo cambiar el número de cuotas de una compra?"
+    es-AR:
+      - "Quiero pasar una compra a cuotas, che."
+      - "¿Puedo financiar una compra en cuotas?"
+    pt-BR:
+      - "Quero parcelar uma compra."
+      - "Posso parcelar a fatura?"
+  - id: oos-034
+    slots: {}
+    es-MX:
+      - "Quiero poner una queja por la mala atención en la sucursal."
+      - "Me atendieron muy mal en la sucursal, quiero quejarme."
+    es-CO:
+      - "Quiero poner una queja por la mala atención en la oficina."
+      - "Me atendieron muy mal en la oficina, quiero quejarme."
+    es-AR:
+      - "Quiero hacer una queja por la mala atención en la sucursal."
+      - "Me atendieron re mal en la sucursal, me quiero quejar."
+    pt-BR:
+      - "Quero fazer uma reclamação do atendimento na agência."
+      - "Fui muito mal atendido na agência, quero reclamar."
+  - id: oos-035
+    slots: {}
+    es-MX:
+      - "¿Cómo activo las notificaciones de la app?"
+      - "Quiero que me lleguen alertas al celular."
+    es-CO:
+      - "¿Cómo hago para activar las notificaciones de la app?"
+      - "Quisiera que me lleguen alertas al celular."
+    es-AR:
+      - "¿Cómo activo las notificaciones de la app, che?"
+      - "Quiero que me lleguen alertas al celu."
+    pt-BR:
+      - "Como ativo as notificações do app?"
+      - "Quero receber alertas no celular."
+  - id: oos-036
+    slots: {}
+    es-MX:
+      - "Quiero agregar a mi esposa como adicional en la tarjeta."
+      - "¿Cómo saco una tarjeta adicional para mi hijo?"
+    es-CO:
+      - "Quiero agregar a mi esposa como amparada en la tarjeta."
+      - "¿Cómo saco una tarjeta amparada para mi hijo?"
+    es-AR:
+      - "Quiero agregar a mi mujer como extensión de la tarjeta."
+      - "¿Cómo pido una extensión para mi hijo?"
+    pt-BR:
+      - "Quero incluir a minha esposa como adicional no cartão."
+      - "Como peço um cartão adicional para o meu filho?"
+  - id: oos-037
+    slots: {}
+    es-MX:
+      - "Quiero bajar el límite de mi tarjeta."
+      - "¿Me pueden reducir el límite de crédito?"
+    es-CO:
+      - "Quiero bajar el cupo de la tarjeta."
+      - "¿Me pueden reducir el cupo?"
+    es-AR:
+      - "Quiero bajar el límite de la tarjeta, che."
+      - "¿Me pueden achicar el límite?"
+    pt-BR:
+      - "Quero diminuir o limite do cartão."
+      - "Podem reduzir o meu limite?"
+  - id: oos-038
+    slots: {}
+    es-MX:
+      - "Quiero cerrar mi cuenta de ahorros."
+      - "¿Cómo cancelo la cuenta de ahorro?"
+    es-CO:
+      - "Quiero cerrar la cuenta de ahorros."
+      - "¿Cómo cancelo la cuenta de ahorros con ustedes?"
+    es-AR:
+      - "Quiero cerrar la caja de ahorro."
+      - "¿Cómo doy de baja la caja de ahorro?"
+    pt-BR:
+      - "Quero encerrar a minha conta poupança."
+      - "Como cancelo a poupança?"
+  - id: oos-039
+    slots: {}
+    es-MX:
+      - "¿Va a llover hoy?"
+      - "¿Me recomiendas un restaurante?"
+    es-CO:
+      - "¿Será que hoy llueve?"
+      - "¿Me recomienda un restaurante?"
+    es-AR:
+      - "¿Va a llover hoy, che?"
+      - "¿Me recomendás un restaurante?"
+    pt-BR:
+      - "Vai chover hoje?"
+      - "Me indica um restaurante?"
+  - id: oos-040
+    slots: {}
+    es-MX:
+      - "Hola, buen día."
+      - "Qué tal, buenas."
+    es-CO:
+      - "Hola, buen día, ¿cómo le va?"
+      - "Buenas, ¿qué más?"
+    es-AR:
+      - "Hola, buen día, che."
+      - "Buenas buenas."
+    pt-BR:
+      - "Oi, bom dia."
+      - "E aí, tudo certo?"
+  # nlu-utt-0.2: seed groups added for the meanings missed in model card 0.1 section 6.
+  # `topic` stratifies their split (3 train / 1 calibration / 1 test per topic).
+  - id: dlv-001
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "Pedí una reposición hace dos semanas y no me ha llegado."
+      - "¿Me pueden decir dónde viene mi tarjeta? Ya pasó una semana."
+    es-CO:
+      - "Solicité la reposición hace dos semanas y no me ha llegado."
+      - "¿Me dicen por dónde viene la tarjeta? Ya pasó una semana."
+    es-AR:
+      - "Pedí la reposición hace dos semanas y todavía no me llegó."
+      - "¿Me decís dónde está la tarjeta que me mandaron? Ya pasó una semana."
+    pt-BR:
+      - "Pedi a segunda via há duas semanas e não chegou."
+      - "Podem me dizer onde está o meu cartão? Já faz uma semana."
+  - id: dlv-002
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "¿Cómo rastreo el envío de mi tarjeta?"
+      - "Quiero el número de guía del envío de la tarjeta."
+    es-CO:
+      - "¿Cómo rastreo el envío de la tarjeta?"
+      - "Quisiera el número de guía del envío de la tarjeta."
+    es-AR:
+      - "¿Cómo sigo el envío de la tarjeta?"
+      - "Quiero el número de seguimiento del envío de la tarjeta."
+    pt-BR:
+      - "Como rastreio a entrega do meu cartão?"
+      - "Quero o código de rastreio do envio do cartão."
+  - id: dlv-003
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "El mensajero no me entregó la tarjeta, ¿qué pasó con el envío?"
+      - "Me dijeron que hoy llegaba la tarjeta y nada."
+    es-CO:
+      - "El domiciliario nunca me entregó la tarjeta, ¿qué pasó?"
+      - "Me dijeron que hoy llegaba la tarjeta y nada que llega."
+    es-AR:
+      - "El cadete no me trajo la tarjeta, ¿qué pasó con el envío?"
+      - "Me avisaron que hoy llegaba la tarjeta y no vino nadie."
+    pt-BR:
+      - "O entregador não trouxe o meu cartão, o que houve com a entrega?"
+      - "Disseram que o cartão chegava hoje e nada."
+  - id: dlv-004
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "¿A qué dirección van a mandar mi tarjeta nueva?"
+      - "¿En cuántos días hábiles llega la tarjeta?"
+    es-CO:
+      - "¿A qué dirección me van a enviar la tarjeta nueva?"
+      - "¿Cuántos días hábiles se demora en llegar la tarjeta?"
+    es-AR:
+      - "¿A qué dirección me mandan la tarjeta nueva?"
+      - "¿En cuántos días hábiles llega la tarjeta, che?"
+    pt-BR:
+      - "Para qual endereço vão mandar o meu cartão novo?"
+      - "Em quantos dias úteis o cartão chega?"
+  - id: dlv-005
+    topic: card_delivery
+    slots: {}
+    es-MX:
+      - "¿Puedo recoger mi tarjeta en sucursal en lugar de esperar el envío?"
+      - "Prefiero ir por la tarjeta a la sucursal, ¿se puede?"
+    es-CO:
+      - "¿Puedo recoger la tarjeta en la oficina en vez de esperar el envío?"
+      - "Prefiero ir por la tarjeta a la oficina, ¿se puede?"
+    es-AR:
+      - "¿Puedo retirar la tarjeta en la sucursal en vez de esperar el envío?"
+      - "Prefiero ir a buscar la tarjeta a la sucursal, ¿se puede?"
+    pt-BR:
+      - "Posso retirar o cartão na agência em vez de esperar a entrega?"
+      - "Prefiro buscar o cartão na agência, pode ser?"
+  - id: app-001
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "Olvidé mi contraseña de la banca en línea."
+      - "No me acuerdo de la contraseña de la app, ¿cómo la recupero?"
+    es-CO:
+      - "Se me olvidó la contraseña de la banca virtual."
+      - "No me acuerdo de la clave de la app, ¿cómo la recupero?"
+    es-AR:
+      - "Me olvidé la contraseña del home banking."
+      - "No me acuerdo la clave de la app, ¿cómo la recupero?"
+    pt-BR:
+      - "Esqueci a senha do internet banking."
+      - "Não lembro a senha do app, como recupero?"
+  - id: app-002
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "Me bloquearon el usuario de la app por intentos fallidos."
+      - "Mi usuario de la banca móvil aparece bloqueado."
+    es-CO:
+      - "Me bloquearon el usuario de la app por meter mal la clave."
+      - "Mi usuario de la app aparece bloqueado, ¿cómo entro?"
+    es-AR:
+      - "Me bloquearon el usuario del home banking por intentos fallidos."
+      - "El usuario de la app me figura bloqueado."
+    pt-BR:
+      - "Meu usuário do app foi bloqueado por tentativas erradas."
+      - "O meu acesso ao internet banking está bloqueado."
+  - id: app-003
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "La app se cierra sola cuando intento entrar."
+      - "No me llega el código para iniciar sesión en la app."
+    es-CO:
+      - "La app se cierra sola cuando intento ingresar."
+      - "No me llega el código para ingresar a la app."
+    es-AR:
+      - "La app se me cierra sola cuando quiero entrar."
+      - "No me llega el código para entrar a la app, che."
+    pt-BR:
+      - "O app fecha sozinho quando tento entrar."
+      - "Não chega o código para entrar no app."
+  - id: app-004
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "¿Cómo me registro en la banca en línea?"
+      - "Quiero dar de alta mi usuario en la app."
+    es-CO:
+      - "¿Cómo me inscribo en la banca virtual?"
+      - "Quisiera crear mi usuario en la app."
+    es-AR:
+      - "¿Cómo me registro en el home banking?"
+      - "Quiero darme de alta en la app."
+    pt-BR:
+      - "Como me cadastro no internet banking?"
+      - "Quero criar meu usuário no app."
+  - id: app-005
+    topic: app_login
+    slots: {}
+    es-MX:
+      - "Cambié de celular y ya no puedo entrar a la app."
+      - "Desde que cambié de teléfono la app no me reconoce."
+    es-CO:
+      - "Cambié de celular y ya no puedo ingresar a la app."
+      - "Desde que cambié de celular la app no me reconoce."
+    es-AR:
+      - "Cambié el celu y ya no puedo entrar a la app."
+      - "Desde que cambié el teléfono la app no me reconoce."
+    pt-BR:
+      - "Troquei de celular e não consigo mais entrar no app."
+      - "Desde que troquei de celular o app não me reconhece."
+  - id: rec-001
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "Quiero ponerle saldo a mi celular de 100 pesos."
+      - "Hágame una recarga de 100 pesos a mi número."
+    es-CO:
+      - "Quiero recargarle 10 mil pesos al celular."
+      - "Me hace una recarga de 10 mil al celular, por favor."
+    es-AR:
+      - "Quiero cargarle 2 mil pesos al celu."
+      - "Haceme una carga de 2 lucas al celu."
+    pt-BR:
+      - "Quero colocar 20 reais de crédito no celular."
+      - "Faz uma recarga de 20 reais no meu número."
+  - id: rec-002
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "¿Puedo recargar tiempo aire con mi tarjeta?"
+      - "¿Cómo compro una recarga para mi celular desde aquí?"
+    es-CO:
+      - "¿Puedo recargar minutos con la tarjeta?"
+      - "¿Cómo compro una recarga para el celular desde aquí?"
+    es-AR:
+      - "¿Puedo cargar crédito al celu con la tarjeta?"
+      - "¿Cómo compro una carga para el celular desde acá?"
+    pt-BR:
+      - "Posso fazer recarga de celular com o cartão?"
+      - "Como compro uma recarga para o celular por aqui?"
+  - id: rec-003
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "Recárguele saldo al celular de mi mamá, por favor."
+      - "Quiero mandarle una recarga al número de mi mamá."
+    es-CO:
+      - "Me recarga el celular de mi mamá, por favor."
+      - "Quisiera mandarle una recarga al número de mi mamá."
+    es-AR:
+      - "Cargale crédito al celular de mi vieja, porfa."
+      - "Quiero mandarle una carga al número de mi vieja."
+    pt-BR:
+      - "Coloca crédito no celular da minha mãe, por favor."
+      - "Quero mandar uma recarga para o número da minha mãe."
+  - id: rec-004
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "Se me acabó el saldo del celular, ¿me ayudas a recargar?"
+      - "Ya no tengo saldo en el teléfono, quiero recargar."
+    es-CO:
+      - "Se me acabaron los minutos del celular, ¿me ayuda a recargar?"
+      - "Ya no tengo saldo en el celular, quiero recargar."
+    es-AR:
+      - "Me quedé sin crédito en el celu, ¿me ayudás a cargar?"
+      - "No tengo más saldo en el teléfono, quiero cargar."
+    pt-BR:
+      - "Acabou o crédito do meu celular, me ajuda a recarregar?"
+      - "Estou sem saldo no celular, quero recarregar."
+  - id: rec-005
+    topic: phone_topup
+    slots: {}
+    es-MX:
+      - "¿Tienen paquetes de datos para el celular?"
+      - "Quiero comprar un paquete de internet para el celular."
+    es-CO:
+      - "¿Venden paquetes de datos para el celular?"
+      - "Quisiera comprar un paquete de datos para el celular."
+    es-AR:
+      - "¿Tienen packs de datos para el celu?"
+      - "Quiero comprar un pack de internet para el celu."
+    pt-BR:
+      - "Vocês vendem pacote de dados para celular?"
+      - "Quero comprar um pacote de internet para o celular."

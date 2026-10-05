@@ -1,0 +1,562 @@
+intent: transaction_detail
+groups:
+  - id: txd-001
+    slots: {merchant: Gasolinera Express, tx_status: declined}
+    es-MX:
+      - "¿Por qué me rechazaron el pago en Gasolinera Express?"
+      - "Quise cargar gasolina en Gasolinera Express y me rechazaron la tarjeta, ¿por qué?"
+    es-CO:
+      - "¿Por qué me salió rechazado el pago en Gasolinera Express?"
+      - "En Gasolinera Express me rechazaron la compra, ¿qué pasó?"
+    es-AR:
+      - "¿Por qué me rebotaron el pago en Gasolinera Express?"
+      - "Fui a cargar nafta a Gasolinera Express y me la rechazaron, ¿qué onda?"
+    pt-BR:
+      - "Por que o pagamento na Gasolinera Express foi recusado?"
+      - "Tentei abastecer na Gasolinera Express e o cartão foi recusado, por quê?"
+  - id: txd-002
+    slots: {amount: "89 USD", date: yesterday}
+    es-MX:
+      - "¿Qué es un cargo de 89 dólares que tengo de ayer?"
+      - "Me aparece un cargo de ayer por 89 dólares, ¿de qué es?"
+    es-CO:
+      - "¿Qué es un cobro de 89 dólares que me salió ayer?"
+      - "Ayer me apareció un cobro por 89 dólares, ¿me explica qué es?"
+    es-AR:
+      - "¿Qué es un consumo de 89 dólares que tengo de ayer?"
+      - "Me figura un consumo de ayer por 89 dólares, ¿de qué es?"
+    pt-BR:
+      - "O que é uma cobrança de 89 dólares de ontem?"
+      - "Apareceu uma compra de 89 dólares ontem, do que é?"
+  - id: txd-003
+    slots: {merchant: Cine Premium, tx_status: pending}
+    es-MX:
+      - "Me sale un cargo pendiente en Cine Premium, ¿por qué sigue pendiente?"
+      - "¿Por qué el pago en Cine Premium sigue pendiente?"
+    es-CO:
+      - "Tengo un cobro pendiente en Cine Premium, ¿por qué no se ha aplicado?"
+      - "¿Por qué la compra en Cine Premium sigue pendiente?"
+    es-AR:
+      - "Me figura un consumo pendiente en Cine Premium, ¿por qué?"
+      - "¿Por qué la compra en Cine Premium quedó pendiente todavía?"
+    pt-BR:
+      - "Tem uma cobrança pendente no Cine Premium, por que continua pendente?"
+      - "Por que a compra no Cine Premium ainda está pendente?"
+  - id: txd-004
+    slots: {tx_status: declined}
+    es-MX:
+      - "¿Qué significa el código 14 en una compra rechazada?"
+      - "Me rechazaron una compra con código 14, ¿qué quiere decir?"
+    es-CO:
+      - "¿Me explica qué significa el código 14 de una compra rechazada?"
+      - "Me salió una compra rechazada con código 14, ¿qué es eso?"
+    es-AR:
+      - "¿Qué significa el código 14 en un consumo rechazado?"
+      - "Me rechazaron una compra con código 14, ¿qué significa?"
+    pt-BR:
+      - "O que significa o código 14 numa compra recusada?"
+      - "Uma compra foi recusada com código 14, o que quer dizer?"
+  - id: txd-005
+    slots: {last4: "2771", merchant: Boutique Moda, tx_status: declined}
+    es-MX:
+      - "¿Por qué me rechazaron la tarjeta terminación 2771 en Boutique Moda?"
+      - "En Boutique Moda me rechazaron la tarjeta que termina en 2771, ¿qué pasó?"
+    es-CO:
+      - "¿Por qué me rechazaron la tarjeta terminada en 2771 en Boutique Moda?"
+      - "En Boutique Moda me salió rechazada la tarjeta que termina en 2771."
+    es-AR:
+      - "¿Me decís por qué me rechazaron la terminada en 2771 en Boutique Moda?"
+      - "En Boutique Moda me rebotó la tarjeta que termina en 2771, ¿por qué?"
+    pt-BR:
+      - "Por que o cartão final 2771 foi recusado na Boutique Moda?"
+      - "Na Boutique Moda recusaram o meu cartão final 2771, o que houve?"
+  - id: txd-006
+    slots: {tx_status: reversed}
+    es-MX:
+      - "¿Qué quiere decir que una compra aparezca como revertida?"
+      - "Tengo una compra revertida, ¿qué significa eso?"
+    es-CO:
+      - "¿Qué quiere decir que un pago aparezca como reversado?"
+      - "Me aparece una compra reversada, ¿qué significa?"
+    es-AR:
+      - "¿Qué quiere decir que un consumo figure como revertido?"
+      - "Tengo una compra revertida, ¿qué significa eso, che?"
+    pt-BR:
+      - "O que quer dizer uma compra aparecer como estornada?"
+      - "Tenho uma compra estornada, o que isso significa?"
+  - id: txd-007
+    slots: {tx_status: declined, date: today}
+    es-MX:
+      - "Hoy no me pasó la tarjeta en la farmacia, ¿qué pasó?"
+      - "¿Por qué hoy me rechazaron la tarjeta en la farmacia?"
+    es-CO:
+      - "Hoy no me pasó la tarjeta en la droguería, ¿qué pasó?"
+      - "¿Por qué hoy me rechazaron la tarjeta en la droguería?"
+    es-AR:
+      - "Hoy no me pasó la tarjeta en la farmacia, ¿qué onda?"
+      - "¿Por qué hoy me rebotó la tarjeta en la farmacia?"
+    pt-BR:
+      - "Hoje o cartão não passou na farmácia, o que houve?"
+      - "Por que hoje recusaram meu cartão na farmácia?"
+  - id: txd-008
+    slots: {merchant: Taxi Seguro, tx_status: declined, date: yesterday}
+    es-MX:
+      - "Ayer quise pagar en Taxi Seguro y me salió rechazado, ¿por qué?"
+      - "¿Por qué me rechazaron ayer el pago de Taxi Seguro?"
+    es-CO:
+      - "Ayer quise pagar en Taxi Seguro y salió rechazado, ¿qué pasó?"
+      - "¿Por qué ayer me rechazaron el cobro de Taxi Seguro?"
+    es-AR:
+      - "Ayer quise pagar en Taxi Seguro y me lo rechazaron, ¿por qué?"
+      - "¿Por qué ayer me rechazaron el viaje de Taxi Seguro?"
+    pt-BR:
+      - "Ontem tentei pagar no Taxi Seguro e foi recusado, por quê?"
+      - "Por que recusaram ontem o pagamento do Taxi Seguro?"
+  - id: txd-009
+    slots: {amount: "1500 PESO", tx_status: pending}
+    es-MX:
+      - "¿Por qué está pendiente un pago de 1,500 pesos?"
+      - "Tengo un cargo pendiente de 1,500 pesos, ¿qué es?"
+    es-CO:
+      - "¿Por qué está pendiente un pago de 1.500 pesos?"
+      - "Me aparece un cobro pendiente de 1.500 pesos, ¿qué es?"
+    es-AR:
+      - "¿Por qué figura pendiente un pago de 1.500 pesos?"
+      - "Tengo un consumo pendiente de 1.500 pesos, ¿qué es?"
+    pt-BR:
+      - "Por que um pagamento de 1.500 pesos está pendente?"
+      - "Tenho uma cobrança pendente de 1.500 pesos, o que é?"
+  - id: txd-010
+    slots: {merchant: Servicios Públicos}
+    es-MX:
+      - "¿Qué es este cargo de Servicios Públicos?"
+      - "Me salió un cargo de Servicios Públicos, ¿a qué corresponde?"
+    es-CO:
+      - "¿Qué es este cobro de Servicios Públicos?"
+      - "Me apareció un cobro de Servicios Públicos, ¿a qué corresponde?"
+    es-AR:
+      - "¿Qué es este débito de Servicios Públicos?"
+      - "Me figura un consumo de Servicios Públicos, ¿a qué corresponde?"
+    pt-BR:
+      - "O que é essa cobrança de Servicios Públicos?"
+      - "Apareceu um débito de Servicios Públicos, a que se refere?"
+  - id: txd-011
+    slots: {merchant: Tienda General, tx_status: declined}
+    es-MX:
+      - "La tarjeta no pasó en Tienda General, ¿por qué?"
+      - "¿Por qué no me aceptaron la tarjeta en Tienda General?"
+    es-CO:
+      - "La tarjeta no pasó en Tienda General, ¿por qué será?"
+      - "¿Por qué no me recibieron la tarjeta en Tienda General? Salió rechazada."
+    es-AR:
+      - "En Tienda General no me pasó la tarjeta, ¿qué onda?"
+      - "¿Por qué no me la aceptaron a la tarjeta en Tienda General?"
+    pt-BR:
+      - "O cartão não passou na Tienda General, por quê?"
+      - "Por que não aceitaram o meu cartão na Tienda General?"
+  - id: txd-012
+    slots: {}
+    es-MX:
+      - "¿Qué significa código 54?"
+      - "Me salió el código 54 en una compra, ¿qué es?"
+    es-CO:
+      - "¿Qué quiere decir el código 54?"
+      - "Una compra me salió con código 54, ¿qué significa?"
+    es-AR:
+      - "¿Qué significa el código 54 que me aparece?"
+      - "Me figura el código 54 en un consumo, ¿qué es?"
+    pt-BR:
+      - "O que significa o código 54?"
+      - "Apareceu o código 54 numa compra, o que é?"
+  - id: txd-013
+    slots: {amount: "1 USD", merchant: Streaming Music}
+    es-MX:
+      - "¿Qué es un cargo de 1 dólar de Streaming Music?"
+      - "Me cobraron 1 dólar de Streaming Music, ¿por qué es eso?"
+    es-CO:
+      - "¿Qué es un cobro de 1 dólar de Streaming Music?"
+      - "Me salió un cobro de 1 dólar de Streaming Music, ¿qué es?"
+    es-AR:
+      - "¿Qué es un consumo de 1 dólar de Streaming Music?"
+      - "Me figura 1 dólar de Streaming Music, ¿qué es eso?"
+    pt-BR:
+      - "O que é uma cobrança de 1 dólar da Streaming Music?"
+      - "Apareceu 1 dólar da Streaming Music, o que é isso?"
+  - id: txd-014
+    slots: {merchant: Teatro Nacional, tx_status: reversed}
+    es-MX:
+      - "¿Por qué se revirtió el pago que hice en Teatro Nacional?"
+      - "El cargo de Teatro Nacional aparece revertido, ¿qué pasó?"
+    es-CO:
+      - "¿Por qué se reversó el pago que hice en Teatro Nacional?"
+      - "El cobro de Teatro Nacional aparece reversado, ¿qué pasó?"
+    es-AR:
+      - "¿Me explicás por qué se revirtió lo que pagué en Teatro Nacional?"
+      - "El consumo de Teatro Nacional figura revertido, ¿qué pasó?"
+    pt-BR:
+      - "Por que o pagamento no Teatro Nacional foi estornado?"
+      - "A compra no Teatro Nacional aparece estornada, o que houve?"
+  - id: txd-015
+    slots: {tx_status: declined}
+    es-MX:
+      - "Intenté comprar en línea y me rechazaron la transacción, ¿qué pasó?"
+      - "¿Por qué me rechazaron una compra por internet?"
+    es-CO:
+      - "Intenté comprar por internet y me rechazaron la transacción, ¿qué pasó?"
+      - "¿Por qué me rechazaron una compra en línea?"
+    es-AR:
+      - "Quise comprar online y me rechazaron la transacción, ¿qué pasó?"
+      - "¿Por qué me rechazaron una compra por internet, che?"
+    pt-BR:
+      - "Tentei comprar pela internet e a transação foi recusada, o que houve?"
+      - "Por que uma compra online foi recusada?"
+  - id: txd-016
+    slots: {amount: "300000 PESO", date: "date:06-02"}
+    es-MX:
+      - "¿Qué es ese movimiento de 300,000 pesos del 2 de junio?"
+      - "El 2 de junio tengo un cargo de 300,000 pesos, ¿de qué es?"
+    es-CO:
+      - "¿Qué es ese movimiento de 300.000 pesos del 2 de junio?"
+      - "El 2 de junio tengo un cobro de 300.000 pesos, ¿de qué es?"
+    es-AR:
+      - "¿Qué es ese consumo de 300.000 pesos del 2 de junio, che?"
+      - "El 2 de junio me figura un consumo de 300.000 pesos, ¿de qué es?"
+    pt-BR:
+      - "O que é essa movimentação de 300.000 pesos de 2 de junho?"
+      - "Em 2 de junho tenho uma cobrança de 300.000 pesos, do que é?"
+  - id: txd-017
+    slots: {merchant: Clínica Médica, tx_status: pending}
+    es-MX:
+      - "¿Me explica por qué un cargo de Clínica Médica sale pendiente?"
+      - "¿Por qué el cargo de Clínica Médica sigue como pendiente?"
+    es-CO:
+      - "¿Me explica por qué un cobro de Clínica Médica sale pendiente?"
+      - "¿Por qué el pago de Clínica Médica sigue pendiente?"
+    es-AR:
+      - "¿Me explicás por qué un consumo de Clínica Médica figura pendiente?"
+      - "¿Por qué lo de Clínica Médica sigue figurando pendiente?"
+    pt-BR:
+      - "Pode me explicar por que uma cobrança da Clínica Médica está pendente?"
+      - "Por que o pagamento da Clínica Médica continua pendente?"
+  - id: txd-018
+    slots: {merchant: Ferretería, tx_status: pending}
+    es-MX:
+      - "¿Cuándo se va a aplicar la compra pendiente de Ferretería?"
+      - "La compra de Ferretería sigue pendiente, ¿cuándo se aplica?"
+    es-CO:
+      - "¿Cuándo se va a aplicar el cobro pendiente de Ferretería?"
+      - "El pago de Ferretería sigue pendiente, ¿cuándo se aplica?"
+    es-AR:
+      - "¿Cuándo se va a acreditar el consumo pendiente de Ferretería?"
+      - "El consumo de Ferretería sigue pendiente, ¿cuándo se acredita?"
+    pt-BR:
+      - "Quando vai ser processada a compra pendente da Ferretería?"
+      - "A compra da Ferretería continua pendente, quando vai cair?"
+  - id: txd-019
+    slots: {tx_status: declined, date: yesterday}
+    es-MX:
+      - "¿Por qué me declinaron la compra de anoche?"
+      - "Anoche me declinaron una compra, ¿qué pasó?"
+    es-CO:
+      - "¿Me explica por qué me declinaron la compra de anoche?"
+      - "Anoche me salió declinada una compra, ¿por qué?"
+    es-AR:
+      - "¿Por qué me rechazaron la compra de anoche?"
+      - "Anoche me rebotaron una compra, ¿por qué fue?"
+    pt-BR:
+      - "Por que a minha compra de ontem à noite foi recusada?"
+      - "Ontem à noite recusaram uma compra minha, o que houve?"
+  - id: txd-020
+    slots: {}
+    es-MX:
+      - "¿Qué significa fondos insuficientes en mi compra?"
+      - "Me salió fondos insuficientes al pagar, ¿qué quiere decir?"
+    es-CO:
+      - "¿Qué significa fondos insuficientes en la compra?"
+      - "Me salió fondos insuficientes al pagar, ¿eso qué es?"
+    es-AR:
+      - "¿Qué significa fondos insuficientes en el consumo?"
+      - "Me salió fondos insuficientes cuando quise pagar, ¿qué onda?"
+    pt-BR:
+      - "O que significa saldo insuficiente na minha compra?"
+      - "Apareceu saldo insuficiente na hora de pagar, o que quer dizer?"
+  - id: txd-021
+    slots: {merchant: Óptica Visión, tx_status: declined}
+    es-MX:
+      - "Me rechazaron una compra en Óptica Visión pero tengo saldo, ¿por qué?"
+      - "¿Por qué me rechazaron en Óptica Visión si sí tengo dinero?"
+    es-CO:
+      - "Me rechazaron una compra en Óptica Visión y sí tengo plata, ¿por qué?"
+      - "¿Por qué me salió rechazada la compra en Óptica Visión si tengo saldo?"
+    es-AR:
+      - "Me rechazaron una compra en Óptica Visión y tengo plata, ¿por qué?"
+      - "¿Por qué me rebotaron en Óptica Visión si tengo saldo?"
+    pt-BR:
+      - "Recusaram uma compra na Óptica Visión mas eu tenho saldo, por quê?"
+      - "Por que a compra na Óptica Visión foi recusada se eu tenho dinheiro?"
+  - id: txd-022
+    slots: {merchant: Laboratorio Central}
+    es-MX:
+      - "¿Qué es el cargo de Laboratorio Central que tengo?"
+      - "Tengo un cargo de Laboratorio Central, ¿me dice de qué es?"
+    es-CO:
+      - "¿Qué es el cobro de Laboratorio Central que tengo?"
+      - "Tengo un cobro de Laboratorio Central, ¿me dice de qué es?"
+    es-AR:
+      - "¿Qué es el consumo de Laboratorio Central que tengo?"
+      - "Tengo un débito de Laboratorio Central, ¿me decís de qué es?"
+    pt-BR:
+      - "O que é a cobrança do Laboratorio Central que eu tenho?"
+      - "Tenho um débito do Laboratorio Central, pode me dizer do que é?"
+  - id: txd-023
+    slots: {merchant: Conciertos Live, tx_status: reversed}
+    es-MX:
+      - "Una compra en Conciertos Live aparece como revertida, ¿ya me regresaron el dinero?"
+      - "¿Qué pasó con mi compra en Conciertos Live? Sale revertida."
+    es-CO:
+      - "Una compra en Conciertos Live aparece reversada, ¿ya me reintegraron la plata?"
+      - "¿Qué pasó con la compra en Conciertos Live? Sale reversada."
+    es-AR:
+      - "Un consumo en Conciertos Live figura revertido, ¿ya me devolvieron la plata?"
+      - "¿Qué pasó con la compra en Conciertos Live? Figura revertida."
+    pt-BR:
+      - "Uma compra na Conciertos Live aparece estornada, o dinheiro já voltou?"
+      - "O que aconteceu com a compra na Conciertos Live? Está estornada."
+  - id: txd-024
+    slots: {date: "weekday:sat", tx_status: pending}
+    es-MX:
+      - "¿Por qué mi compra del sábado quedó pendiente?"
+      - "La compra que hice el sábado sigue pendiente, ¿por qué?"
+    es-CO:
+      - "¿Por qué la compra del sábado quedó pendiente?"
+      - "La compra que hice el sábado sigue pendiente, ¿qué pasa?"
+    es-AR:
+      - "¿Por qué el consumo del sábado quedó pendiente?"
+      - "La compra que hice el sábado sigue pendiente, ¿por qué será?"
+    pt-BR:
+      - "Por que a minha compra de sábado ficou pendente?"
+      - "A compra que fiz no sábado continua pendente, por quê?"
+  - id: txd-025
+    slots: {merchant: Estación de Servicio, tx_status: declined}
+    es-MX:
+      - "¿Qué pasó con mi pago en Estación de Servicio? No pasó."
+      - "En Estación de Servicio no pasó mi tarjeta, ¿por qué?"
+    es-CO:
+      - "¿Qué pasó con el pago en Estación de Servicio? No pasó."
+      - "En Estación de Servicio no me pasó la tarjeta, ¿por qué será?"
+    es-AR:
+      - "¿Qué pasó con lo de Estación de Servicio? No me pasó."
+      - "En Estación de Servicio no me pasó la tarjeta, ¿qué onda?"
+    pt-BR:
+      - "O que houve com o meu pagamento na Estación de Servicio? Não passou."
+      - "Na Estación de Servicio o cartão não passou, por quê?"
+  - id: txd-026
+    slots: {amount: "45 USD"}
+    es-MX:
+      - "Tengo un cargo de 45 dólares que no entiendo, ¿de qué es?"
+      - "No entiendo un cargo de 45 dólares, ¿me explica?"
+    es-CO:
+      - "Tengo un cobro de 45 dólares que no entiendo, ¿de qué es?"
+      - "No entiendo un cobro de 45 dólares, ¿me explica qué es?"
+    es-AR:
+      - "Tengo un consumo de 45 dólares que no entiendo, ¿de qué es?"
+      - "No entiendo un consumo de 45 dólares, ¿me explicás?"
+    pt-BR:
+      - "Tenho uma cobrança de 45 dólares que não entendo, do que é?"
+      - "Não entendi uma compra de 45 dólares, pode explicar?"
+  - id: txd-027
+    slots: {tx_status: declined}
+    es-MX:
+      - "¿Por qué rechazan mi tarjeta en todas las tiendas en línea?"
+      - "En todas las páginas de internet me rechazan la tarjeta, ¿por qué?"
+    es-CO:
+      - "¿Por qué me rechazan la tarjeta en todas las tiendas en línea?"
+      - "En todas las páginas me rechazan la tarjeta, ¿qué pasa?"
+    es-AR:
+      - "¿Por qué me rechazan la tarjeta en todas las tiendas online?"
+      - "En todos los sitios de internet me rechazan la tarjeta, ¿por qué?"
+    pt-BR:
+      - "Por que o meu cartão é recusado em todas as lojas online?"
+      - "Em todos os sites o meu cartão é recusado, por quê?"
+  - id: txd-028
+    slots: {amount: "120 USD", date: yesterday, tx_status: declined}
+    es-MX:
+      - "La compra de 120 dólares de ayer, ¿por qué salió rechazada?"
+      - "¿Por qué me rechazaron ayer una compra de 120 dólares?"
+    es-CO:
+      - "¿Me explica por qué la compra de 120 dólares de ayer salió rechazada?"
+      - "¿Por qué ayer me rechazaron una compra de 120 dólares?"
+    es-AR:
+      - "El consumo de 120 dólares de ayer, ¿por qué salió rechazado?"
+      - "¿Por qué ayer me rechazaron una compra de 120 dólares, che?"
+    pt-BR:
+      - "A compra de 120 dólares de ontem, por que foi recusada?"
+      - "Por que ontem recusaram uma compra de 120 dólares?"
+  - id: txd-029
+    slots: {}
+    es-MX:
+      - "¿Qué es esta comisión que me cobraron?"
+      - "Me aparece una comisión, ¿por qué concepto es?"
+    es-CO:
+      - "¿Me explica esta comisión que me cobraron?"
+      - "Me salió una comisión, ¿eso de qué es?"
+    es-AR:
+      - "¿Qué es esta comisión que me cobraron, me explicás?"
+      - "Me figura una comisión, ¿de qué es?"
+    pt-BR:
+      - "O que é essa tarifa que me cobraram?"
+      - "Apareceu uma tarifa, é referente a quê?"
+  - id: txd-030
+    slots: {merchant: Centro Comercial, date: "date:05-10"}
+    es-MX:
+      - "¿Me explica el movimiento de Centro Comercial del 10 de mayo?"
+      - "El 10 de mayo tengo un cargo en Centro Comercial, ¿qué es?"
+    es-CO:
+      - "¿Me colabora explicándome el cobro de Centro Comercial del 10 de mayo?"
+      - "El 10 de mayo tengo un cobro en Centro Comercial, ¿qué es?"
+    es-AR:
+      - "¿Me explicás el movimiento de Centro Comercial del 10 de mayo?"
+      - "El 10 de mayo me figura un consumo en Centro Comercial, ¿qué es?"
+    pt-BR:
+      - "Pode me explicar a movimentação do Centro Comercial de 10 de maio?"
+      - "Em 10 de maio tem uma compra no Centro Comercial, o que é?"
+  - id: txd-031
+    slots: {merchant: Super Ahorro}
+    es-MX:
+      - "¿Por qué no se completó mi compra en Super Ahorro?"
+      - "Mi compra en Super Ahorro no se completó, ¿qué pasó?"
+    es-CO:
+      - "¿Por qué no se completó la compra en Super Ahorro?"
+      - "La compra en Super Ahorro no se completó, ¿qué pasó?"
+    es-AR:
+      - "¿Por qué no se pudo hacer la compra en Super Ahorro?"
+      - "La compra en Super Ahorro no se terminó de hacer, ¿qué pasó?"
+    pt-BR:
+      - "Por que a minha compra no Super Ahorro não foi concluída?"
+      - "A compra no Super Ahorro não se completou, o que houve?"
+  - id: txd-032
+    slots: {tx_status: pending}
+    es-MX:
+      - "¿Qué significa que un cargo esté en proceso?"
+      - "Tengo un cargo en proceso, ¿qué quiere decir?"
+    es-CO:
+      - "¿Qué significa que un cobro esté en proceso?"
+      - "Tengo un cobro en proceso, ¿eso qué quiere decir?"
+    es-AR:
+      - "¿Qué significa que un consumo esté en proceso?"
+      - "Tengo un consumo en proceso, ¿qué significa?"
+    pt-BR:
+      - "O que significa uma compra estar em processamento?"
+      - "Tenho uma cobrança em processamento, o que quer dizer?"
+  - id: txd-033
+    slots: {tx_status: declined}
+    es-MX:
+      - "¿Por qué me salió transacción denegada en el cajero?"
+      - "En el cajero me salió denegada la operación, ¿qué pasó?"
+    es-CO:
+      - "¿Por qué el cajero me dijo transacción denegada?"
+      - "En el cajero me salió denegada la transacción, ¿qué pasó?"
+    es-AR:
+      - "¿Por qué el cajero me tiró transacción denegada?"
+      - "En el cajero me figuró denegada la operación, ¿qué onda?"
+    pt-BR:
+      - "Por que deu transação negada no caixa eletrônico?"
+      - "No caixa eletrônico a operação foi negada, o que houve?"
+  - id: txd-034
+    slots: {amount: "25 USD", merchant: Tienda Don José}
+    es-MX:
+      - "Me cobraron 25 dólares de Tienda Don José, ¿qué compra es?"
+      - "¿A qué compra corresponde el cargo de 25 dólares de Tienda Don José?"
+    es-CO:
+      - "Me salió un cobro de 25 dólares de Tienda Don José, ¿de qué compra es?"
+      - "¿A qué compra corresponde el cobro de 25 dólares de Tienda Don José?"
+    es-AR:
+      - "Me cobraron 25 dólares de Tienda Don José, ¿qué compra es esa?"
+      - "¿A qué compra corresponde el consumo de 25 dólares de Tienda Don José?"
+    pt-BR:
+      - "Me cobraram 25 dólares da Tienda Don José, que compra é essa?"
+      - "A que compra corresponde a cobrança de 25 dólares da Tienda Don José?"
+  - id: txd-035
+    slots: {}
+    es-MX:
+      - "codigo 05 que significa"
+      - "q es el codigo 05"
+    es-CO:
+      - "que significa codigo 05"
+      - "codigo 05 q es"
+    es-AR:
+      - "que es el codigo 05 che"
+      - "codigo 05 que onda"
+    pt-BR:
+      - "codigo 05 o que significa"
+      - "o q é codigo 05"
+  - id: txd-036
+    slots: {tx_status: declined, date: today}
+    es-MX:
+      - "por que me rechazaron la compra de hoy"
+      - "xq me rechazaron hoy la tarjeta"
+    es-CO:
+      - "por que me rechazaron la compra hoy"
+      - "xq hoy me salio rechazada la tarjeta"
+    es-AR:
+      - "por que me rechazaron la compra hoy che"
+      - "xq hoy me rebotaron la tarjeta"
+    pt-BR:
+      - "pq recusaram minha compra hoje"
+      - "pq meu cartao foi recusado hoje"
+  - id: txd-037
+    slots: {last4: "4950", tx_status: pending}
+    es-MX:
+      - "¿Por qué mi pago con la tarjeta terminación 4950 quedó pendiente?"
+      - "Tengo un pago pendiente con la tarjeta que termina en 4950, ¿por qué?"
+    es-CO:
+      - "¿Por qué el pago con la tarjeta terminada en 4950 quedó pendiente?"
+      - "Tengo un cobro pendiente con la tarjeta que termina en 4950, ¿por qué?"
+    es-AR:
+      - "¿Por qué quedó pendiente lo que pagué con la terminada en 4950?"
+      - "Tengo un consumo pendiente con la tarjeta que termina en 4950, ¿por qué?"
+    pt-BR:
+      - "Por que o pagamento com o cartão final 4950 ficou pendente?"
+      - "Tenho uma compra pendente no cartão final 4950, por quê?"
+  - id: txd-038
+    slots: {merchant: Uber, tx_status: declined}
+    es-MX:
+      - "Gracias. ¿Y por qué me rechazaron la compra en Uber?"
+      - "Ok. Ahora, ¿por qué me rechazaron el pago de Uber?"
+    es-CO:
+      - "Listo, gracias. ¿Y por qué me rechazaron el pago en Uber?"
+      - "Bueno. ¿Y por qué me salió rechazado el Uber?"
+    es-AR:
+      - "Gracias. ¿Y por qué me rechazaron el pago de Uber?"
+      - "Dale. ¿Y por qué me rebotó el Uber?"
+    pt-BR:
+      - "Obrigado. E por que recusaram a compra no Uber?"
+      - "Beleza. E por que o pagamento do Uber foi recusado?"
+  - id: txd-039
+    slots: {amount: "60 USD", tx_status: reversed}
+    es-MX:
+      - "No entiendo por qué me revirtieron una compra de 60 dólares."
+      - "¿Por qué aparece revertida una compra de 60 dólares?"
+    es-CO:
+      - "No entiendo por qué me reversaron una compra de 60 dólares."
+      - "¿Por qué aparece reversada una compra de 60 dólares?"
+    es-AR:
+      - "No entiendo por qué me revirtieron un consumo de 60 dólares."
+      - "¿Por qué figura revertida una compra de 60 dólares?"
+    pt-BR:
+      - "Não entendo por que estornaram uma compra de 60 dólares."
+      - "Por que uma compra de 60 dólares aparece estornada?"
+  - id: txd-040
+    slots: {tx_status: declined}
+    es-MX:
+      - "Mi tarjeta no funciona cuando quiero pagar, ¿por qué me la rechazan?"
+      - "Cada vez que pago me rechazan la tarjeta, ¿qué pasa?"
+    es-CO:
+      - "La tarjeta no me funciona al pagar, ¿por qué me la rechazan?"
+      - "Cada vez que voy a pagar me rechazan la tarjeta, ¿qué pasa?"
+    es-AR:
+      - "La tarjeta no me anda cuando quiero pagar, ¿por qué me la rechazan?"
+      - "Cada vez que pago me rechazan la tarjeta, ¿qué onda?"
+    pt-BR:
+      - "Meu cartão não funciona quando vou pagar, por que recusam?"
+      - "Toda vez que pago o cartão é recusado, o que está acontecendo?"

@@ -1,0 +1,9 @@
+**/.venv/
+**/__pycache__/
+ml/data/**
+!ml/data/**/
+!ml/data/**/.gitkeep
+
+**/.env
+!**/.env.example
+*.db
