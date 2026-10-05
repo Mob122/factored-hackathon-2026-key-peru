@@ -15,5 +15,9 @@ class EventoAuditoria(SQLModel, table= True):
     conversation_id: str = Field(max_length= 64, index= True)
     event_type: str = Field(max_length= 30)
     occurred_at: datetime
+    # Copias de campos del sobre, solo para consultar (GET /auditoria/{session_id}); el cuerpo manda.
+    session_id: Optional[str] = Field(default= None, max_length= 64, index= True)
+    trace_id: Optional[str] = Field(default= None, max_length= 32, index= True)
+    turn_index: Optional[int] = Field(default= None)
     event_hash: str = Field(max_length= 64)
     cuerpo: Dict[str, Any] = Field(sa_column= Column(JSON, nullable= False)) # El evento completo sin event_hash (incluye prev_event_hash).

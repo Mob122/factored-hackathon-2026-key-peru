@@ -2,12 +2,13 @@
 
 | Field | Value |
 |---|---|
-| Version | `ops-0.2`, 2026-10-04, **draft** |
+| Version | `ops-0.3`, 2026-10-04, **draft** |
 | Status | Sections 2 to 5 are drafted from the written policy and contracts (Aldair). Section 1 (capacity and load test) and the trace sample in section 3.3 are placeholders for Martín, Day 7. Both review the whole document before feature freeze. |
 | Owners | Aldair (draft, sections 2 to 5) · Martín (section 1, section 3.3, implementation of the deletion job and health checks) |
-| Sources | `docs/policy_cards.md` `cards-synthetic-0.7` (SYNTHETIC), `docs/contracts/state_machine.md` `sm-0.4`, `docs/contracts/audit_log.md` `audit-0.2`, `docs/contracts/gold_tables.md` `gold-0.2`, `docs/contracts/freshness_policy.md` `fresh-0.2`, `docs/eval_plan.md` `eval-plan-0.3` |
+| Sources | `docs/policy_cards.md` `cards-synthetic-0.8` (SYNTHETIC), `docs/contracts/state_machine.md` `sm-0.4`, `docs/contracts/audit_log.md` `audit-0.2`, `docs/contracts/gold_tables.md` `gold-0.2`, `docs/contracts/freshness_policy.md` `fresh-0.2`, `docs/eval_plan.md` `eval-plan-0.3` |
 | Requirements | `docs/requirements_matrix.md` S-2, S-3, I-9, D6-1, D6-5 to D6-9 (gaps G-3, G-4) |
 | Changes in 0.2 | The mock identity is built as a labeled test IdP (POL-AUTH-10 to 13): roles `cliente`, `agente` and `jurado` in sections 2.1 and 2.2, `SEED_PASSWORD` and required secrets in 2.3, identity records in 4.1, and a real identity provider as remaining work in section 5. |
+| Changes in 0.3 | The agent runs in the backend (`backend/services/agente/`): LLM settings and their startup checks in 2.3, the fallback queue's location in 4.1, and the agent's remaining work in section 5. |
 
 Everything here describes a **prototype on synthetic data**. Values marked *prototype* are
 design choices, not measurements or bank requirements. Nothing in this document has been run
@@ -79,6 +80,7 @@ From POL-PII-07, POL-AUTH-01 to 09 and `docs/contracts/audit_log.md` section 6.
 | `AUDIT_KEY` | Keyed pseudonyms and hashes in the audit log (AL-P3, AL-P5) | `backend/.env`; required at startup | Same; operators have no access to it |
 | `SEED_PASSWORD` | Password of the seeded test users (`backend/scripts/sembrar_usuarios.py`, POL-AUTH-10) | `backend/.env` | Same; it protects every seeded user, so it must not be reused anywhere else |
 | LLM provider API key | LLM calls | `backend/.env` | Same; never sent to the browser |
+| `LLM_MODE`, `LLM_MODEL`, `LLM_ALLOWED_MODELS`, `LLM_BASE_URL` | Not secrets. `LLM_MODE=mock` (the default) never calls the provider; `openai` calls `LLM_MODEL`. The backend does not start if `LLM_MODEL` is not in `LLM_ALLOWED_MODELS`, or if `LLM_MODE=openai` has no API key | `backend/.env` | A model outside the allowed list |
 | Test credentials and one-time codes | Test IdP | Password hashes (Argon2) in `usuarios`; one-time codes only as an HMAC in `codigos_otp_prueba`; the code is shown once to the evaluator | In the chat (POL-AUTH-08), the audit log (AL-P2) |
 
 Rotation, a secrets manager and per-environment keys are not implemented (section 5).
@@ -131,7 +133,7 @@ Values from policy section 11 (*prototype*, synthetic data).
 | Traces | Spans with redacted payloads | 30 days (`RETAIN_TRACE_DAYS`) | Created date | POL-PII-06 |
 | Case files | The five content fields and metadata (POL-HND-10 to 15) | 90 days (`RETAIN_CASE_DAYS`) | Created date | POL-PII-06 |
 | Audit log | Append-only events, pseudonymized | 90 days (`RETAIN_CASE_DAYS`) | `occurred_at` | Audit log section 6 |
-| Handoff fallback queue | Case files waiting for replay | Until replayed, then as case files | Replay | POL-REL-03 |
+| Handoff fallback queue | Case files waiting for replay, as JSON Lines in `FALLBACK_QUEUE_PATH` (default `backend/var/cola_casos.jsonl`, git-ignored, outside the database) | Until replayed, then as case files | Replay (not built yet) | POL-REL-03 |
 | Mock bank overlay | Status events written by `block_card` | Reset between evaluation runs (flag F-04, open); in production this is the core banking system | Reset procedure (open) | `freshness_policy.md` section 5 |
 | Identity records | Server-side sessions, step-ups and hashed one-time codes of the test IdP | Not in the deletion job yet (open); expired sessions grant nothing | — | POL-AUTH-03, POL-AUTH-12 |
 | Gold tables | Synthetic customers, cards, transactions, balance products | Life of the prototype; never committed (POL-PII-08) | — | `gold_tables.md` |
@@ -173,6 +175,7 @@ What the prototype does not have and a real deployment would need. None of it is
 | LLM provider | Declared in `docs/data_card.md` (planned) | Contract terms confirmed: no training on or retention of data (POL-PII-09); data residency |
 | Secrets | `.env` and `conf/local` files | A secrets manager, rotation of `CARD_HASH_KEY` and `AUDIT_KEY` (with re-keying of stored hashes), separate keys per environment |
 | Security | Unit and scenario tests of the rules (INV-01 to 14, AT-1 to 6) | Independent security review and penetration test, including prompt injection beyond our 2 templates |
+| Agent | Orchestrator, tool gateway and mock bank in one process; tools have no preemptive timeout; read retries and the LLM's backoff block the request; case-file summaries come from a template; the fallback queue has no replay job; elliptical follow-ups use one heuristic rule (POL-ESC-14) | Tools behind network clients with their own `TOOL_TIMEOUT_SEC`; asynchronous retries; a replay job for the fallback queue with alerting (M-9); a model-written case summary marked `generated_by: model` (POL-HND-10); a classifier trained on dialogue context instead of the follow-up rule |
 | Capacity | Section 1 (placeholder) | Load test against the real LLM rate limits and core latency; horizontal scaling of the orchestrator |
 | Operations | Signals defined in section 3; no alerting | Dashboards, alert routing, on-call, incident runbooks, the deletion job in production |
 | Human agents | A case inbox for the demo | Integration with the bank's case management; agent training on the case file; SLA for `urgent` and `security` cases |

@@ -280,6 +280,13 @@ def estado_cliente(customer_id: str) -> Optional[str]:
     return filas[0]["customer_status"] if filas else None
 
 
+def pais_cliente(customer_id: str) -> Optional[str]:
+    """País del cliente, solo para el formato de números de las plantillas (política 3b; gold_tables.md
+    sección 2). Nunca se usa para decidir nada ni para inferir el idioma (POL-GEN-03)."""
+    filas = _consultar("SELECT country FROM customers WHERE customer_id = ?", [customer_id])
+    return filas[0]["country"] if filas else None
+
+
 def buscar_clientes(
     *, q: Optional[str], pais: Optional[str], segmento: Optional[str], estado: Optional[str], pagina: int, tamano: int
 ) -> Tuple[List[Dict[str, Any]], bool]:
@@ -569,7 +576,7 @@ def emitir_token_confirmacion(sesion: Session, sesion_cliente: SesionCliente, ca
     auditoria.registrar_evento(
         sesion, event_type= "confirmation", conversation_id= registro.conversacion_id, session_id= registro.id,
         actor= "action_gateway", auth_level= "L2", state= "AWAIT_CONFIRMATION", rule_ids= ["POL-ACT-02"],
-        customer_id= registro.customer_id,
+        customer_id= registro.customer_id, session_origin= identidad.origen_sesion(registro),
         campos= {
             "confirmation_event": "requested", "confirmation_token_id": token.id, "action": accion,
             "card_ref": auditoria.seudonimo(card_id), "last4": tarjetas[0]["last4"], "card_type": tarjetas[0]["product_type"],
@@ -636,6 +643,7 @@ def block_card(sesion: Session, sesion_cliente: SesionCliente, card_id: str, tok
             sesion, event_type= "action_result", conversation_id= registro.conversacion_id, session_id= registro.id,
             actor= "action_gateway", auth_level= precondiciones["auth_level"], state= "EXECUTING",
             rule_ids= ["POL-ACT-01", "POL-ACT-02", "POL-ACT-06", "POL-ACT-09"], customer_id= registro.customer_id,
+            session_origin= identidad.origen_sesion(registro),
             campos= {
                 "action_id": accion_id, "action": "block_card", "card_ref": auditoria.seudonimo(str(card_id)),
                 "last4": contexto["last4"], "confirmation_token_id": contexto["token_id"], "step_up_id": contexto["step_up_id"],
@@ -788,7 +796,7 @@ def open_handoff(sesion: Session, sesion_cliente: SesionCliente, expediente: Dic
         sesion, event_type= "handoff", conversation_id= registro.conversacion_id, session_id= registro.id,
         actor= "handoff_service", auth_level= caso.auth_level, state= "HANDOFF",
         rule_ids= ["POL-HND-10", "POL-HND-11", "POL-HND-12", "POL-HND-13", "POL-HND-14", "POL-HND-15"],
-        customer_id= registro.customer_id,
+        customer_id= registro.customer_id, session_origin= identidad.origen_sesion(registro),
         campos= {
             "handoff_event": "opened", "case_id": caso.case_id, "idempotency_key": idempotency_key,
             "priority": caso.priority, "reason_rule_ids": caso.reason_rule_ids,
@@ -803,6 +811,44 @@ def open_handoff(sesion: Session, sesion_cliente: SesionCliente, expediente: Dic
     sesion.commit()
 
     return {"case_id": caso.case_id}
+
+
+ORDEN_PRIORIDAD = {"normal": 0, "security": 1, "urgent": 2} # POL-HND-15: urgent > security > normal.
+
+
+def anexar_mensaje_caso(
+    sesion: Session, sesion_cliente: SesionCliente, case_id: str, mensaje_redactado: str,
+    reglas: List[str], prioridad: Optional[str] = None,
+) -> Dict[str, Any]:
+    """T-38 (POL-HND-06): después de la transferencia, cada mensaje del cliente se agrega a su caso,
+    con las reglas ESC que el mensaje dispara y, si corresponde, una prioridad más alta. No es una
+    tool: no lee datos del banco. Solo el caso del cliente de la sesión."""
+    registro = _preparar(sesion, sesion_cliente, permitir_revision= True)
+    caso = sesion.get(Caso, case_id)
+    if caso is None or caso.customer_id != registro.customer_id:
+        raise ErrorHerramienta("NOT_FOUND")
+
+    caso.appended_messages = [*caso.appended_messages, {"text_redacted": mensaje_redactado,
+                                                        "received_at": identidad.ahora_utc().isoformat()}]
+    nuevas = [r for r in reglas if r not in caso.reason_rule_ids]
+    if nuevas:
+        caso.reason_rule_ids = [*caso.reason_rule_ids, *nuevas]
+    subio = prioridad is not None and ORDEN_PRIORIDAD[prioridad] > ORDEN_PRIORIDAD[caso.priority]
+    if subio:
+        caso.priority = prioridad
+    sesion.add(caso)
+
+    for evento in ["message_appended"] + (["priority_raised"] if subio else []):
+        auditoria.registrar_evento(
+            sesion, event_type= "handoff", conversation_id= registro.conversacion_id, session_id= registro.id,
+            actor= "handoff_service", auth_level= identidad.nivel_actual(sesion, registro), state= "HANDED_OFF",
+            rule_ids= ["POL-HND-06", *reglas], customer_id= registro.customer_id,
+            session_origin= identidad.origen_sesion(registro),
+            campos= {"handoff_event": evento, "case_id": caso.case_id, "idempotency_key": caso.idempotency_key,
+                     "priority": caso.priority, "reason_rule_ids": caso.reason_rule_ids},
+        )
+    sesion.commit()
+    return {"case_id": caso.case_id, "priority": caso.priority}
 
 
 # --- Comprobación de propiedad de un número completo (POL-ESC-10) --------------------------------

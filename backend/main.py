@@ -1,5 +1,8 @@
 from db import crear_db_y_tablas
 from routers import (
+    auditoria_router,
+    casos_router,
+    chat_router,
     identidad_router,
     usuarios_router
 )
@@ -46,6 +49,9 @@ app.add_middleware(
 
 app.include_router(usuarios_router) # Agrega el enrutador de usuarios a la aplicación FastAPI.
 app.include_router(identidad_router) # IdP de prueba (simulado): solo el rol jurado (POL-AUTH-11).
+app.include_router(chat_router) # Orquestador del asistente (docs/contracts/state_machine.md).
+app.include_router(casos_router) # Bandeja de casos: solo el rol agente.
+app.include_router(auditoria_router) # Audit log por sesión: roles agente y jurado.
 
 
 @app.get("/")

@@ -486,3 +486,112 @@ The audit hash chains verified. The local development database was not touched.
 - `backend/models/__init__.py` imports every model, so `create_all` sees the new tables.
 - `run_migraciones()` now also runs on SQLite. It adds missing columns after checking them with
   the inspector.
+
+## Agent: orchestrator, LLM wording, audit log, chat API and CLI (2026-10-04)
+
+Context: the team asked for:
+- (a) a script that checks the backend's card HMAC against gold;
+- (b) a test for every T1 rule;
+- the agent of `docs/contracts/state_machine.md` (`sm-0.4`) in `backend/`: orchestrator, replies with an OpenAI LLM, audit log, chat API, terminal CLI, and end-to-end replays of golden dialogues 1, 5, 7 to 12.
+
+### D-26. HMAC verification script
+
+- **What it does:** `backend/scripts/verificar_hmac.py` takes 20 gold cards in a fixed order (`md5(card_id)`). It joins their `product_number` from `ml/data/02_intermediate/products.parquet` and recomputes the HMAC with `banco.hmac_numero_tarjeta`. It prints only `HMAC OK: n/n` or a mismatch count: never the key, a card number or an ID.
+- **How it reads `.env`:** only `CARD_HASH_KEY` and `GOLD_DIR`, through `dotenv_values`, and only when they are not already set. The rest of `backend/.env` never enters the process.
+- **Source data:** reading `02_intermediate` is a one-off verification. The rule that the backend reads only gold (`gold-0.2`) is about the mock bank, which this script is not.
+- **Not run** on real data, as asked. Run it from `backend/` with `python -m scripts.verificar_hmac`. Its tests use fixture data only.
+
+### D-27. Classifier in the backend
+
+- **Import:** `banking_cs.nlu` is imported from `ml/src` by path (`ML_SRC_DIR`). It loads no Kedro code.
+- **Scoring:** `predict(..., method="lac")` with its `safety_override` and `signals`.
+- **Pins:** scikit-learn 1.9.1, numpy, scipy and joblib are pinned in `backend/requirements.txt` to the ml venv versions, because `predict` refuses an artifact trained with another scikit-learn.
+- **Fallback:** if the artifact fails to load, `rules.classify` is used with the same overrides. The `classification` event says which classifier ran and why.
+- **Extra fields on the `classification` event (additive):** the top 5 scores, `safety_override`, `signals`, `context_override` and `fallback_reason`.
+
+### D-28. POL-ESC-14: elliptical follow-up (policy 0.8)
+
+- **Finding:** the real model reproduces 17 of the 18 golden turns checked. The exception is dialogue 12, turn 2 ("E o do cartão de crédito?"): it gets an empty set, which T-04 would transfer. The golden dialogue expects a balance answer. `ml/tests` already marks that turn xfail, because a single-message classifier cannot see the previous turn.
+- **Decision:** new rule POL-ESC-14 (tier T1). When all of these hold, the set becomes {the previous read intent}:
+  - the state is `IDLE`;
+  - the set is empty or {`out_of_scope`};
+  - the message is short (at most 8 words) and starts as a continuation ("y", "e");
+  - it names only a product, through slots the previous read intent takes;
+  - the previous request was served as a read intent.
+
+  It never yields an action or transfer intent, and the `classification` event records it as `context_override`.
+- **Why it does not contradict the frozen `sm-0.4`:** it changes only the set that step 5 produces, as the safety overrides already do. `sm-0.4` says the overrides change no transition or state, and neither does this rule. Any other empty set still goes to T-04.
+- **For the contract owners:** the state machine could cite POL-ESC-14 at T-03 to T-06 in its next version.
+
+### D-29. The LLM only rewords, and never templates
+
+- **Configuration:** `LLM_MODE` is `mock` by default, so a missing setting never spends money. In mock mode the API is never called and replies are the code's templates and sentences.
+  - The backend does not start if `LLM_MODEL` is not in `LLM_ALLOWED_MODELS`, if `LLM_MODE` is unknown, or if `LLM_MODE=openai` has no `OPENAI_API_KEY`.
+  - The settings come only from `backend/.env`.
+- **What the LLM sees:** each reply is a list of segments:
+  - policy templates (BAL, TXS, DEC, ACT, HND);
+  - fixed policy sentences (the step-up request, the confirmation prompt, refusals);
+  - free sentences the code drafted from verified facts.
+
+  The LLM receives only the free sentences, as a numbered JSON array, after redaction and a PII scan (INV-09). The customer's message is never sent.
+- **Why not templates:** the request said the LLM rephrases "verified facts and templates". Policy section 0 says a template is rendered by code and the LLM does not rewrite it, so templates stay verbatim.
+- **Grounding check (POL-GEN-02):** every number in a reworded sentence must appear in the original. Otherwise the original is kept (POL-REL-04).
+- **Retries:** exponential backoff with jitter on 429, 5xx and timeouts, a 30 s timeout and at most 3 retries. After that, template-only (POL-REL-04). After 2 failures in a session, the next turn transfers (G-06).
+- **Logging:** each call writes an `llm_call` event with the model ID returned by the API (the pinned version, not the alias), the prompt SHA-256, the tokens and the cost. Cost uses the list prices assumed in `ml/src/banking_cs/nlu/llm_baseline.py`.
+- **Case-file summary:** `request.summary` is written from a template and marked `summary_generated_by: "template"`, so a handoff never depends on an LLM call. POL-HND-10 expects `model`; this is marked honestly instead.
+
+### D-30. Orchestrator
+
+- **Where it lives:** `backend/services/agente/`.
+  - `orquestador.py`: the states, transitions and turn pipeline of `sm-0.4`. Each decision cites its rule IDs.
+  - `gateway.py`: the table of tools allowed per state, read retries recorded as separate calls (POL-REL-01), no retry of `block_card`, open_handoff retried with the same key, audited calls, and facts with their read times (POL-GEN-07).
+  - `seguridad.py`: redaction, injection and third-party detection, language, and answer parsing.
+  - `textos.py`: the es/pt templates and the number and date formats of policy 3b.
+  - `clasificador.py`, `llm.py` and `cola_respaldo.py`.
+- **Conversation:** the conversation ID is the audit `conversation_id` and survives re-authentication. After G-01, the customer signs in again and calls `POST /chat/sesiones` with the `conversation_id` (G-02). That is refused while the previous session is still live.
+  - `POST /chat/mensaje` accepts an expired token (signature checked, expiry not), so it can answer G-01 without data instead of a bare 401.
+- **Step-up code:** it arrives in a separate field, `codigo_step_up` (the "verification window"), and never in the chat text. A code typed in the chat is redacted and refused (POL-AUTH-08).
+- **Confirmation token:** its secret stays in the server-side conversation context. The token table stores only its hash.
+- **Readings of the golden dialogues:**
+  - `last_message_redacted` holds the current message when that message triggers the transfer (G-03 to G-07, dialogue 7). After answers in waiting states, it keeps the request (dialogue 5).
+  - `evidence.cards` lists only the cards discussed (dialogue 7 has none).
+  - A read that keeps failing after its retries transfers (POL-ESC-07), not just abstains.
+  - Dialogue 11, turn 4, sentence 2 ("the same value as before") is not produced. It compares two tool results and is left to the LLM's wording.
+- **No preemptive timeout:** the tools run in process, so there is no 5 s cut-off. A tool that raises `TimeoutError` or a service error is recorded as a timeout or an error (dialogue 10's fault fixture does this). A real core-banking client would carry its own timeout.
+- **Safety net:** a turn that would end in a transient state is logged as a defect and set to `IDLE`.
+- **POL-GEN-06 detection is a heuristic:** a second read intent with a rule score of 0.5 or more, in a message with a conjunction. It fires on none of the replayed golden turns.
+
+### D-31. Audit log
+
+- **Storage:** the contract's single `audit_events` table, with the event body as JSON. It gains indexed `session_id`, `trace_id` and `turn_index` columns, used only for queries (idempotent migration).
+- **Turn trace ID:** every event of a turn shares one `trace_id`, including those the bank tools write, through a `ContextVar`.
+- **`session_origin` (additive, like `test_idp`, D-21):** every event says whether its session came from a password sign-in (user ID and role) or from the test IdP (with the jurado's user ID). The contract owners should add it in the next audit contract version.
+- **Event coverage:** `message_received`, `classification`, `tool_call` (including `authenticate`, step-up and retries), `confirmation`, `action_result`, `verification`, `handoff`, `security`, `llm_call` and one `policy_decision` per turn.
+  - `block_card` writes its own `action_result`. The gateway writes it only when the call raised before `block_card` could, so there is exactly one per call (AT-5).
+- **Card placeholder:** a typed card number is redacted as `<CARD_1234>`, the format of golden dialogue 7 and the one `rules.py` extracts last 4 from. AL-P1 says `[CARD_PAN_n]`. The last 4 are allowed in clear (AL-P4), and the AL-P7 scan still blocks any 13 to 19 digit run.
+
+### D-32. Endpoints and roles
+
+- **Chat:** `POST /chat/sesiones` and `POST /chat/mensaje`. The reply returns the text, state, language, pending confirmation and case ID. The chat works the same for seeded users and for test-IdP sessions.
+- **Ownership:** a conversation can only be used with its own session (403 for another customer's session, 409 for a session that is not attached).
+- **Cases:** `GET /casos` and `GET /casos/{id}` are for the `agente` role only.
+- **Audit:** `GET /auditoria/{session_id}` is for `agente` and `jurado`. A customer gets 403.
+- **CLI:** `backend/cli.py` signs in as a seeded user, or as a jurado who opens a test-IdP session for a `customer_id`. Commands: `/stepup`, `/otp`, `/lang es|pt`, `/audit`, `/reanudar`.
+
+### D-33. Every T1 rule has a test
+
+- **Stricter meta-test:** `test_cobertura_reglas.py` reads the T1 rules from the policy's Tier column, so it now covers all 80 of them. A rule counts only when its ID is in the docstring of a `test_*` function, where each test declares what it checks. A comment does not count.
+- **Result:** 0 of 80 T1 rules lack a test, so none needs a reason. The rules each test cites can be listed from its docstring.
+- **Golden replays:**
+  - they use the real classifier and `LLM_MODE=mock`;
+  - they run on a labeled gold test fixture with the rows the golden document reproduces (`backend/tests/gold_golden.py`);
+  - dialogue 10's fault is injected into the tool registry.
+- **Scripted classifier:** used only where a real message cannot pin the outcome, namely set sizes of 2 or 0 for POL-ESC-06, and partial requests for POL-GEN-06.
+- **Isolation:** no test calls the OpenAI API (a fake client stands in for the live mode), and no test reads `backend/.env`.
+
+### D-34. Smaller items
+
+- One card is "Tiene una tarjeta" / "Você tem um cartão", not a plural.
+- **Language:** the reply language is stored as a preference only when the customer chooses it or it is detected (POL-GEN-03). A default is never stored. An answer naming a language resolves the POL-ESC-11 question.
+- `backend/var/` (the fallback queue of POL-REL-03) is git-ignored.
+- **Requirements:** the classifier and OpenAI SDK pins are in `backend/requirements.txt`.

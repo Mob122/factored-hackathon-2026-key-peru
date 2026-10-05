@@ -3,3 +3,4 @@ from .usuarios import Usuario
 from .identidad import SesionIdentidad, CodigoOTPPrueba, StepUp
 from .banco import EventoEstadoTarjeta, TokenConfirmacion, Caso
 from .auditoria import EventoAuditoria
+from .chat import Conversacion, MensajeChat

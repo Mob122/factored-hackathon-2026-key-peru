@@ -8,6 +8,8 @@ Mientras no exista el orquestador, los eventos del IdP de prueba y de las tools 
 y trace_id/span_id generados aquí (docs/decisions_log.md, D-21).
 """
 
+from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import datetime, timezone
 from typing import Any, Dict, Iterable, List, Optional
 
@@ -25,7 +27,7 @@ import time
 import uuid
 
 SCHEMA_VERSION = "audit-0.2"
-POLICY_VERSION = "cards-synthetic-0.7"
+POLICY_VERSION = "cards-synthetic-0.8"
 STATE_MACHINE_VERSION = "sm-0.4"
 
 # AL-P7: secuencias de 13 a 19 dígitos que no forman parte de un token alfanumérico (un hash hex no cuenta).
@@ -38,6 +40,20 @@ _CAMPOS_PROHIBIDOS = {
     "credit_score", "estimated_monthly_income", "gender", "marital_status", "education_level",
     "occupation", "fraud_score", "is_fraud", "password", "codigo", "otp", "code",
 }
+
+
+# Turno en curso (trace_id, turn_index): lo fija el orquestador para que los eventos de las tools
+# del mismo turno compartan trace_id (contrato sección 3).
+_turno_actual: ContextVar[Optional[Dict[str, Any]]] = ContextVar("turno_auditado", default= None)
+
+
+@contextmanager
+def turno_auditado(trace_id: str, turn_index: int):
+    marca = _turno_actual.set({"trace_id": trace_id, "turn_index": turn_index})
+    try:
+        yield
+    finally:
+        _turno_actual.reset(marca)
 
 
 def iso_utc(momento: Optional[datetime]) -> Optional[str]:
@@ -113,12 +129,21 @@ def registrar_evento(
     state: str,
     rule_ids: Iterable[str],
     customer_id: Optional[str] = None,
-    turn_index: int = 0,
+    turn_index: Optional[int] = None,
     campos: Optional[Dict[str, Any]] = None,
+    trace_id: Optional[str] = None,
+    session_origin: Optional[Dict[str, Any]] = None,
 ) -> EventoAuditoria:
     """Agrega un evento a la sesión de base de datos. Quien llama hace commit junto con el cambio
-    que el evento registra, así ambos se guardan o ninguno (sección 1: falla cerrado)."""
+    que el evento registra, así ambos se guardan o ninguno (sección 1: falla cerrado).
+
+    `trace_id` es el del turno (todos los eventos de un turno lo comparten; se genera si falta).
+    `session_origin` es la extensión aditiva que dice cómo se abrió la sesión: contraseña de un
+    usuario sembrado o IdP de prueba con el id del jurado (docs/decisions_log.md, D-21 y D-27)."""
     ahora = datetime.now(timezone.utc)
+    turno = _turno_actual.get() or {}
+    trace_id = trace_id or turno.get("trace_id")
+    turn_index = turn_index if turn_index is not None else turno.get("turn_index", 0)
 
     sobre = {
         "schema_version": SCHEMA_VERSION,
@@ -128,7 +153,7 @@ def registrar_evento(
         "conversation_id": conversation_id,
         "session_id": session_id,
         "turn_index": turn_index,
-        "trace_id": secrets.token_hex(16),
+        "trace_id": trace_id or secrets.token_hex(16),
         "span_id": secrets.token_hex(8),
         "actor": actor,
         "customer_ref": seudonimo(customer_id) if customer_id else None,
@@ -138,6 +163,8 @@ def registrar_evento(
         "state_machine_version": STATE_MACHINE_VERSION,
         "rule_ids": list(rule_ids),
     }
+    if session_origin is not None:
+        sobre["session_origin"] = session_origin
 
     conteo: Dict[str, int] = {}
     cuerpo = {**sobre, **_escanear(campos or {}, conteo)}
@@ -149,6 +176,9 @@ def registrar_evento(
         conversation_id= conversation_id,
         event_type= event_type,
         occurred_at= ahora,
+        session_id= session_id,
+        trace_id= sobre["trace_id"],
+        turn_index= turn_index,
         event_hash= hashlib.sha256(json_canonico(cuerpo).encode("utf-8")).hexdigest(),
         cuerpo= cuerpo,
     )
@@ -166,6 +196,8 @@ def registrar_evento(
             state= state,
             rule_ids= ["POL-PII-05"],
             turn_index= turn_index,
+            trace_id= sobre["trace_id"],
+            session_origin= session_origin,
             campos= {"security_event": "pii_blocked", "subtype": None, "detector": "al-p7-scan-v1",
                      "evidence": {"blocked_event_id": sobre["event_id"], "hits": conteo}, "effect": "ignored_continue"},
         )

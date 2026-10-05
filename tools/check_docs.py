@@ -23,6 +23,9 @@ NOT_YET = {
     "docs/data_card.md",
     "docs/writeup.md",
     "backend/.env",
+    # Created at runtime and git-ignored (fallback queue of POL-REL-03).
+    "backend/var",
+    "backend/var/cola_casos.jsonl",
     "ml/tests/fixtures/update",
     "ml/tests/fixtures/update/expected",
     "ml/tests/pipelines/gold/test_incremental_update.py",
@@ -30,7 +33,7 @@ NOT_YET = {
 
 # Current contract and document versions.
 CURRENT = {
-    "cards-synthetic": "0.7",
+    "cards-synthetic": "0.8",
     "sm": "0.4",
     "gold": "0.2",
     "fresh": "0.2",
@@ -39,7 +42,7 @@ CURRENT = {
     "eval-plan": "0.3",
     "golden": "0.5",
     "intents": "1.0",
-    "ops": "0.2",
+    "ops": "0.3",
 }
 # Lines that legitimately cite older versions (change logs, history notes).
 HISTORY = re.compile(

@@ -158,7 +158,8 @@ ESQUEMAS = {
 LINAJE = "source_file VARCHAR, gold_batch_id VARCHAR, gold_loaded_at TIMESTAMP"
 
 
-def escribir_gold(directorio: Path, tablas: Dict[str, List[dict]], cargas: List[List[tuple]], clave_hmac: str) -> None:
+def escribir_gold(directorio: Path, tablas: Dict[str, List[dict]], cargas: List[List[tuple]], clave_hmac: str,
+                  numeros: Optional[Dict[str, str]] = None) -> None:
     """Escribe las cuatro tablas y _load_log.parquet. `cargas` es una lista de cargas publicadas, cada
     una con sus archivos de entrada (ruta, fecha de entrega)."""
     directorio.mkdir(parents= True, exist_ok= True)
@@ -171,7 +172,7 @@ def escribir_gold(directorio: Path, tablas: Dict[str, List[dict]], cargas: List[
         for fila in tablas[tabla]:
             fila = dict(fila)
             if tabla == "cards":
-                fila["card_number_hmac"] = huella(NUMEROS[fila["card_id"]], clave_hmac)
+                fila["card_number_hmac"] = huella((numeros or NUMEROS)[fila["card_id"]], clave_hmac)
             fila.setdefault("source_file", "customers.csv" if tabla == "customers" else "products.csv")
             fila.setdefault("gold_batch_id", LOTE_BASE)
             fila.setdefault("gold_loaded_at", CARGA_BASE)

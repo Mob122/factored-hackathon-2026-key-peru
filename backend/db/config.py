@@ -36,6 +36,9 @@ def run_migraciones():
     # (tabla, columna, tipo SQL) agregadas a tablas que ya existían.
     columnas_nuevas = [
         ("usuarios", "customer_id", "VARCHAR(16)"),
+        ("audit_events", "session_id", "VARCHAR(64)"),
+        ("audit_events", "trace_id", "VARCHAR(32)"),
+        ("audit_events", "turn_index", "INTEGER"),
     ]
 
     declaraciones = [

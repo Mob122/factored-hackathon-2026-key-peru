@@ -176,12 +176,24 @@ def auditar_sesion(
         rule_ids= rule_ids,
         customer_id= registro.customer_id,
         campos= campos,
+        session_origin= origen_sesion(registro),
     )
 
 
-def decodificar_token(token: str) -> str:
+def origen_sesion(registro: SesionIdentidad) -> dict:
+    """Cómo se abrió la sesión, para cada evento del audit log: contraseña de un usuario sembrado o
+    IdP de prueba con el id del jurado (POL-AUTH-11)."""
+    if registro.metodo == "idp_prueba":
+        return {"method": "test_idp", "issued_by_user_id": registro.emitida_por_usuario_id}
+    return {"method": "password", "user_id": registro.usuario_id, "role": registro.rol}
+
+
+def decodificar_token(token: str, *, permitir_vencido: bool = False) -> str:
+    """sid del JWT. La firma siempre se verifica. Con permitir_vencido el chat puede reconocer una
+    sesión cuyo JWT ya venció para responder con G-01 (pedir un nuevo inicio de sesión) sin datos."""
     try:
-        datos = jwt.decode(token, SECRET_KEY, algorithms= [ALGORITHM], options= {"require": ["exp", "sid"]})
+        datos = jwt.decode(token, SECRET_KEY, algorithms= [ALGORITHM],
+                           options= {"require": ["exp", "sid"], "verify_exp": not permitir_vencido})
     except jwt.InvalidTokenError:
         raise ErrorSesion("TOKEN_INVALID", "No se pudo validar las credenciales.")
 
