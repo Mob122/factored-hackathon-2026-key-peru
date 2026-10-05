@@ -1,4 +1,5 @@
 // src/hooks.server.ts
+import { env } from '$env/dynamic/private';
 import { redirect, type Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -9,7 +10,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	} else {
 		try {
 			// Validamos el token directamente contra el endpoint /me de FastAPI
-			const response = await fetch('http://localhost:8000/autenticacion/mi-perfil', {
+			const response = await fetch(`${env.API_BCKD_8}/autenticacion/mi-perfil`, {
 				method: 'GET',
 				headers: {
 					'Authorization': `Bearer ${token}`,

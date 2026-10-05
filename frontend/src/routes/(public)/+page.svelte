@@ -6,13 +6,13 @@
                     <h4 class="text-red-500/62">
                         <span class="bg-red-500 px-3 rounded-lg text-white">
                             FACTORED AI & DATA HACKATHON 2026
-                        </span> Dos caminos. Una decisión segura.
+                        </span> Atención bancaria segura, en segundos.
                     </h4>
         
                     <h1>
-                        ¿No reconoces este cargo?
+                        ¿Tienes una duda sobre tu tarjeta?
                         <span class="rounded-lg px-3 font-playfair-display relative text-red-500">
-                            Primero, entiéndelo.                    
+                            Verifícala antes de actuar.                    
         
                              <svg
                                 class="absolute -bottom-2 left-0 w-full"
@@ -32,13 +32,13 @@
                     </h1>
         
                     <p>
-                        Cargo Claro analiza tu transacción, encuentra una explicación basada en evidencia y evalúa su nivel de riesgo. Si podemos explicarla, te mostramos por qué. Si no, la enviamos a investigación.    
+                        Consulta tus tarjetas y transacciones con un asistente que responde solo con datos verificados. Consulta movimientos, revisa el estado de tu tarjeta o bloquéala con confirmación. Si el caso requiere intervención, lo entrega a un humano con todo el contexto.    
                     </p>
                 </div>
 
                 <div class="flex flex-col gap-4">                    
                     <div class="flex flex-col gap-3 justify-center md:flex-row">
-                        <a class="border border-gris-secundario/44 gap-2 group inline-flex items-center justify-center" href="/login">Analizar un cargo
+                        <a class="border border-gris-secundario/44 gap-2 group inline-flex items-center justify-center" href="/login">Consultar mi tarjeta
                             <svg class="group-hover:fill-gris-primario group-hover:-rotate-45 h-5 transition-transform w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Navigate Next</title><path d="M9.31 6.71a.996.996 0 0 0 0 1.41L13.19 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.72 6.7c-.38-.38-1.02-.38-1.41.01Z"></path><metadata>arrow, arrows, direction, navigate, next, right</metadata></svg>
                         </a>
                         <a class="border border-gris-secundario/44 gap-2 group inline-flex items-center justify-center" href="#preguntas-frecuentes">¿Cómo funciona?
@@ -47,7 +47,7 @@
                     </div>
                     <div class="flex items-center self-center">                        
                         <span class="bg-gris-secundario/70 h-1.5 rounded-full w-1.5"></span>
-                        <h4 class="inline-block text-gris-secundario/62 px-2 rounded-lg">No todo cargo desconocido es fraude. No todo cargo desconocido debe convertirse en un contracargo.</h4>
+                        <h4 class="inline-block text-gris-secundario/62 px-2 rounded-lg">No inventamos respuestas. No ejecutamos acciones sensibles sin verificar.</h4>
                     </div>
                 </div>      
             </div> 
@@ -60,8 +60,8 @@
                                 <svg  viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--noto fill-gris-secundario h-5 w-5" preserveAspectRatio="xMidYMid meet" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M107.77 15.16c-14.5-11.48-35.93-6.24-46.72 3.2c-12.08 10.56-12.42 27.25-6.13 40.88l-43.58 42.77c-1.77 1.74-3.59 14.19-3.5 16.64l5.9 4.12s9.99 2.99 14.34-.41s8.17-9.56 7.72-12.33c-.26-1.59.08-3.07 1.11-4.08c1.28-1.26 3.32-1.47 5.39-.78c1.59.53 3.36.08 4.55-1.09l.42-.41c1.69-1.58 1.88-3.42 1.55-4.96c-.51-2.39.36-4.37 1.7-6.12c1.16-1.52 3.36-2.16 5.28-2.19c3.46-.05 5.7-.79 8.15-3.19l6.38-6.24c14.36 6.4 31.97 3.51 43.4-8.68c14.66-15.64 10.91-43.77-5.96-57.13zm-8.64 33.35c-4 3.92-10.48 3.92-14.48 0s-4-10.29 0-14.21c4-3.92 10.48-3.92 14.48 0s4 10.29 0 14.21z" fill="#9d0b0b"></path><path d="M107.77 15.16c-14.88-14.88-39-14.88-53.88 0c-11.39 11.39-14.05 28.18-8.01 42.11L7.83 95.08a9.11 9.11 0 0 0-2.67 6.76l.44 11.75c2.17 1.22 2.24 5.07 2.24 5.07l9.9.76c2.53.08 4.98-.89 6.76-2.67l3.14-3.14c1.96-1.96 3.07-4.73 2.58-7.45c-.31-1.69.03-3.27 1.1-4.34c1.26-1.26 3.23-1.5 5.26-.87c1.69.53 3.53.19 4.79-1.06l.43-.43c1.71-1.63 1.9-3.52 1.57-5.1c-.51-2.46.37-4.49 1.71-6.29c1.17-1.57 3.4-2.22 5.33-2.25c3.49-.05 5.76-.81 8.23-3.28l5.98-5.95c14.13 6.65 31.49 4.14 43.17-7.54c14.86-14.89 14.86-39.01-.02-53.89zm-13.6 28.22c-4.04 4.04-10.59 4.04-14.62 0c-4.04-4.04-4.04-10.59 0-14.62c4.04-4.04 10.59-4.04 14.62 0c4.04 4.03 4.04 10.58 0 14.62z" fill="#ff2600"></path><path d="M5.6 113.59s1.24.84 2.24 5.07l47.48-48.27c1.55-1.7-5.4-.82-7.48 1.25L5.6 113.59z" fill="#e3e3e3"></path><path d="M60.43 19.92c-3.9 2.12-8.3 7.8-9.51 16c-1.1 7.44-.63 12.61 1.87 16.96c2.83 4.91 6.68 2.31 5.13-2.47c-1.02-3.15-1.28-4.34-1.42-7.68c-.11-2.61.16-5.24.9-7.74c1.84-6.2 6.11-10.27 7.36-12.28c1.59-2.57-.92-4.66-4.33-2.79z" fill="#fcfcfc"></path><path d="M33.05 79.72c-2.84 2.42.1-5.11 2.28-7.65C38.2 68.71 45 61.58 46.2 60.97c1.64-.83 1.54 3.75.87 4.59C44.69 68.5 35.9 77.3 33.05 79.72z" fill="#fcfcfc"></path></g></svg>
                             </div>
                             <div class="text-start">
-                                <h5 class="font-bold">Análisis de Cargo Claro</h5>
-                                <h6 class="text-xs">Entiende un cargo antes de disputarlo</h6>
+                                <h5 class="font-bold">Consulta de transacción</h5>
+                                <h6 class="text-xs">Información verificada antes de responder</h6>
                             </div>
                         </div>
                         <div class="font-bold text-red-500">
@@ -75,7 +75,7 @@
                         <div class="border border-gris-secundario/15 rounded-xl p-3">
                             <div class="flex items-center justify-between">
                                 <div>
-                                    <h6 class="text-xs text-gris-secundario/62">CARGO NO RECONOCIDO</h6>
+                                    <h6 class="text-xs text-gris-secundario/62">MOVIMIENTO RECIENTE</h6>
                                     <h4 class="font-bold">STREAMFLIX</h4>
                                 </div>
 
@@ -84,14 +84,14 @@
 
                             <div class="flex gap-2 mt-2 text-[10px] text-gris-secundario/62">
                                 <span class="bg-slate-100 px-2 py-1 rounded-md">Suscripción</span>
-                                <span class="bg-slate-100 px-2 py-1 rounded-md">Comercio habitual</span>
+                                <span class="bg-slate-100 px-2 py-1 rounded-md">Tarjeta terminada en 4821</span>
                             </div>
                         </div>
 
                         <!-- Resultado -->
                         <div class="flex items-center gap-3">
                             <div class="h-px bg-gris-secundario/15 flex-1"></div>
-                            <span class="text-xs text-gris-secundario/62">Evidencia encontrada</span>
+                            <span class="text-xs text-gris-secundario/62">Datos verificados</span>
                             <div class="h-px bg-gris-secundario/15 flex-1"></div>
                         </div>
 
@@ -107,12 +107,12 @@
                                     </div>
 
                                     <div>
-                                        <h5 class="font-bold text-xs">Causa encontrada</h5>
-                                        <h6 class="text-[10px] text-gris-secundario/62">Suscripción recurrente</h6>
+                                        <h5 class="font-bold text-xs">Transacción encontrada</h5>
+                                        <h6 class="text-[10px] text-gris-secundario/62">Registrada en la tarjeta del cliente</h6>
                                     </div>
                                 </div>
 
-                                <span class="text-xs font-bold text-red-500">BAJO RIESGO</span>
+                                <span class="text-xs font-bold text-red-500">VERIFICADO</span>
                             </div>
                         </div>
                     </div>
@@ -120,9 +120,9 @@
                     <div class="flex items-center justify-between">
                         <div class="flex gap-1 items-center">
                             <svg class="h-5 stroke-gris-secundario w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <rect x="6" y="13"  height="8" rx="2" transform="rotate(90 6 13)" ></rect> <rect x="17" y="12"  height="8" rx="2" transform="rotate(-90 17 12)" ></rect> <path d="M18 11L16.5 12.5C15.4829 13.5171 14.9744 14.0256 14.3628 14.1384C14.1229 14.1826 13.8771 14.1826 13.6372 14.1384C13.0256 14.0256 12.5171 13.5171 11.5 12.5V12.5C10.4829 11.4829 9.97442 10.9744 9.36277 10.8616C9.12295 10.8174 8.87705 10.8174 8.63723 10.8616C8.02558 10.9744 7.51705 11.4829 6.5 12.5L5 14" ></path> </g></svg>
-                            <h6 class="text-start text-xs">Explicación basada en evidencia</h6>
+                            <h6 class="text-start text-xs">Respuesta basada en los datos de tu cuenta</h6>
                         </div>
-                        <a class="flex gap-1 group items-center text-xs" href="/login">Ver análisis <svg class="fill-gris-secundario group-hover:fill-white h-5 transition-colors w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Navigate Next</title><path d="M9.31 6.71a.996.996 0 0 0 0 1.41L13.19 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.72 6.7c-.38-.38-1.02-.38-1.41.01Z"></path><metadata>arrow, arrows, direction, navigate, next, right</metadata></svg></a>
+                        <a class="flex gap-1 group items-center text-xs" href="/login">Ver movimiento <svg class="fill-gris-secundario group-hover:fill-white h-5 transition-colors w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Navigate Next</title><path d="M9.31 6.71a.996.996 0 0 0 0 1.41L13.19 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.72 6.7c-.38-.38-1.02-.38-1.41.01Z"></path><metadata>arrow, arrows, direction, navigate, next, right</metadata></svg></a>
                     </div>
                 </div>    
                 <div class="bg-gris-primario/17 border-t-3 border-x-2 border-gris-secundario cursor-cell duration-300 flex flex-col gap-4 group items-center rounded-t-4xl px-4 py-5 transition-transform hover:-translate-y-2 xl:mt-10">                    
@@ -130,13 +130,13 @@
                     
                     <div class="space-y-4 text-left">
                         <h5 class="font-light text-gris-secundario text-xl">¡Hola, soy Key Perú!</h5>
-                        <h3 class="font-medium">¿Qué quieres hacer con este cargo?</h3>
+                        <h3 class="font-medium">¿Qué quieres consultar?</h3>
                         <div class="flex flex-wrap gap-4">
-                            <h5 class="bg-white cursor-pointer p-3 rounded-2xl transition-colors hover:bg-black hover:text-white">Entender el cargo</h5>
+                            <h5 class="bg-white cursor-pointer p-3 rounded-2xl transition-colors hover:bg-black hover:text-white">Ver mis movimientos</h5>
                             <h5 class="bg-white cursor-pointer flex gap-2 group/adorno-1 p-3 rounded-2xl transition-colors hover:bg-black hover:text-white">
-                                <svg class="group-hover/adorno-1:stroke-white h-5 stroke-gris-secundario transition-colors w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11 6C13.7614 6 16 8.23858 16 11M16.6588 16.6549L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>Investigar</h5>
+                                <svg class="group-hover/adorno-1:stroke-white h-5 stroke-gris-secundario transition-colors w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11 6C13.7614 6 16 8.23858 16 11M16.6588 16.6549L21 21M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>Estado de mi tarjeta</h5>
                             <h5 class="bg-white cursor-pointer flex gap-2 group/adorno-1 p-3 rounded-2xl transition-colors hover:bg-black hover:text-white">
-                                <svg class="fill-gris-secundario group-hover/adorno-1:fill-white h-5 transition-colors w-5" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="m1783.68 1468.235-315.445 315.445v-315.445h315.445Zm-541.327-338.823v112.94h-903.53v-112.94h903.53Zm338.936-338.824V903.53H338.824V790.59h1242.465ZM621.176 0c93.403 0 169.412 76.01 169.412 169.412 0 26.09-6.437 50.484-16.94 72.62L999.98 468.255l-79.962 79.962-226.221-226.334c-22.137 10.504-46.532 16.942-72.622 16.942-93.402 0-169.411-76.01-169.411-169.412C451.765 76.009 527.775 0 621.176 0Zm395.295 225.882v112.942h790.588v1016.47h-451.765v451.765H112.941V338.824h225.883V225.882H0V1920h1421.478c45.176 0 87.755-17.619 119.717-49.581l329.224-329.11c31.962-32.076 49.581-74.655 49.581-119.831V225.882h-903.53Z" fill-rule="evenodd"></path> </g></svg>Noticias</h5>
+                                <svg class="fill-gris-secundario group-hover/adorno-1:fill-white h-5 transition-colors w-5" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="m1783.68 1468.235-315.445 315.445v-315.445h315.445Zm-541.327-338.823v112.94h-903.53v-112.94h903.53Zm338.936-338.824V903.53H338.824V790.59h1242.465ZM621.176 0c93.403 0 169.412 76.01 169.412 169.412 0 26.09-6.437 50.484-16.94 72.62L999.98 468.255l-79.962 79.962-226.221-226.334c-22.137 10.504-46.532 16.942-72.622 16.942-93.402 0-169.411-76.01-169.411-169.412C451.765 76.009 527.775 0 621.176 0Zm395.295 225.882v112.942h790.588v1016.47h-451.765v451.765H112.941V338.824h225.883V225.882H0V1920h1421.478c45.176 0 87.755-17.619 119.717-49.581l329.224-329.11c31.962-32.076 49.581-74.655 49.581-119.831V225.882h-903.53Z" fill-rule="evenodd"></path> </g></svg>Bloquear tarjeta</h5>
                         </div>
                     </div>
                 </div>
@@ -146,16 +146,16 @@
                              <svg  viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--noto fill-gris-secundario h-5 w-5" preserveAspectRatio="xMidYMid meet" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M107.77 15.16c-14.5-11.48-35.93-6.24-46.72 3.2c-12.08 10.56-12.42 27.25-6.13 40.88l-43.58 42.77c-1.77 1.74-3.59 14.19-3.5 16.64l5.9 4.12s9.99 2.99 14.34-.41s8.17-9.56 7.72-12.33c-.26-1.59.08-3.07 1.11-4.08c1.28-1.26 3.32-1.47 5.39-.78c1.59.53 3.36.08 4.55-1.09l.42-.41c1.69-1.58 1.88-3.42 1.55-4.96c-.51-2.39.36-4.37 1.7-6.12c1.16-1.52 3.36-2.16 5.28-2.19c3.46-.05 5.7-.79 8.15-3.19l6.38-6.24c14.36 6.4 31.97 3.51 43.4-8.68c14.66-15.64 10.91-43.77-5.96-57.13zm-8.64 33.35c-4 3.92-10.48 3.92-14.48 0s-4-10.29 0-14.21c4-3.92 10.48-3.92 14.48 0s4 10.29 0 14.21z" fill="#9d0b0b"></path><path d="M107.77 15.16c-14.88-14.88-39-14.88-53.88 0c-11.39 11.39-14.05 28.18-8.01 42.11L7.83 95.08a9.11 9.11 0 0 0-2.67 6.76l.44 11.75c2.17 1.22 2.24 5.07 2.24 5.07l9.9.76c2.53.08 4.98-.89 6.76-2.67l3.14-3.14c1.96-1.96 3.07-4.73 2.58-7.45c-.31-1.69.03-3.27 1.1-4.34c1.26-1.26 3.23-1.5 5.26-.87c1.69.53 3.53.19 4.79-1.06l.43-.43c1.71-1.63 1.9-3.52 1.57-5.1c-.51-2.46.37-4.49 1.71-6.29c1.17-1.57 3.4-2.22 5.33-2.25c3.49-.05 5.76-.81 8.23-3.28l5.98-5.95c14.13 6.65 31.49 4.14 43.17-7.54c14.86-14.89 14.86-39.01-.02-53.89zm-13.6 28.22c-4.04 4.04-10.59 4.04-14.62 0c-4.04-4.04-4.04-10.59 0-14.62c4.04-4.04 10.59-4.04 14.62 0c4.04 4.03 4.04 10.58 0 14.62z" fill="#ff2600"></path><path d="M5.6 113.59s1.24.84 2.24 5.07l47.48-48.27c1.55-1.7-5.4-.82-7.48 1.25L5.6 113.59z" fill="#e3e3e3"></path><path d="M60.43 19.92c-3.9 2.12-8.3 7.8-9.51 16c-1.1 7.44-.63 12.61 1.87 16.96c2.83 4.91 6.68 2.31 5.13-2.47c-1.02-3.15-1.28-4.34-1.42-7.68c-.11-2.61.16-5.24.9-7.74c1.84-6.2 6.11-10.27 7.36-12.28c1.59-2.57-.92-4.66-4.33-2.79z" fill="#fcfcfc"></path><path d="M33.05 79.72c-2.84 2.42.1-5.11 2.28-7.65C38.2 68.71 45 61.58 46.2 60.97c1.64-.83 1.54 3.75.87 4.59C44.69 68.5 35.9 77.3 33.05 79.72z" fill="#fcfcfc"></path></g></svg>                  
                         </div>
                         <div class="flex-1 flex flex-col text-start">
-                            <div class="flex font-bold gap-3 items-center text-lg">Cargo Claro
+                            <div class="flex font-bold gap-3 items-center text-lg">Tarjetas
                                 <span class="bg-white px-2 rounded-lg text-xs text-gris-secundario/62">
-                                    Decisión segura
+                                    Atención segura
                                 </span>
                             </div>
-                            <span class="flex-1 block text-sm">Explica los cargos legítimos y deriva a investigación cuando el riesgo lo requiere</span>
+                            <span class="flex-1 block text-sm">Consulta, verifica y actúa sobre tus tarjetas sin perder el control</span>
                             
                             <span class="justify-self-end flex items-center">
-                                Analiza un cargo
-                                <svg class="fill-gris-secundario group-hover:fill-white h-5 transition-colors w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Navigate Next</title><path d="M9.31 6.71a.996.996 0 0 0 0 1.41L13.19 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.72 6.7c-.38-.38-1.02-.38-1.41.01Z"></path><metadata>arrow, arrows, direction, navigate, next, right</metadata></svg>
+                                Consultar ahora
+                                <svg class="fill-gris-secundario group-hover:fill-white group-hover:-rotate-45 h-5 transition-colors w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>Navigate Next</title><path d="M9.31 6.71a.996.996 0 0 0 0 1.41L13.19 12l-3.88 3.88a.996.996 0 1 0 1.41 1.41l4.59-4.59a.996.996 0 0 0 0-1.41L10.72 6.7c-.38-.38-1.02-.38-1.41.01Z"></path><metadata>arrow, arrows, direction, navigate, next, right</metadata></svg>
                             </span>
                         </div>
                     </div>                                        
