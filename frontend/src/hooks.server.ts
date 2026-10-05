@@ -32,7 +32,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-
 	// Seguridad: Proteger rutas del /app en el servidor.
 	if (event.url.pathname.startsWith('/app') && !event.locals.usuario) {
 		redirect(302, '/login');
